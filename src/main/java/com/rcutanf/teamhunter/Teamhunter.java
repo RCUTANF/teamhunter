@@ -7,10 +7,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
 
 import java.time.Duration;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Teamhunter implements ModInitializer {
 
@@ -38,35 +35,14 @@ public class Teamhunter implements ModInitializer {
         broadcastPacket(server, phase);
     }
 
-    public static void setPhase(MinecraftServer server, Phase phase, Duration countDown, Runnable then) {
+    public static CompletableFuture<Void> setPhase(MinecraftServer server, Phase phase, Duration countDown) {
         setPhase(server, phase);
-        startCountDown(server, countDown, then);
+        return ticker.start(server, countDown, Duration.ofMillis(500));
     }
 
-    public static void setPhase(MinecraftServer server, Phase phase, Duration countDown, Phase nextPhase) {
-        setPhase(server, phase);
-        startCountDown(server, countDown, () -> {
-            setPhase(server, nextPhase);
-        });
-    }
+    public static final Ticker<MinecraftServer> ticker = new Ticker<>((c, d) -> {
+        broadcastPacket(c, new NetWorking.CounterSyncPacket(d.toMillis()));
+    });
 
-
-    public static void startCountDown(MinecraftServer server, Duration duration, Runnable then) {
-        counterTask.cancel(false);
-        onCompleteTask.cancel(false);
-        counterTask = executor.scheduleAtFixedRate(() -> {
-            broadcastPacket(server, new NetWorking.CounterSyncPacket(duration.toMillis()));
-        }, 0, 500, TimeUnit.MILLISECONDS);
-        onCompleteTask = executor.schedule(() -> {
-            counterTask.cancel(false);
-            if (then != null)
-                then.run();
-        }, duration.toMillis(), TimeUnit.MILLISECONDS);
-    }
-
-    private static ScheduledFuture<?> counterTask;
-    private static ScheduledFuture<?> onCompleteTask;
-
-    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
 }

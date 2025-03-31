@@ -8,6 +8,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
+import java.time.Duration;
+
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -40,9 +42,15 @@ public class Command {
 
     // TODO: Implement the start method
     private static int start(CommandContext<ServerCommandSource> context) {
-        final var minutes = IntegerArgumentType.getInteger(context, MINUTES);
 
-        context.getSource().sendFeedback(() -> Text.literal("not implemented"), false);
+        context.getSource().sendFeedback(() -> Text.literal("started"), false);
+        var server = context.getSource().getServer();
+        Teamhunter.setPhase(server, Phase.WARMUP, Duration.ofSeconds(5))
+                .thenCompose(
+                        (v) -> Teamhunter.setPhase(server, Phase.PREPARE, Duration.ofSeconds(5))
+                ).thenAccept(
+                        (v) -> Teamhunter.setPhase(server, Phase.MATCH)
+                );
         return SINGLE_SUCCESS;
     }
 
