@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "teamhunter",
+  "version": "${version}",
+  "name": "teamhunter",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All Rights Reserved",
+  "icon": "assets/teamhunter/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.rcutanf.teamhunter.client.TeamhunterClient"
+    ],
+    "main": [
+      "com.rcutanf.teamhunter.Teamhunter"
+    ]
+  },
+  "mixins": [
+    "teamhunter.mixins.json",
+    {
+      "config": "teamhunter.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
