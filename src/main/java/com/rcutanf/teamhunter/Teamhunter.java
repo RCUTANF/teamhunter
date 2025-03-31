@@ -6,7 +6,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Teamhunter implements ModInitializer {
 
@@ -17,7 +21,7 @@ public class Teamhunter implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(Command::register);
     }
 
-    private static final AtomicBoolean started = new AtomicBoolean(false);
+    private static Phase _phase = Phase.WAITING;
 
     private static void broadcastPacket(MinecraftServer server, CustomPayload payload) {
         server.getPlayerManager()
@@ -25,16 +29,44 @@ public class Teamhunter implements ModInitializer {
                 .forEach(player -> ServerPlayNetworking.send(player, payload));
     }
 
-    public static void startInServer(MinecraftServer server, int countDownTicks) {
-        if (countDownTicks <= 0) return;
-        if (started.compareAndSet(false, true)) {
-            broadcastPacket(server, new NetWorking.CounterTogglePacket(countDownTicks));
-        }
+    public static Phase getPhase() {
+        return _phase;
     }
 
-    public static void stopInServer(MinecraftServer server) {
-        if (started.compareAndSet(true, false)) {
-            broadcastPacket(server, new NetWorking.CounterTogglePacket(0));
-        }
+    public static void setPhase(MinecraftServer server, Phase phase) {
+        _phase = phase;
+        broadcastPacket(server, phase);
     }
+
+    public static void setPhase(MinecraftServer server, Phase phase, Duration countDown, Runnable then) {
+        setPhase(server, phase);
+        startCountDown(server, countDown, then);
+    }
+
+    public static void setPhase(MinecraftServer server, Phase phase, Duration countDown, Phase nextPhase) {
+        setPhase(server, phase);
+        startCountDown(server, countDown, () -> {
+            setPhase(server, nextPhase);
+        });
+    }
+
+
+    public static void startCountDown(MinecraftServer server, Duration duration, Runnable then) {
+        counterTask.cancel(false);
+        onCompleteTask.cancel(false);
+        counterTask = executor.scheduleAtFixedRate(() -> {
+            broadcastPacket(server, new NetWorking.CounterSyncPacket(duration.toMillis()));
+        }, 0, 500, TimeUnit.MILLISECONDS);
+        onCompleteTask = executor.schedule(() -> {
+            counterTask.cancel(false);
+            if (then != null)
+                then.run();
+        }, duration.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    private static ScheduledFuture<?> counterTask;
+    private static ScheduledFuture<?> onCompleteTask;
+
+    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
 }
