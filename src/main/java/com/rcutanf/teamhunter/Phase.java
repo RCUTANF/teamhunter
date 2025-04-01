@@ -6,18 +6,24 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public enum Phase implements CustomPayload {
-    WAITING(true),
+    WAITING(true, false),
     WARMUP(true),
     PREPARE(true),
     MATCH(false),
     PAUSED(false),
     END(false);
 
-    Phase(boolean countDown) {
-        this.countDown = countDown;
+    Phase(boolean showCountDown, boolean showPhaseName) {
+        this.showCountDown = showCountDown;
+        this.showPhaseName = showPhaseName;
     }
 
-    public final boolean countDown;
+    Phase(boolean showCountDown) {
+        this(showCountDown, true);
+    }
+
+    public final boolean showCountDown;
+    public final boolean showPhaseName;
 
     private static final Identifier PhaseId = Identifier.of(Teamhunter.MOD_ID, "start");
     public static final Id<Phase> ID = new Id<>(PhaseId);
