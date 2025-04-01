@@ -30,8 +30,9 @@ public class Command {
 
         var cmd = literal(BASE_COMMAND)
                 .then(literal(START)
-                        .then(argument(MINUTES, IntegerArgumentType.integer(0)))
-                        .executes(Command::start)
+                        .then(argument(MINUTES, IntegerArgumentType.integer(0))
+                                .executes(Command::start)
+                        )
                 ).then(literal(CANCEL)
                         .executes(Command::cancel)
                 );
@@ -40,11 +41,12 @@ public class Command {
 
     }
 
-    // TODO: Implement the start method
+    // TODO: inspect the start method
     private static int start(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
-        Teamhunter.startPhase(server, Phase.WARMUP, Duration.ofSeconds(5))
-                .then(Phase.PREPARE, Duration.ofSeconds(5))
+        var minutes = IntegerArgumentType.getInteger(context, MINUTES);
+        Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofMinutes(minutes))
+                .then(Phase.PREPARE, Duration.ofSeconds(10))
                 .then(Phase.MATCH);
         return SINGLE_SUCCESS;
     }

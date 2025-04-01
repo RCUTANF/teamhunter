@@ -26,7 +26,7 @@ public final class Ticker<C> {
 
         counterTask = executor.scheduleAtFixedRate(() -> {
             if (paused) return;
-            onTick.accept(context, duration);
+            onTick.accept(context, remaining);
             remaining = remaining.minus(interval);
             if (remaining.isNegative()) {
                 remaining = Duration.ZERO;
@@ -50,6 +50,11 @@ public final class Ticker<C> {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public void clear() {
+        if (counterTask != null)
+            counterTask.cancel(false);
     }
 
     private ScheduledFuture<?> counterTask;
