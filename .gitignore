@@ -159,7 +159,6 @@ out/
 *.swp
 *~
 
-.idea
 *.iml
 *.ipr
 *.iws
