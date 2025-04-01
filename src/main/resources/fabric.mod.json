@@ -4,7 +4,14 @@
   "version": "${version}",
   "name": "teamhunter",
   "description": "",
-  "authors": [],
+  "authors": [
+    {
+      "name": "ghostflyby",
+      "contact": {
+        "email": "ghostflyby+teamhunter@outlook.com"
+      }
+    }
+  ],
   "contact": {},
   "license": "All Rights Reserved",
   "icon": "assets/teamhunter/icon.png",
