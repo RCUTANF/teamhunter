@@ -7,6 +7,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.*;
 
 public class Teamhunter implements ModInitializer {
@@ -30,12 +31,12 @@ public class Teamhunter implements ModInitializer {
         return _phase;
     }
 
-    public static void setPhase(MinecraftServer server, Phase phase) {
+    private static void setPhase(MinecraftServer server, Phase phase) {
         _phase = phase;
         broadcastPacket(server, phase);
     }
 
-    public static CompletableFuture<Void> setPhase(MinecraftServer server, Phase phase, Duration countDown) {
+    private static CompletableFuture<Void> setPhase(MinecraftServer server, Phase phase, Duration countDown) {
         setPhase(server, phase);
         return ticker.start(server, countDown, Duration.ofMillis(500));
     }
@@ -43,6 +44,30 @@ public class Teamhunter implements ModInitializer {
     public static final Ticker<MinecraftServer> ticker = new Ticker<>((c, d) -> {
         broadcastPacket(c, new NetWorking.CounterSyncPacket(d.toMillis()));
     });
+
+    public static PhaseCombiner startPhase(MinecraftServer server, Phase phase, Duration countDown) {
+        return new PhaseCombiner(server, setPhase(server, phase, countDown));
+    }
+
+    public static final class PhaseCombiner {
+        private final MinecraftServer server;
+        private CompletableFuture<Void> future;
+
+        public PhaseCombiner(MinecraftServer server, CompletableFuture<Void> future) {
+            this.server = server;
+            this.future = future;
+        }
+
+        public PhaseCombiner then(Phase phase, Duration countDown) {
+            future = future.thenCompose(v -> setPhase(server, phase, countDown));
+            return this;
+        }
+
+        public void then(Phase phase) {
+            future.thenAccept(v -> setPhase(server, phase));
+        }
+
+    }
 
 
 }

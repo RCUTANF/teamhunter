@@ -42,21 +42,15 @@ public class Command {
 
     // TODO: Implement the start method
     private static int start(CommandContext<ServerCommandSource> context) {
-
-        context.getSource().sendFeedback(() -> Text.literal("started"), false);
         var server = context.getSource().getServer();
-        Teamhunter.setPhase(server, Phase.WARMUP, Duration.ofSeconds(5))
-                .thenCompose(
-                        (v) -> Teamhunter.setPhase(server, Phase.PREPARE, Duration.ofSeconds(5))
-                ).thenAccept(
-                        (v) -> Teamhunter.setPhase(server, Phase.MATCH)
-                );
+        Teamhunter.startPhase(server, Phase.WARMUP, Duration.ofSeconds(5))
+                .then(Phase.PREPARE, Duration.ofSeconds(5))
+                .then(Phase.MATCH);
         return SINGLE_SUCCESS;
     }
 
     // TODO: Implement the cancel method
     private static int cancel(CommandContext<ServerCommandSource> context) {
-        context.getSource().sendFeedback(() -> Text.literal("not implemented"), false);
         return SINGLE_SUCCESS;
     }
 }
