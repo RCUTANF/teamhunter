@@ -3,6 +3,8 @@ package com.rcutanf.teamhunter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import static com.rcutanf.teamhunter.TeamUtils.getTeamPlayerNames;
+
 
 public class PhaseHandler {
     private final MinecraftServer server;
@@ -14,17 +16,45 @@ public class PhaseHandler {
     // WARMUP 阶段逻辑
     public void onWarmupStart() {
         CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* false");
-        CommandExecutor.executeCommand(server, "/");
+        //设置牢房
+        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:bedrock");
+        CommandExecutor.executeCommand(server, "/fill 9 257 9 -9 260 -9 minecraft:air");
+
+        CommandExecutor.executeCommand(server, "/tp @a 0 257 0");
+        CommandExecutor.executeCommand(server, "/gamemode survival @a[team=runners]");
+        CommandExecutor.executeCommand(server, "/gamemode survival @a[team=hunters]");
+        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode false");
+
+        CommandExecutor.executeCommand(server, "/clear @a[team=runners]");
+        CommandExecutor.executeCommand(server, "/clear @a[team=hunters]");
+        CommandExecutor.executeCommand(server, "/say §4赛前热身阶段，比赛开始倒计时" + Command.MINUTES + "分钟，请各位玩家充分交流，制定计划，做好准备");
+
+        //计分板
+        CommandExecutor.executeCommand(server, "/scoreboard objectives add Deaths deathCount \"死亡次数\"");
+        CommandExecutor.executeCommand(server, "/scoreboard objectives setdisplay sidebar Deaths");
     }
 
     // PREPARE 阶段逻辑
     public void onPrepareStart() {
+        CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn true");
+        CommandExecutor.executeCommand(server, "/kill @a[team=runners]");
+        CommandExecutor.executeCommand(server, "/kill @a[team=hunters]");
+
+        FreezeAllPlayers(server);
+
+        CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=runners] Deaths 0");
+        CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=hunters] Deaths 0");
+        CommandExecutor.executeCommand(server, "/say §4准备阶段，请及时确认你的伙伴位置");
+
+
 
     }
 
     // MATCH 阶段逻辑
     public void onMatchStart() {
-
+        CommandExecutor.executeCommand(server, "/say &aGO!");
+        CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn false");
+        unFreezeAllPlayers(server);
     }
 
 
@@ -45,4 +75,25 @@ public class PhaseHandler {
         player.getAbilities().flying = false;
         player.getAbilities().allowModifyWorld = true;
     }
+    public static void unFreezeAllPlayers(MinecraftServer server) {
+        for (String teamName : new String[]{"hunters", "runners"}) {
+            for (String playerName : getTeamPlayerNames(server, teamName)) {
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+                if (player != null) {
+                    unFreezePlayer(server, player);
+                }
+            }
+        }
+    }
+    public static void FreezeAllPlayers(MinecraftServer server) {
+        for (String teamName : new String[]{"hunters", "runners"}) {
+            for (String playerName : getTeamPlayerNames(server, teamName)) {
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+                if (player != null) {
+                    freezePlayer(server, player);
+                }
+            }
+        }
+    }
+
 }

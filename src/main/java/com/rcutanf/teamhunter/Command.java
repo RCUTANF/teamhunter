@@ -21,6 +21,7 @@ public class Command {
     final static String START = "start";
     final static String CANCEL = "cancel";
     final static String MINUTES = "minutes";
+    final static String END = "end";
 
 
     private Command() {
@@ -53,6 +54,17 @@ public class Command {
 
     // TODO: Implement the cancel method
     private static int cancel(CommandContext<ServerCommandSource> context) {
-        return SINGLE_SUCCESS;
+        //检查是否是热身阶段
+        if (Teamhunter.phaseManager.Phase() == Phase.WARMUP) {
+            CommandExecutor.executeCommand(context.getSource().getServer(), "/luckperms group default permission set minecraft.command.trigger.* false");
+            CommandExecutor.executeCommand(context.getSource().getServer(), "/say §4比赛已取消");
+            Teamhunter.phaseManager.clear();
+            return SINGLE_SUCCESS;
+        }
+        else {
+            context.getSource().sendError(Text.translatable("§4比赛已开始，无法取消"));
+            return SINGLE_SUCCESS;
+        }
     }
+
 }
