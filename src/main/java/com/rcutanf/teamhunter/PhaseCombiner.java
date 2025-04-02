@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-public final class PhaseCombiner {
+public final class PhaseCombiner implements AutoCloseable {
     private final MinecraftServer server;
     private final PhaseHandler phaseHandler;
     private @Nullable CompletableFuture<Void> future;
@@ -19,7 +19,8 @@ public final class PhaseCombiner {
 
     /**
      * 链式调用以设置下一个阶段，并指定倒计时时长。
-     * @param phase 下一个阶段
+     *
+     * @param phase     下一个阶段
      * @param countDown 倒计时时长
      * @return 当前 PhaseCombiner 实例
      */
@@ -40,6 +41,7 @@ public final class PhaseCombiner {
 
     /**
      * 链式调用的结束，设置最终阶段，持续时间无限。
+     *
      * @param phase 最终阶段
      */
     public void then(Phase phase) {
@@ -68,6 +70,7 @@ public final class PhaseCombiner {
 
     /**
      * 停止正在运行的倒计时。
+     *
      * @return 当前 PhaseCombiner 实例
      */
     public PhaseCombiner clear() {
@@ -92,4 +95,8 @@ public final class PhaseCombiner {
         Teamhunter.broadcastPacket(c, new NetWorking.CounterSyncPacket(d.toMillis()));
     });
 
+    @Override
+    public void close() throws Exception {
+        ticker.close();
+    }
 }

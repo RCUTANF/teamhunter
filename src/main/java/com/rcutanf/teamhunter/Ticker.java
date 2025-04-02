@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-public final class Ticker<C> {
+public final class Ticker<C> implements AutoCloseable {
     private final BiConsumer<C, Duration> onTick;
     private Duration remaining;
     boolean paused = false;
@@ -60,4 +60,10 @@ public final class Ticker<C> {
     private ScheduledFuture<?> counterTask;
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    @Override
+    public void close() throws Exception {
+        clear();
+        executor.close();
+    }
 }

@@ -21,7 +21,11 @@ public class Teamhunter implements ModInitializer {
                 s -> phaseManager = new PhaseCombiner(s, new PhaseHandler(s))
         );
         ServerLifecycleEvents.SERVER_STOPPING.register(s -> {
-            phaseManager.clear();
+            try {
+                phaseManager.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             phaseManager = null;
         });
     }
