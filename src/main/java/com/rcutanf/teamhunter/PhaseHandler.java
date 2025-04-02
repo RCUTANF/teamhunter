@@ -40,6 +40,14 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/kill @a[team=runners]");
         CommandExecutor.executeCommand(server, "/kill @a[team=hunters]");
 
+        //等待1秒
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+
         FreezeAllPlayers(server);
 
         CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=runners] Deaths 0");
