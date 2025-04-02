@@ -27,6 +27,10 @@ public class PhaseHandler {
 
         CommandExecutor.executeCommand(server, "/clear @a[team=runners]");
         CommandExecutor.executeCommand(server, "/clear @a[team=hunters]");
+
+        //设置玩家无敌
+        CommandExecutor.executeCommand(server, "/effect give @a[team=runners] minecraft:resistance 1000000 255 true");
+        CommandExecutor.executeCommand(server, "/effect give @a[team=hunters] minecraft:resistance 1000000 255 true");
         CommandExecutor.executeCommand(server, "/say 赛前热身阶段，请各位玩家充分交流，制定计划，做好准备");
 
         //计分板
@@ -42,7 +46,7 @@ public class PhaseHandler {
 
         //等待1秒
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);

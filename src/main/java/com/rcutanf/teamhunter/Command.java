@@ -79,6 +79,9 @@ public class Command {
         if (Teamhunter.phaseManager.Phase() == Phase.WARMUP) {
             CommandExecutor.executeCommand(context.getSource().getServer(), "/luckperms group default permission set minecraft.command.trigger.* false");
             CommandExecutor.executeCommand(context.getSource().getServer(), "/say §4比赛已取消");
+            //清除无敌效果
+            CommandExecutor.executeCommand(context.getSource().getServer(), "/effect clear @a[team=runners] minecraft:resistance");
+            CommandExecutor.executeCommand(context.getSource().getServer(), "/effect clear @a[team=hunters] minecraft:resistance");
             Teamhunter.phaseManager.clear();
             Teamhunter.phaseManager.then(Phase.WAITING);
             return SINGLE_SUCCESS;
