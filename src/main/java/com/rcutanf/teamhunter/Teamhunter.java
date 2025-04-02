@@ -15,7 +15,7 @@ public class Teamhunter implements ModInitializer {
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register(Command::register);
         ServerLifecycleEvents.SERVER_STARTED.register(
-                s -> phaseManager = new PhaseCombiner(s)
+                s -> phaseManager = new PhaseCombiner(s, new PhaseHandler(s))
         );
     }
 

@@ -8,11 +8,13 @@ import java.util.concurrent.CompletableFuture;
 
 public final class PhaseCombiner {
     private final MinecraftServer server;
+    private final PhaseHandler phaseHandler;
     private @Nullable CompletableFuture<Void> future;
     private Phase _phase = Phase.WAITING;
 
-    public PhaseCombiner(MinecraftServer server) {
+    public PhaseCombiner(MinecraftServer server, PhaseHandler phaseHandler) {
         this.server = server;
+        this.phaseHandler = phaseHandler;
     }
 
     /**
@@ -50,6 +52,13 @@ public final class PhaseCombiner {
     private void setPhase(Phase phase) {
         _phase = phase;
         Teamhunter.broadcastPacket(server, phase);
+        server.execute(() -> {
+            switch (phase) {
+                case WARMUP -> phaseHandler.onWarmupStart();
+                case PREPARE -> phaseHandler.onPrepareStart();
+                case MATCH -> phaseHandler.onMatchStart();
+            }
+        });
     }
 
     private CompletableFuture<Void> setPhase(Phase phase, Duration countDown) {
