@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -8,16 +9,30 @@ import static com.rcutanf.teamhunter.TeamUtils.getTeamPlayerNames;
 
 public class PhaseHandler {
     private final MinecraftServer server;
+    //监听器用
+    private int delayTicks = 0;
+    private boolean shouldFreeze = false;
 
     public PhaseHandler(MinecraftServer server) {
         this.server = server;
+        ServerTickEvents.START_SERVER_TICK.register(tickServer -> {
+
+            if (shouldFreeze) {
+                delayTicks++;
+                if (delayTicks >= 20) { // 20 ticks = 1秒
+                    //System.out.println("[DEBUG] Tick监听器被触发");
+                    FreezeAllPlayers(server);
+                    shouldFreeze = false;
+                }
+            }
+        });
     }
 
     // WARMUP 阶段逻辑
     public void onWarmupStart() {
         CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* false");
         //设置牢房
-        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:bedrock");
+        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:barrier");
         CommandExecutor.executeCommand(server, "/fill 9 257 9 -9 260 -9 minecraft:air");
 
         CommandExecutor.executeCommand(server, "/tp @a 0 257 0");
@@ -44,22 +59,16 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/kill @a[team=runners]");
         CommandExecutor.executeCommand(server, "/kill @a[team=hunters]");
 
-        //等待1秒
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        }
-
-        FreezeAllPlayers(server);
-
         CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=runners] Deaths 0");
         CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=hunters] Deaths 0");
         CommandExecutor.executeCommand(server, "/team modify hunters friendlyFire false");
         CommandExecutor.executeCommand(server, "/team modify runners friendlyFire false");
         CommandExecutor.executeCommand(server, "/time set day");
         CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
+
+        //触发监听器调用freezeall
+        shouldFreeze = true;
+        delayTicks = 0;
 
 
 
@@ -69,6 +78,7 @@ public class PhaseHandler {
     public void onMatchStart() {
         CommandExecutor.executeCommand(server, "/say &aGO!");
         CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn false");
+        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:air");
         unFreezeAllPlayers(server);
     }
 
@@ -145,5 +155,6 @@ public class PhaseHandler {
 
          */
     }
+
 
 }
