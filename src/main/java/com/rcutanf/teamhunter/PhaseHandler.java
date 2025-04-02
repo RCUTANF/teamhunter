@@ -60,7 +60,7 @@ public class PhaseHandler {
 
     // 共用方法
     public static void freezePlayer(MinecraftServer server, ServerPlayerEntity player){
-        CommandExecutor.executeCommand(server, "/");
+        CommandExecutor.executeCommand(server, "/tick freeze");
         player.getAbilities().setWalkSpeed(0f);
         player.getAbilities().setFlySpeed(0f);
         player.getAbilities().allowFlying = false;
@@ -68,7 +68,7 @@ public class PhaseHandler {
         player.getAbilities().allowModifyWorld = false;
     }
     public static void unFreezePlayer(MinecraftServer server, ServerPlayerEntity player){
-
+        CommandExecutor.executeCommand(server, "/tick unfreeze");
         player.getAbilities().setWalkSpeed(0.1f); // 默认行走速度
         player.getAbilities().setFlySpeed(0.05f);
         player.getAbilities().allowFlying = false;

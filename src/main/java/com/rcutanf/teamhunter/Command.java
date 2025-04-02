@@ -22,6 +22,8 @@ public class Command {
     final static String CANCEL = "cancel";
     final static String MINUTES = "minutes";
     final static String END = "end";
+    final static String PARSE = "parse";
+    final static String RESUME = "resume";
 
 
     private Command() {
@@ -36,6 +38,15 @@ public class Command {
                         )
                 ).then(literal(CANCEL)
                         .executes(Command::cancel)
+                )
+                .then(literal(END)
+                        .executes(Command::end)
+                )
+                .then(literal(PARSE)
+                        .executes(Command::parse)
+                )
+                .then(literal(RESUME)
+                        .executes(Command::resume)
                 );
 
         dispatcher.register(cmd);
@@ -67,4 +78,24 @@ public class Command {
         }
     }
 
+    private static int end(CommandContext<ServerCommandSource> context) {
+        var server = context.getSource().getServer();
+        CommandExecutor.executeCommand(server, "/say §4比赛已结束");
+        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* true");
+        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode true");
+        Teamhunter.phaseManager.clear();
+        return SINGLE_SUCCESS;
+    }
+
+    private static int parse(CommandContext<ServerCommandSource> context) {
+        var server = context.getSource().getServer();
+        PhaseHandler.FreezeAllPlayers(server);
+        return SINGLE_SUCCESS;
+    }
+
+    private static int resume(CommandContext<ServerCommandSource> context) {
+        var server = context.getSource().getServer();
+        PhaseHandler.unFreezeAllPlayers(server);
+        return SINGLE_SUCCESS;
+    }
 }
