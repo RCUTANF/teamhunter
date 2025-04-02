@@ -3,6 +3,7 @@ package com.rcutanf.teamhunter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+
 public class PhaseHandler {
     private final MinecraftServer server;
 
@@ -12,7 +13,8 @@ public class PhaseHandler {
 
     // WARMUP 阶段逻辑
     public void onWarmupStart() {
-
+        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* false");
+        CommandExecutor.executeCommand(server, "/");
     }
 
     // PREPARE 阶段逻辑
@@ -27,15 +29,16 @@ public class PhaseHandler {
 
 
     // 共用方法
-    public static void freezePlayer(ServerPlayerEntity player){
-
+    public static void freezePlayer(MinecraftServer server, ServerPlayerEntity player){
+        CommandExecutor.executeCommand(server, "/");
         player.getAbilities().setWalkSpeed(0f);
         player.getAbilities().setFlySpeed(0f);
         player.getAbilities().allowFlying = false;
         player.getAbilities().flying = false;
         player.getAbilities().allowModifyWorld = false;
     }
-    public static void unFreezePlayer(ServerPlayerEntity player){
+    public static void unFreezePlayer(MinecraftServer server, ServerPlayerEntity player){
+
         player.getAbilities().setWalkSpeed(0.1f); // 默认行走速度
         player.getAbilities().setFlySpeed(0.05f);
         player.getAbilities().allowFlying = false;
