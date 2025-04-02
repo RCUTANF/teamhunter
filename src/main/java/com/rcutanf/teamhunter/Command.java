@@ -53,7 +53,12 @@ public class Command {
 
     }
 
-    // TODO: inspect the start method
+    /**
+     * 开始比赛
+     *
+     * @param context
+     * @return
+     */
     private static int start(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
         var minutes = IntegerArgumentType.getInteger(context, MINUTES);
@@ -63,7 +68,12 @@ public class Command {
         return SINGLE_SUCCESS;
     }
 
-    // TODO: Implement the cancel method
+    /**
+     * 取消比赛
+     *
+     * @param context
+     * @return
+     */
     private static int cancel(CommandContext<ServerCommandSource> context) {
         //检查是否是热身阶段
         if (Teamhunter.phaseManager.Phase() == Phase.WARMUP) {
@@ -73,11 +83,16 @@ public class Command {
             return SINGLE_SUCCESS;
         }
         else {
-            context.getSource().sendError(Text.translatable("§4比赛已开始，无法取消"));
+            CommandExecutor.executeCommand(context.getSource().getServer(), "/say §4比赛已开始，无法取消");
             return SINGLE_SUCCESS;
         }
     }
-
+    /**
+     * 结束比赛
+     *
+     * @param context
+     * @return
+     */
     private static int end(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
         CommandExecutor.executeCommand(server, "/say §4比赛已结束");
@@ -86,13 +101,23 @@ public class Command {
         Teamhunter.phaseManager.clear();
         return SINGLE_SUCCESS;
     }
-
+    /**
+     * 暂停比赛
+     *
+     * @param context
+     * @return
+     */
     private static int parse(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
         PhaseHandler.FreezeAllPlayers(server);
         return SINGLE_SUCCESS;
     }
-
+    /**
+     * 恢复比赛
+     *
+     * @param context
+     * @return
+     */
     private static int resume(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
         PhaseHandler.unFreezeAllPlayers(server);

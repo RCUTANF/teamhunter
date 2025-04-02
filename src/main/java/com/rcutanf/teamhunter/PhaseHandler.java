@@ -44,6 +44,9 @@ public class PhaseHandler {
 
         CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=runners] Deaths 0");
         CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=hunters] Deaths 0");
+        CommandExecutor.executeCommand(server, "/team modify hunters friendlyFire false");
+        CommandExecutor.executeCommand(server, "/team modify runners friendlyFire false");
+        CommandExecutor.executeCommand(server, "/time set day");
         CommandExecutor.executeCommand(server, "/say §4准备阶段，请及时确认你的伙伴位置");
 
 
