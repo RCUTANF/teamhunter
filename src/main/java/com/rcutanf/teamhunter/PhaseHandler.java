@@ -59,8 +59,8 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/kill @a[team=runners]");
         CommandExecutor.executeCommand(server, "/kill @a[team=hunters]");
 
-        CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=runners] Deaths 0");
-        CommandExecutor.executeCommand(server, "/scoreboard players set @a[team=hunters] Deaths 0");
+        CommandExecutor.executeCommand(server, "/scoreboard players reset @a[team=runners] Deaths");
+        CommandExecutor.executeCommand(server, "/scoreboard players reset @a[team=hunters] Deaths");
         CommandExecutor.executeCommand(server, "/team modify hunters friendlyFire false");
         CommandExecutor.executeCommand(server, "/team modify runners friendlyFire false");
         CommandExecutor.executeCommand(server, "/time set day");
