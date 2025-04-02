@@ -27,7 +27,7 @@ public class PhaseHandler {
 
         CommandExecutor.executeCommand(server, "/clear @a[team=runners]");
         CommandExecutor.executeCommand(server, "/clear @a[team=hunters]");
-        CommandExecutor.executeCommand(server, "/say §4赛前热身阶段，比赛开始倒计时" + Command.MINUTES + "分钟，请各位玩家充分交流，制定计划，做好准备");
+        CommandExecutor.executeCommand(server, "/say 赛前热身阶段，比赛开始倒计时" + Command.MINUTES + "分钟，请各位玩家充分交流，制定计划，做好准备");
 
         //计分板
         CommandExecutor.executeCommand(server, "/scoreboard objectives add Deaths deathCount \"死亡次数\"");
@@ -47,7 +47,7 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/team modify hunters friendlyFire false");
         CommandExecutor.executeCommand(server, "/team modify runners friendlyFire false");
         CommandExecutor.executeCommand(server, "/time set day");
-        CommandExecutor.executeCommand(server, "/say §4准备阶段，请及时确认你的伙伴位置");
+        CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
 
 
 
@@ -69,6 +69,8 @@ public class PhaseHandler {
         player.getAbilities().allowFlying = false;
         player.getAbilities().flying = false;
         player.getAbilities().allowModifyWorld = false;
+        player.setInvulnerable(true);
+        player.getAbilities().allowModifyWorld = false;
     }
     public static void unFreezePlayer(MinecraftServer server, ServerPlayerEntity player){
         CommandExecutor.executeCommand(server, "/tick unfreeze");
@@ -76,6 +78,8 @@ public class PhaseHandler {
         player.getAbilities().setFlySpeed(0.05f);
         player.getAbilities().allowFlying = false;
         player.getAbilities().flying = false;
+        player.getAbilities().allowModifyWorld = true;
+        player.setInvulnerable(false);
         player.getAbilities().allowModifyWorld = true;
     }
     public static void unFreezeAllPlayers(MinecraftServer server) {
