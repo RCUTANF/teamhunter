@@ -80,6 +80,7 @@ public class Command {
             CommandExecutor.executeCommand(context.getSource().getServer(), "/luckperms group default permission set minecraft.command.trigger.* false");
             CommandExecutor.executeCommand(context.getSource().getServer(), "/say §4比赛已取消");
             Teamhunter.phaseManager.clear();
+            Teamhunter.phaseManager.then(Phase.WAITING);
             return SINGLE_SUCCESS;
         }
         else {
