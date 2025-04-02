@@ -19,7 +19,8 @@ public final class PhaseCombiner {
 
     /**
      * 链式调用以设置下一个阶段，并指定倒计时时长。
-     * @param phase 下一个阶段
+     *
+     * @param phase     下一个阶段
      * @param countDown 倒计时时长
      * @return 当前 PhaseCombiner 实例
      */
@@ -40,6 +41,7 @@ public final class PhaseCombiner {
 
     /**
      * 链式调用的结束，设置最终阶段，持续时间无限。
+     *
      * @param phase 最终阶段
      */
     public void then(Phase phase) {
@@ -51,7 +53,7 @@ public final class PhaseCombiner {
 
     private void setPhase(Phase phase) {
         _phase = phase;
-        Teamhunter.broadcastPacket(server, phase);
+        Teamhunter.broadcastPacket(server, new NetWorking.PhasePacket(phase));
         server.execute(() -> {
             switch (phase) {
                 case WARMUP -> phaseHandler.onWarmupStart();
@@ -68,6 +70,7 @@ public final class PhaseCombiner {
 
     /**
      * 停止正在运行的倒计时。
+     *
      * @return 当前 PhaseCombiner 实例
      */
     public PhaseCombiner clear() {

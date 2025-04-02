@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client;
 
+import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
@@ -22,11 +23,11 @@ public class TeamhunterClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        PayloadTypeRegistry.playS2C().register(Phase.ID, Phase.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.PhasePacket.ID, NetWorking.PhasePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(CounterSyncPacket.ID, CounterSyncPacket.CODEC);
 
-        ClientPlayNetworking.registerGlobalReceiver(Phase.ID, (payload, context) -> {
-            phase = payload;
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.PhasePacket.ID, (payload, context) -> {
+            phase = payload.phase();
         });
 
         ClientPlayNetworking.registerGlobalReceiver(CounterSyncPacket.ID, (payload, context) -> {

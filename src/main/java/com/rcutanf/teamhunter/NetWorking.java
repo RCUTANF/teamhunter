@@ -27,4 +27,24 @@ public class NetWorking {
         }
     }
 
+    public record PhasePacket(Phase phase) implements CustomPayload {
+
+        private static final Identifier PhaseId = Identifier.of(Teamhunter.MOD_ID, "start");
+        public static final Id<PhasePacket> ID = new Id<>(PhaseId);
+        public static final PacketCodec<PacketByteBuf, PhasePacket> CODEC = CustomPayload.codecOf(PhasePacket::write, PhasePacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeEnumConstant(phase);
+        }
+
+        public PhasePacket(PacketByteBuf buf) {
+            this(buf.readEnumConstant(Phase.class));
+        }
+    }
+
 }
