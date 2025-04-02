@@ -22,8 +22,6 @@ public class TeamhunterClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        PayloadTypeRegistry.playS2C().register(Phase.ID, Phase.CODEC);
-        PayloadTypeRegistry.playS2C().register(CounterSyncPacket.ID, CounterSyncPacket.CODEC);
 
         ClientPlayNetworking.registerGlobalReceiver(Phase.ID, (payload, context) -> {
             phase = payload;
