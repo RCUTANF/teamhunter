@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 
 public class NetWorking {
     private static final Identifier Sync = Identifier.of(Teamhunter.MOD_ID, "sync");
+    public static final Identifier CheckClientMod = Identifier.of(Teamhunter.MOD_ID, "sync");
 
     public record CounterSyncPacket(long countDownMilliseconds) implements CustomPayload {
 

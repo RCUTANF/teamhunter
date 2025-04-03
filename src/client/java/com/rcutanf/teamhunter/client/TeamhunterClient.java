@@ -1,19 +1,23 @@
 package com.rcutanf.teamhunter.client;
 
+import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 public class TeamhunterClient implements ClientModInitializer {
 
@@ -34,6 +38,7 @@ public class TeamhunterClient implements ClientModInitializer {
         HudLayerRegistrationCallback.EVENT.register(r ->
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, TeamhunterClient::draw)
         );
+        ClientLoginNetworking.registerGlobalReceiver(NetWorking.CheckClientMod, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
     }
 
     public static Phase phase = Phase.WAITING;

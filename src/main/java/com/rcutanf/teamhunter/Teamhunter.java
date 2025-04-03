@@ -1,12 +1,19 @@
 package com.rcutanf.teamhunter;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.Text;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Teamhunter implements ModInitializer {
 
@@ -27,6 +34,21 @@ public class Teamhunter implements ModInitializer {
                 throw new RuntimeException(e);
             }
             phaseManager = null;
+        });
+
+        ServerLoginConnectionEvents.QUERY_START.register(
+                (handler, server, sender, synchronizer) -> {
+                    var future = CompletableFuture.runAsync(() -> {
+                    });
+                    synchronizer.waitFor(future);
+                    var buf = new PacketByteBuf(Unpooled.buffer());
+                    sender.sendPacket(NetWorking.CheckClientMod, buf);
+                }
+        );
+
+        ServerLoginNetworking.registerGlobalReceiver(NetWorking.CheckClientMod, (server, handler, understood, buf, synchronizer, packetSender) -> {
+            if (!understood)
+                handler.disconnect(Text.literal("install " + MOD_ID + " to join the server"));
         });
     }
 
