@@ -4,10 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
@@ -50,6 +47,10 @@ public class Teamhunter implements ModInitializer {
             if (!understood)
                 handler.disconnect(Text.literal("install " + MOD_ID + " to join the server"));
         });
+        ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {
+            var phase = phaseManager.Phase();
+            ServerPlayNetworking.send(handler.player, phase);
+        }));
     }
 
 
