@@ -13,6 +13,8 @@ public class PhaseHandler {
     private int delayTicks = 0;
     private boolean shouldFreeze = false;
 
+
+
     public PhaseHandler(MinecraftServer server) {
         this.server = server;
         ServerTickEvents.START_SERVER_TICK.register(tickServer -> {
@@ -76,7 +78,7 @@ public class PhaseHandler {
 
     // MATCH 阶段逻辑
     public void onMatchStart() {
-        CommandExecutor.executeCommand(server, "/say &aGO!");
+        CommandExecutor.executeCommand(server, "/say §aGO!");
         CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn false");
         CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:air");
         unFreezeAllPlayers(server);
