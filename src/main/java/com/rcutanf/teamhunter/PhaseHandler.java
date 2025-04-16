@@ -117,12 +117,14 @@ public class PhaseHandler {
     }
     public static void unFreezeAllPlayers(MinecraftServer server) {
         CommandExecutor.executeCommand(server, "/tick unfreeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:block_interaction_range modifier remove freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:jump_strength modifier remove freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:movement_speed modifier remove freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:block_interaction_range modifier remove freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:jump_strength modifier remove freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:movement_speed modifier remove freeze");
+        String[] teams = {"runners", "hunters"};
+        for (String team : teams) {
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:block_interaction_range modifier remove freeze");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:jump_strength modifier remove freeze");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:movement_speed modifier remove freeze");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:attack_damage modifier remove freeze");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:attack_knockback modifier remove freeze");
+        }
         /*
         for (String teamName : new String[]{"hunters", "runners"}) {
             for (String playerName : getTeamPlayerNames(server, teamName)) {
@@ -137,12 +139,14 @@ public class PhaseHandler {
     }
     public static void FreezeAllPlayers(MinecraftServer server) {
         CommandExecutor.executeCommand(server, "/tick freeze");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:block_interaction_range modifier add freeze -1 add_multiplied_total");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:jump_strength modifier add freeze -1 add_multiplied_total");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:movement_speed modifier add freeze -1 add_multiplied_total");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:block_interaction_range modifier add freeze -1 add_multiplied_total");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:jump_strength modifier add freeze -1 add_multiplied_total");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:movement_speed modifier add freeze -1 add_multiplied_total");
+        String[] teams = {"runners", "hunters"};
+        for (String team : teams) {
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:block_interaction_range modifier add freeze -1 add_multiplied_total");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:jump_strength modifier add freeze -1 add_multiplied_total");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:movement_speed modifier add freeze -1 add_multiplied_total");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:attack_damage modifier add freeze -1 add_multiplied_total");
+            CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:attack_knockback modifier add freeze -1 add_multiplied_total");
+        }
         /*
         for (String teamName : new String[]{"hunters", "runners"}) {
             for (String playerName : getTeamPlayerNames(server, teamName)) {
