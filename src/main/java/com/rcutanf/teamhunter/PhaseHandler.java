@@ -1,8 +1,16 @@
 package com.rcutanf.teamhunter;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.scoreboard.*;
 import net.minecraft.server.MinecraftServer;
+
+import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.server.network.ServerPlayerEntity;
+
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.rcutanf.teamhunter.TeamUtils.getTeamPlayerNames;
 
@@ -13,7 +21,9 @@ public class PhaseHandler {
     private int delayTicks = 0;
     private boolean shouldFreeze = false;
 
-
+    // 死亡统计用
+    private int lastHunterDeaths = 0;
+    private int lastRunnerDeaths = 0;
 
     public PhaseHandler(MinecraftServer server) {
         this.server = server;
@@ -26,6 +36,11 @@ public class PhaseHandler {
                     FreezeAllPlayers(server);
                     shouldFreeze = false;
                 }
+            }
+
+            // 在比赛阶段监听计分板变化
+            if (Teamhunter.phaseManager.Phase() == Phase.MATCH) {
+                checkAndUpdateDeathStats();
             }
         });
     }
@@ -68,6 +83,13 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/time set day");
         CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
 
+        // 重置死亡统计
+        lastHunterDeaths = 0;
+        lastRunnerDeaths = 0;
+
+        // 初始化计分板显示
+        String title = "死亡次数 §c0§f:§a0";
+        CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
         //触发监听器调用freezeall
         shouldFreeze = true;
         delayTicks = 0;
@@ -160,6 +182,39 @@ public class PhaseHandler {
         }
 
          */
+    }
+
+    // 检查计分板变化并更新标题
+    private void checkAndUpdateDeathStats() {
+        // 计算当前队伍死亡总数
+        int hunterDeaths = calculateTeamDeaths("hunters");
+        int runnerDeaths = calculateTeamDeaths("runners");
+
+        // 只在数值变化时更新标题
+        if (hunterDeaths != lastHunterDeaths || runnerDeaths != lastRunnerDeaths) {
+            lastHunterDeaths = hunterDeaths;
+            lastRunnerDeaths = runnerDeaths;
+
+            // 更新计分板标题（红色表示猎人队，绿色表示逃亡者队）
+            String title = "死亡次数 §c" + hunterDeaths + "§f:§a" + runnerDeaths;
+            CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
+        }
+    }
+
+    // 计算队伍的总死亡数
+    private int calculateTeamDeaths(String teamName) {
+        int deaths = 0;
+        Scoreboard scoreboard = server.getScoreboard();
+        ScoreboardObjective objective = scoreboard.getNullableObjective("Deaths");
+        if (objective == null) return 0;
+
+        for (String playerName : getTeamPlayerNames(server, teamName)) {
+            ReadableScoreboardScore score = scoreboard.getScore(ScoreHolder.fromName(playerName), objective);
+            if (score != null) {
+                deaths += score.getScore();
+            }
+        }
+        return deaths;
     }
 
 

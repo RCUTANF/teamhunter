@@ -3,12 +3,15 @@ package com.rcutanf.teamhunter;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.arguments.StringArgumentType;
+
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static net.minecraft.server.command.CommandManager.argument;
@@ -24,6 +27,8 @@ public class Command {
     final static String END = "end";
     final static String PARSE = "parse";
     final static String RESUME = "resume";
+    final static String SET_PHASE = "setphase";
+    final static String SECONDS = "seconds";
 
 
     private Command() {
@@ -47,6 +52,21 @@ public class Command {
                 )
                 .then(literal(RESUME)
                         .executes(Command::resume)
+                )
+                .then(literal(SET_PHASE)
+                        .then(argument("phase", StringArgumentType.word())
+                                .suggests((context, builder) -> {
+                                    Arrays.stream(Phase.values())
+                                            .map(Phase::name)
+                                            .forEach(builder::suggest);
+                                    builder.suggest("NONE");
+                                    return builder.buildFuture();
+                                })
+                                .executes(Command::setPhase)
+                                .then(argument(SECONDS, IntegerArgumentType.integer(0))
+                                        .executes(Command::setPhaseWithSeconds)
+                                )
+                        )
                 );
 
         dispatcher.register(cmd);
@@ -126,5 +146,59 @@ public class Command {
         var server = context.getSource().getServer();
         PhaseHandler.unFreezeAllPlayers(server);
         return SINGLE_SUCCESS;
+    }
+    /**
+     * 设置当前phase
+     *
+     * @param context 命令上下文
+     * @return 执行结果
+     */
+    private static int setPhase(CommandContext<ServerCommandSource> context) {
+        String phaseName = StringArgumentType.getString(context, "phase");
+        var server = context.getSource().getServer();
+
+        if (phaseName.equalsIgnoreCase("NONE")) {
+            Teamhunter.phaseManager.clear();
+            context.getSource().sendFeedback(() -> Text.of("已清除当前阶段"), true);
+            return SINGLE_SUCCESS;
+        }
+
+        try {
+            Phase phase = Phase.valueOf(phaseName.toUpperCase());
+            Teamhunter.phaseManager.clear().then(phase);
+            context.getSource().sendFeedback(() -> Text.of("已设置当前阶段为: " + phase.name()), true);
+            return SINGLE_SUCCESS;
+        } catch (IllegalArgumentException e) {
+            context.getSource().sendError(Text.of("无效的阶段名称: " + phaseName));
+            return 0;
+        }
+    }
+
+    /**
+     * 设置当前phase及其计时器秒数
+     *
+     * @param context 命令上下文
+     * @return 执行结果
+     */
+    private static int setPhaseWithSeconds(CommandContext<ServerCommandSource> context) {
+        String phaseName = StringArgumentType.getString(context, "phase");
+        int seconds = IntegerArgumentType.getInteger(context, SECONDS);
+        var server = context.getSource().getServer();
+
+        if (phaseName.equalsIgnoreCase("NONE")) {
+            Teamhunter.phaseManager.clear();
+            context.getSource().sendFeedback(() -> Text.of("已清除当前阶段"), true);
+            return SINGLE_SUCCESS;
+        }
+
+        try {
+            Phase phase = Phase.valueOf(phaseName.toUpperCase());
+            Teamhunter.phaseManager.clear().then(phase, Duration.ofSeconds(seconds));
+            context.getSource().sendFeedback(() -> Text.of("已设置当前阶段为: " + phase.name() + ", 计时器: " + seconds + "秒"), true);
+            return SINGLE_SUCCESS;
+        } catch (IllegalArgumentException e) {
+            context.getSource().sendError(Text.of("无效的阶段名称: " + phaseName));
+            return 0;
+        }
     }
 }
