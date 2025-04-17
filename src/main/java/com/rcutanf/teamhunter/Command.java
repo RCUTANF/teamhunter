@@ -118,11 +118,7 @@ public class Command {
      * @return
      */
     private static int end(CommandContext<ServerCommandSource> context) {
-        var server = context.getSource().getServer();
-        CommandExecutor.executeCommand(server, "/say §4比赛已结束");
-        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* true");
-        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode true");
-        Teamhunter.phaseManager.clear();
+        PhaseHandler.matchEnd(context.getSource().getServer());
         return SINGLE_SUCCESS;
     }
     /**

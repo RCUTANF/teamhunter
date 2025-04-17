@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 
 public class MatchEndListener {
@@ -20,15 +21,10 @@ public class MatchEndListener {
                         world.getServer(),
                         "/say source:"+entity
                 );
-                matchEnd();
+                PhaseHandler.matchEnd(world.getServer());
             }
         });
     }
 
-    public static void matchEnd() {
-        if (Teamhunter.phaseManager.Phase() == Phase.MATCH) {
-            Teamhunter.phaseManager.clear();
-            Teamhunter.phaseManager.then(Phase.END);
-        }
-    }
+
 }

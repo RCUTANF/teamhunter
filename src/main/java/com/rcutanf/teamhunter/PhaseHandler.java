@@ -201,10 +201,12 @@ public class PhaseHandler {
             String title = "死亡次数 §c" + hunterDeaths + "§f:§a" + runnerDeaths;
             CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
 
+
             //如果死亡次数达到上限
             DeathsMax = TeamUtils.getMaxTeamPlayerCount(server)*3-1;
+            CommandExecutor.executeCommand(server, "/say "+DeathsMax);
             if (hunterDeaths >= DeathsMax || runnerDeaths >= DeathsMax) {
-                matchEndListener.matchEnd();
+                matchEnd(server);
             }
         }
     }
@@ -225,5 +227,14 @@ public class PhaseHandler {
         return deaths;
     }
 
+    public static void matchEnd(MinecraftServer server) {
+        if (Teamhunter.phaseManager.Phase() == Phase.MATCH) {
+            CommandExecutor.executeCommand(server, "/say §4比赛已结束");
+            CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* true");
+            CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode true");
+            Teamhunter.phaseManager.clear();
+            Teamhunter.phaseManager.then(Phase.END);
+        }
+    }
 
 }
