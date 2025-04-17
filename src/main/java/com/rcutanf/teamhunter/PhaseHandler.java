@@ -17,6 +17,7 @@ import static com.rcutanf.teamhunter.TeamUtils.getTeamPlayerNames;
 
 public class PhaseHandler {
     private final MinecraftServer server;
+    private final MatchEndListener matchEndListener = new MatchEndListener();
     //监听器用
     private int delayTicks = 0;
     private boolean shouldFreeze = false;
@@ -24,6 +25,7 @@ public class PhaseHandler {
     // 死亡统计用
     private int lastHunterDeaths = 0;
     private int lastRunnerDeaths = 0;
+    private int DeathsMax = 0;
 
     public PhaseHandler(MinecraftServer server) {
         this.server = server;
@@ -198,6 +200,12 @@ public class PhaseHandler {
             // 更新计分板标题（红色表示猎人队，绿色表示逃亡者队）
             String title = "死亡次数 §c" + hunterDeaths + "§f:§a" + runnerDeaths;
             CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
+
+            //如果死亡次数达到上限
+            DeathsMax = TeamUtils.getMaxTeamPlayerCount(server)*3-1;
+            if (hunterDeaths >= DeathsMax || runnerDeaths >= DeathsMax) {
+                matchEndListener.matchEnd();
+            }
         }
     }
 

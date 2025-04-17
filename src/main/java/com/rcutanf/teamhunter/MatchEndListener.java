@@ -11,7 +11,7 @@ import net.minecraft.server.world.ServerWorld;
 
 public class MatchEndListener {
 
-    public static void initialize() {
+    public MatchEndListener() {
         // 注册末影龙死亡事件监听器
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
             // 检查被杀死的实体是否为末影龙
