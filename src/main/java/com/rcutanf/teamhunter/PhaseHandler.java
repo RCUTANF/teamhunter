@@ -85,6 +85,11 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/time set day");
         CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
 
+        // 设置世界边界
+        CommandExecutor.executeCommand(server, "/worldborder center 0 0");
+        CommandExecutor.executeCommand(server, "/worldborder set 1000"); // ±500*±500的边界
+
+
         // 重置死亡统计
         lastHunterDeaths = 0;
         lastRunnerDeaths = 0;
@@ -105,6 +110,11 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/say §aGO!");
         CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn false");
         CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:air");
+
+        // 设置世界边界以每秒1格的速度扩展
+        CommandExecutor.executeCommand(server, "/worldborder add 1 1");
+
+
         unFreezeAllPlayers(server);
     }
 
