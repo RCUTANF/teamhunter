@@ -46,8 +46,8 @@ public class ResurrectionProtection {
             }
 
             if (invincibilityEnabled || invisibilityEnabled || speedEnabled) {
-                CommandExecutor.executeCommand(server, "/title " + playerName + " subtitle {\"text\":\"复活保护生效中\",\"color\":\"green\"}");
-                CommandExecutor.executeCommand(server, "/title " + playerName + " title {\"text\":\"10秒\",\"color\":\"gold\"}");
+                //CommandExecutor.executeCommand(server, "/title " + playerName + " subtitle {\"text\":\"复活保护生效中\",\"color\":\"green\"}");
+                //CommandExecutor.executeCommand(server, "/title " + playerName + " title {\"text\":\"10秒\",\"color\":\"gold\"}");
             }
         }
     }

@@ -112,7 +112,7 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:air");
 
         // 设置世界边界以每秒1格的速度扩展
-        CommandExecutor.executeCommand(server, "/worldborder add 1 1");
+        CommandExecutor.executeCommand(server, "/worldborder add 100000 100000");
 
 
         unFreezeAllPlayers(server);
@@ -213,7 +213,7 @@ public class PhaseHandler {
 
 
             //如果死亡次数达到上限
-            DeathsMax = TeamUtils.getMaxTeamPlayerCount(server)*3-1;
+            DeathsMax = TeamUtils.getMaxTeamPlayerCount(server)*5+1;
             CommandExecutor.executeCommand(server, "/say "+DeathsMax);
             if (hunterDeaths >= DeathsMax || runnerDeaths >= DeathsMax) {
                 matchEnd(server);
@@ -242,6 +242,9 @@ public class PhaseHandler {
             CommandExecutor.executeCommand(server, "/say §4比赛已结束");
             CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* true");
             CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode true");
+            //取消边界
+            CommandExecutor.executeCommand(server, "/worldborder set 29999984"); // 将世界边界重置为Minecraft的默认值
+
             Teamhunter.phaseManager.clear();
             Teamhunter.phaseManager.then(Phase.END);
         }
