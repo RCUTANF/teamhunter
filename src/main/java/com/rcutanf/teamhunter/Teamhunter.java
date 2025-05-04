@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class Teamhunter implements ModInitializer {
 
     public static final String MOD_ID = "teamhunter";
+    private PlayerRespawnHandler playerRespawnHandler;
 
     @Override
     public void onInitialize() {
@@ -51,6 +52,8 @@ public class Teamhunter implements ModInitializer {
             var phase = phaseManager.Phase();
             ServerPlayNetworking.send(handler.player, phase);
         }));
+
+        playerRespawnHandler = new PlayerRespawnHandler();
     }
 
 
@@ -61,5 +64,6 @@ public class Teamhunter implements ModInitializer {
     }
 
     public static PhaseCombiner phaseManager;
+
 
 }

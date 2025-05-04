@@ -1,9 +1,11 @@
 package com.rcutanf.teamhunter;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -29,7 +31,10 @@ public class Command {
     final static String RESUME = "resume";
     final static String SET_PHASE = "setphase";
     final static String SECONDS = "seconds";
-
+    final static String RESURRECTION = "resurrection";
+    final static String INVINCIBILITY = "invincibility";
+    final static String INVISIBILITY = "invisibility";
+    final static String SPEED = "speed";
 
     private Command() {
     }
@@ -67,6 +72,24 @@ public class Command {
                                         .executes(Command::setPhaseWithSeconds)
                                 )
                         )
+                )
+                .then(literal(RESURRECTION)
+                        .then(literal(INVINCIBILITY)
+                                .then(argument("enabled", BoolArgumentType.bool())
+                                        .executes(Command::setResurrectionInvincibility)
+                                )
+                        )
+                        .then(literal(INVISIBILITY)
+                                .then(argument("enabled", BoolArgumentType.bool())
+                                        .executes(Command::setResurrectionInvisibility)
+                                )
+                        )
+                        .then(literal(SPEED)
+                                .then(argument("enabled", BoolArgumentType.bool())
+                                        .executes(Command::setResurrectionSpeed)
+                                )
+                        )
+                        .executes(Command::showResurrectionStatus)
                 );
 
         dispatcher.register(cmd);
@@ -196,5 +219,42 @@ public class Command {
             context.getSource().sendError(Text.of("无效的阶段名称: " + phaseName));
             return 0;
         }
+    }
+
+    /**
+     * 设置复活保护无敌
+     *
+     * @param context 命令上下文
+     * @return 执行结果
+     */
+    private static int setResurrectionInvincibility(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        boolean enabled = BoolArgumentType.getBool(context, "enabled");
+        ResurrectionProtection.setInvincibilityEnabled(enabled);
+        context.getSource().sendFeedback(() -> Text.of("复活无敌效果已" + (enabled ? "启用" : "禁用")), true);
+        return SINGLE_SUCCESS;
+    }
+
+    private static int setResurrectionInvisibility(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        boolean enabled = BoolArgumentType.getBool(context, "enabled");
+        ResurrectionProtection.setInvisibilityEnabled(enabled);
+        context.getSource().sendFeedback(() -> Text.of("复活隐身效果已" + (enabled ? "启用" : "禁用")), true);
+        return SINGLE_SUCCESS;
+    }
+
+    private static int setResurrectionSpeed(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        boolean enabled = BoolArgumentType.getBool(context, "enabled");
+        ResurrectionProtection.setSpeedEnabled(enabled);
+        context.getSource().sendFeedback(() -> Text.of("复活速度效果已" + (enabled ? "启用" : "禁用")), true);
+        return SINGLE_SUCCESS;
+    }
+
+    private static int showResurrectionStatus(CommandContext<ServerCommandSource> context) {
+        String status = "复活保护效果状态:\n" +
+                "- 无敌: " + (ResurrectionProtection.isInvincibilityEnabled() ? "开启" : "关闭") + "\n" +
+                "- 隐身: " + (ResurrectionProtection.isInvisibilityEnabled() ? "开启" : "关闭") + "\n" +
+                "- 速度: " + (ResurrectionProtection.isSpeedEnabled() ? "开启" : "关闭") + "\n" +
+                "持续时间: 10秒";
+        context.getSource().sendFeedback(() -> Text.of(status), false);
+        return SINGLE_SUCCESS;
     }
 }
