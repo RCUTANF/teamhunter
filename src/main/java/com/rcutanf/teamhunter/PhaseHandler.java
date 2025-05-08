@@ -87,7 +87,7 @@ public class PhaseHandler {
 
         // 设置世界边界
         CommandExecutor.executeCommand(server, "/worldborder center 0 0");
-        CommandExecutor.executeCommand(server, "/worldborder set 1000"); // ±500*±500的边界
+        CommandExecutor.executeCommand(server, "/worldborder set "+ TeamUtils.getMaxTeamPlayerCount(server)*50 ); // ±500*±500的边界
 
 
         // 重置死亡统计
