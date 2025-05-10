@@ -121,9 +121,9 @@ public class EnvironmentController {
 
                         // 增加80%的抗性（相当于只受20%的伤害）
                         CommandExecutor.executeCommand(server,
-                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:generic.armor base set 30");
+                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor base set 30");
                         CommandExecutor.executeCommand(server,
-                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:generic.armor_toughness base set 20");
+                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor_toughness base set 20");
                     }
                 }
             }
