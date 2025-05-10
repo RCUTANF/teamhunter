@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter;
 
+import com.rcutanf.teamhunter.loot.TeamhunterLootConditions;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -57,6 +58,7 @@ public class Teamhunter implements ModInitializer {
             ServerPlayNetworking.send(handler.player, phase);
         }));
 
+        TeamhunterLootConditions.register();
     }
 
 

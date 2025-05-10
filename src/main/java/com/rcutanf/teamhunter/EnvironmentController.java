@@ -61,32 +61,11 @@ public class EnvironmentController {
     private void registerBlazeEvents() {
         // 监听实体死亡事件
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            // 只处理地狱中的烈焰人
-            if (entity instanceof BlazeEntity blaze && entity.getWorld().getRegistryKey() == World.NETHER) {
 
-            }
         });
     }
 
-    // 判断是否应该掉落烈焰棒
-    private boolean shouldDropBlazeRod(String killerTeam, MinecraftServer server) {
-        if (killerTeam == null) {
-            return true; // 不是玩家杀死的，正常掉落
-        }
 
-        // 检查地狱中的队伍人数
-        int huntersInNether = countTeamPlayersInDimension(server, "hunters", World.NETHER);
-        int runnersInNether = countTeamPlayersInDimension(server, "runners", World.NETHER);
-
-        // 如果队伍人数相同，正常掉落
-        if (huntersInNether == runnersInNether) {
-            return true;
-        }
-
-        // 如果是人数占优势的队伍杀死的，才掉落
-        String dominantTeam = (huntersInNether > runnersInNether) ? "hunters" : "runners";
-        return killerTeam.equals(dominantTeam);
-    }
 
     private void onServerTick(MinecraftServer server) {
         // 只在比赛阶段执行
@@ -230,10 +209,10 @@ public class EnvironmentController {
 
         if (canDropBlazeRod && !hasTag) {
             // 添加掉落权限标签
-            CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " add can_drop_blaze_rod");
+            player.addCommandTag("can_drop_blaze_rod");
         } else if (!canDropBlazeRod && hasTag) {
             // 移除掉落权限标签
-            CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " remove can_drop_blaze_rod");
+            player.removeCommandTag("can_drop_blaze_rod");
         }
     }
 }

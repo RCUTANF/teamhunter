@@ -1,7 +1,0 @@
-{
-  "condition": "minecraft:entity_properties",
-  "entity": "killer_player",
-  "predicate": {
-    "tags": ["can_drop_blaze_rod"]
-  }
-}
