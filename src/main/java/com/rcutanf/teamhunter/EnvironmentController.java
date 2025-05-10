@@ -102,7 +102,6 @@ public class EnvironmentController {
     }
 
     // 处理末地龙抗性
-    // 处理末地龙抗性
     private void handleEnderDragonResistance() {
         ServerWorld endWorld = server.getWorld(World.END);
         if (endWorld == null) return;
@@ -113,6 +112,8 @@ public class EnvironmentController {
 
         // 检查末影龙状态
         boolean shouldEnhanceDragon = (huntersInEnd > 0 && runnersInEnd > 0);
+        //打印人数
+        //System.out.println("[TeamHunter] 末地队伍人数: 猎人 " + huntersInEnd + ", 逃亡者 " + runnersInEnd);
 
         for (Entity entity : endWorld.getEntitiesByType(net.minecraft.entity.EntityType.ENDER_DRAGON, entity -> true)) {
             if (entity instanceof EnderDragonEntity dragon) {
@@ -133,8 +134,8 @@ public class EnvironmentController {
                                 "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor_toughness base set 20");
                     } else {
                         // 恢复正常状态
-                        dragon.setCustomName(null);
-                        dragon.setCustomNameVisible(false);
+                        dragon.setCustomName(Text.of("末影龙"));
+                        dragon.setCustomNameVisible(true);
 
                         // 重置抗性到默认值
                         CommandExecutor.executeCommand(server,
@@ -216,6 +217,7 @@ public class EnvironmentController {
 
         // 如果优势状态发生变化，向所有玩家发送更新
         if (previousAdvantage != netherAdvantageTeam) {
+            System.out.println("[TeamHunter] 地狱优势状态更新: " + netherAdvantageTeam);
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 ServerPlayNetworking.send(player, new NetWorking.TeamAdvantagePacket(netherAdvantageTeam.ordinal()));
             }
@@ -224,10 +226,12 @@ public class EnvironmentController {
 
     // 更新玩家的标签
     private void updatePlayerTag(ServerPlayerEntity player, boolean canDropBlazeRod) {
-        if (canDropBlazeRod) {
+        boolean hasTag = player.getCommandTags().contains("can_drop_blaze_rod");
+
+        if (canDropBlazeRod && !hasTag) {
             // 添加掉落权限标签
             CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " add can_drop_blaze_rod");
-        } else {
+        } else if (!canDropBlazeRod && hasTag) {
             // 移除掉落权限标签
             CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " remove can_drop_blaze_rod");
         }
