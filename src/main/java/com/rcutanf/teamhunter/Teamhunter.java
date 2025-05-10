@@ -30,6 +30,7 @@ public class Teamhunter implements ModInitializer {
             playerRespawnHandler = new PlayerRespawnHandler();
             environmentController = new EnvironmentController(s);
         });
+        TeamhunterLootConditions.register();
         ServerLifecycleEvents.SERVER_STOPPING.register(s -> {
             try {
                 phaseManager.close();
@@ -58,7 +59,7 @@ public class Teamhunter implements ModInitializer {
             ServerPlayNetworking.send(handler.player, phase);
         }));
 
-        TeamhunterLootConditions.register();
+
     }
 
 

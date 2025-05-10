@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
  * 用于决定烈焰人是否掉落烈焰棒
  */
 public class HasCommandTagCondition implements LootCondition {
-    // 使用of方法创建标识符，因为构造函数是私有的
+    // 标签条件的类型
     public static final Identifier ID = Identifier.of(Teamhunter.MOD_ID, "has_command_tag");
     private final String tagName; // 需要检查的标签名
 
@@ -52,8 +52,11 @@ public class HasCommandTagCondition implements LootCondition {
     @Override
     public boolean test(LootContext context) {
         Entity killer = context.get(LootContextParameters.LAST_DAMAGE_PLAYER);
+        //打印killer
+        System.out.println("killer: " + killer);
         // 检查击杀者是否是玩家且拥有指定标签
         if (killer instanceof PlayerEntity player) {
+
             return player.getCommandTags().contains(this.tagName);
         }
         return false;
