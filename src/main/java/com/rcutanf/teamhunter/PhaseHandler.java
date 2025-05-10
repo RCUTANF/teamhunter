@@ -85,6 +85,14 @@ public class PhaseHandler {
         CommandExecutor.executeCommand(server, "/time set day");
         CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
 
+
+        // 将玩家血量翻倍（从默认20点增加到40点）
+        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:max_health base set 40");
+        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:max_health base set 40");
+        // 确保玩家血量被填满
+        CommandExecutor.executeCommand(server, "/effect give @a minecraft:instant_health 1 10 true");
+
+
         // 设置世界边界
         CommandExecutor.executeCommand(server, "/worldborder center 0 0");
         CommandExecutor.executeCommand(server, "/worldborder set "+ TeamUtils.getMaxTeamPlayerCount(server)*50 ); // ±500*±500的边界
