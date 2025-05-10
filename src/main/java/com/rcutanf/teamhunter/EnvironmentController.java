@@ -102,6 +102,7 @@ public class EnvironmentController {
     }
 
     // 处理末地龙抗性
+    // 处理末地龙抗性
     private void handleEnderDragonResistance() {
         ServerWorld endWorld = server.getWorld(World.END);
         if (endWorld == null) return;
@@ -110,20 +111,36 @@ public class EnvironmentController {
         int huntersInEnd = countTeamPlayersInDimension("hunters", World.END);
         int runnersInEnd = countTeamPlayersInDimension("runners", World.END);
 
-        // 如果两队都有人在末地，增强末影龙抗性
-        if (huntersInEnd > 0 && runnersInEnd > 0) {
-            for (Entity entity : endWorld.getEntitiesByType(net.minecraft.entity.EntityType.ENDER_DRAGON, entity -> true)) {
-                if (entity instanceof EnderDragonEntity dragon) {
-                    // 若龙没有抗性标签，添加抗性
-                    if (!dragon.hasCustomName() || !dragon.getCustomName().getString().contains("[增强]")) {
+        // 检查末影龙状态
+        boolean shouldEnhanceDragon = (huntersInEnd > 0 && runnersInEnd > 0);
+
+        for (Entity entity : endWorld.getEntitiesByType(net.minecraft.entity.EntityType.ENDER_DRAGON, entity -> true)) {
+            if (entity instanceof EnderDragonEntity dragon) {
+                boolean isCurrentlyEnhanced = dragon.hasCustomName() &&
+                        dragon.getCustomName().getString().contains("[增强]");
+
+                // 状态需要改变
+                if (shouldEnhanceDragon != isCurrentlyEnhanced) {
+                    if (shouldEnhanceDragon) {
+                        // 增强龙的抗性
                         dragon.setCustomName(Text.of("[增强] 末影龙"));
                         dragon.setCustomNameVisible(true);
 
-                        // 增加80%的抗性（相当于只受20%的伤害）
+                        // 增加抗性（相当于只受20%的伤害）
                         CommandExecutor.executeCommand(server,
-                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor base set 30");
+                                "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor base set 30");
                         CommandExecutor.executeCommand(server,
-                            "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor_toughness base set 20");
+                                "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor_toughness base set 20");
+                    } else {
+                        // 恢复正常状态
+                        dragon.setCustomName(null);
+                        dragon.setCustomNameVisible(false);
+
+                        // 重置抗性到默认值
+                        CommandExecutor.executeCommand(server,
+                                "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor base set 0");
+                        CommandExecutor.executeCommand(server,
+                                "/execute as @e[type=ender_dragon] run attribute @s minecraft:armor_toughness base set 0");
                     }
                 }
             }
