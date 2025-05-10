@@ -28,4 +28,23 @@ public class NetWorking {
         }
     }
 
+    public record TeamAdvantagePacket(int advantageOrdinal) implements CustomPayload {
+        public static final Identifier TEAM_ADVANTAGE_ID = Identifier.of(Teamhunter.MOD_ID, "team_advantage");
+        public static final Id<TeamAdvantagePacket> ID = new Id<>(TEAM_ADVANTAGE_ID);
+        public static final PacketCodec<PacketByteBuf, TeamAdvantagePacket> CODEC = CustomPayload.codecOf(TeamAdvantagePacket::write, TeamAdvantagePacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public TeamAdvantagePacket(PacketByteBuf buf) {
+            this(buf.readInt());
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeInt(advantageOrdinal);
+        }
+    }
+
 }

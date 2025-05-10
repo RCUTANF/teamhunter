@@ -23,6 +23,10 @@ public class TeamhunterClient implements ClientModInitializer {
 
     private static final Identifier countDownLayer = Identifier.of(Teamhunter.MOD_ID, "count-down");
 
+    public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
+    private static final Identifier advantageLayer = Identifier.of(Teamhunter.MOD_ID, "team-advantage");
+
+
 
     @Override
     public void onInitializeClient() {
@@ -39,6 +43,14 @@ public class TeamhunterClient implements ClientModInitializer {
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, TeamhunterClient::draw)
         );
         ClientLoginNetworking.registerGlobalReceiver(NetWorking.CheckClientMod, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
+
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamAdvantagePacket.ID, (payload, context) -> {
+            teamAdvantage = payload.advantageOrdinal();
+        });
+
+        HudLayerRegistrationCallback.EVENT.register(r ->
+                r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, advantageLayer, TeamhunterClient::drawAdvantageBar)
+        );
     }
 
     public static Phase phase = Phase.WAITING;
@@ -58,5 +70,21 @@ public class TeamhunterClient implements ClientModInitializer {
 
         ctx.drawCenteredTextWithShadow(textRenderer, phase.name(), windowWidth / 2, 10, 0xFFFFFFFF);
         ctx.drawCenteredTextWithShadow(textRenderer, text, windowWidth / 2, 10 + textHeight + 4, 0xFFFFFFFF);
+    }
+
+    //渲染地狱优势队伍
+    private static void drawAdvantageBar(DrawContext ctx, RenderTickCounter counter) {
+        if (teamAdvantage == 0) return; // 无优势不显示
+
+        int windowWidth = ctx.getScaledWindowWidth();
+        int lineWidth = 100; // 横线宽度
+        int lineHeight = 3;  // 横线高度
+        int y = 5;          // 距离顶部的距离
+
+        // 根据优势队伍设置颜色（猎人红色，逃亡者绿色）
+        int color = teamAdvantage == 1 ? 0xFFFF0000 : 0xFF00FF00;
+
+        // 绘制横线
+        ctx.fill((windowWidth - lineWidth) / 2, y, (windowWidth + lineWidth) / 2, y + lineHeight, color);
     }
 }

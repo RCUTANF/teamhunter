@@ -1,31 +1,91 @@
 package com.rcutanf.teamhunter;
 
+// 导入正确的包
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.item.Items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Random;
 
 public class EnvironmentController {
     private final MinecraftServer server;
     private static final Map<UUID, String> blazeKillerTeams = new HashMap<>();
+    private static final Random random = new Random();
+    public enum TeamAdvantage {
+        NONE,       // 无优势或相等
+        HUNTERS,    // 猎人队优势
+        RUNNERS     // 逃亡者队优势
+    }
+
+    //当前地狱中的优势队伍
+    private static TeamAdvantage netherAdvantageTeam = TeamAdvantage.NONE;
+
+    public static TeamAdvantage getNetherAdvantageTeam() {
+        return netherAdvantageTeam;
+    }
 
     public EnvironmentController(MinecraftServer server) {
         this.server = server;
 
         // 注册tick事件监听器
         ServerTickEvents.START_SERVER_TICK.register(this::onServerTick);
+
+        // 注册烈焰人相关事件
+        registerBlazeEvents();
+    }
+
+    // 静态初始化方法，在主类中调用
+    public static void init(MinecraftServer server) {
+        new EnvironmentController(server);
+    }
+
+    // 注册烈焰人相关事件处理
+    private void registerBlazeEvents() {
+        // 监听实体死亡事件
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            // 只处理地狱中的烈焰人
+            if (entity instanceof BlazeEntity blaze && entity.getWorld().getRegistryKey() == World.NETHER) {
+
+            }
+        });
+    }
+
+    // 判断是否应该掉落烈焰棒
+    private boolean shouldDropBlazeRod(String killerTeam, MinecraftServer server) {
+        if (killerTeam == null) {
+            return true; // 不是玩家杀死的，正常掉落
+        }
+
+        // 检查地狱中的队伍人数
+        int huntersInNether = countTeamPlayersInDimension(server, "hunters", World.NETHER);
+        int runnersInNether = countTeamPlayersInDimension(server, "runners", World.NETHER);
+
+        // 如果队伍人数相同，正常掉落
+        if (huntersInNether == runnersInNether) {
+            return true;
+        }
+
+        // 如果是人数占优势的队伍杀死的，才掉落
+        String dominantTeam = (huntersInNether > runnersInNether) ? "hunters" : "runners";
+        return killerTeam.equals(dominantTeam);
     }
 
     private void onServerTick(MinecraftServer server) {
@@ -36,6 +96,9 @@ public class EnvironmentController {
 
         // 处理末地龙抗性
         handleEnderDragonResistance();
+
+        // 更新玩家的烈焰棒掉落权限标签
+        updateBlazeDroppingPermissions(server);
     }
 
     // 处理末地龙抗性
@@ -79,39 +142,6 @@ public class EnvironmentController {
         return count;
     }
 
-    // 记录杀死烈焰人的玩家所属队伍
-    public static void registerBlazeKiller(BlazeEntity blaze, PlayerEntity player) {
-        String teamName = null;
-        if (player.getScoreboardTeam() != null) {
-            teamName = player.getScoreboardTeam().getName();
-        }
-
-        if (teamName != null && (teamName.equals("hunters") || teamName.equals("runners"))) {
-            blazeKillerTeams.put(blaze.getUuid(), teamName);
-        }
-    }
-
-    // 检查烈焰人是否应该掉落物品
-    public static boolean shouldBlazeDropItems(BlazeEntity blaze, MinecraftServer server) {
-        String killerTeam = blazeKillerTeams.remove(blaze.getUuid());
-        if (killerTeam == null) {
-            return true; // 不是玩家杀死的，正常掉落
-        }
-
-        // 检查地狱中的队伍人数
-        int huntersInNether = countTeamPlayersInDimension(server, "hunters", World.NETHER);
-        int runnersInNether = countTeamPlayersInDimension(server, "runners", World.NETHER);
-
-        // 如果队伍人数相同，正常掉落
-        if (huntersInNether == runnersInNether) {
-            return true;
-        }
-
-        // 如果是人数占优势的队伍杀死的，才掉落
-        String dominantTeam = (huntersInNether > runnersInNether) ? "hunters" : "runners";
-        return killerTeam.equals(dominantTeam);
-    }
-
     // 静态方法，统计特定队伍在特定维度的玩家数
     private static int countTeamPlayersInDimension(MinecraftServer server, String teamName, RegistryKey<World> dimensionKey) {
         int count = 0;
@@ -122,5 +152,67 @@ public class EnvironmentController {
             }
         }
         return count;
+    }
+
+    private void updateBlazeDroppingPermissions(MinecraftServer server) {
+        // 检查地狱中的队伍人数
+        int huntersInNether = countTeamPlayersInDimension(server, "hunters", World.NETHER);
+        int runnersInNether = countTeamPlayersInDimension(server, "runners", World.NETHER);
+
+        boolean huntersCanDrop = false;
+        boolean runnersCanDrop = false;
+
+        // 更新优势队伍状态
+        TeamAdvantage previousAdvantage = netherAdvantageTeam;
+
+        if (huntersInNether == 0 && runnersInNether == 0) {
+            netherAdvantageTeam = TeamAdvantage.NONE;
+        } else if (huntersInNether == runnersInNether) {
+            netherAdvantageTeam = TeamAdvantage.NONE;
+            huntersCanDrop = true;
+            runnersCanDrop = true;
+        } else if (huntersInNether > runnersInNether) {
+            netherAdvantageTeam = TeamAdvantage.HUNTERS;
+            huntersCanDrop = true;
+            runnersCanDrop = false;
+        } else {
+            netherAdvantageTeam = TeamAdvantage.RUNNERS;
+            huntersCanDrop = false;
+            runnersCanDrop = true;
+        }
+
+        // 更新猎人队玩家标签
+        for (String playerName : TeamUtils.getTeamPlayerNames(server, "hunters")) {
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+            if (player != null && player.getWorld().getRegistryKey() == World.NETHER) {
+                updatePlayerTag(player, huntersCanDrop);
+            }
+        }
+
+        // 更新逃亡者队玩家标签
+        for (String playerName : TeamUtils.getTeamPlayerNames(server, "runners")) {
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+            if (player != null && player.getWorld().getRegistryKey() == World.NETHER) {
+                updatePlayerTag(player, runnersCanDrop);
+            }
+        }
+
+        // 如果优势状态发生变化，向所有玩家发送更新
+        if (previousAdvantage != netherAdvantageTeam) {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                ServerPlayNetworking.send(player, new NetWorking.TeamAdvantagePacket(netherAdvantageTeam.ordinal()));
+            }
+        }
+    }
+
+    // 更新玩家的标签
+    private void updatePlayerTag(ServerPlayerEntity player, boolean canDropBlazeRod) {
+        if (canDropBlazeRod) {
+            // 添加掉落权限标签
+            CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " add can_drop_blaze_rod");
+        } else {
+            // 移除掉落权限标签
+            CommandExecutor.executeCommand(server, "/tag " + player.getName().getString() + " remove can_drop_blaze_rod");
+        }
     }
 }
