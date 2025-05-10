@@ -23,12 +23,24 @@ public class HasCommandTagCondition implements LootCondition {
     public static final Identifier ID = Identifier.of(Teamhunter.MOD_ID, "has_command_tag");
     private final String tagName; // 需要检查的标签名
 
+    public static final MapCodec<HasCommandTagCondition> CODEC = Codec.STRING
+            .fieldOf("tag")
+            .xmap(HasCommandTagCondition::new, HasCommandTagCondition::getTagName);
+
     /**
      * 构造函数
      * @param tagName 要检查的玩家命令标签
      */
     public HasCommandTagCondition(String tagName) {
         this.tagName = tagName;
+    }
+
+    /**
+     * 获取标签名
+     * @return 标签名
+     */
+    public String getTagName() {
+        return this.tagName;
     }
 
     @Override
@@ -45,27 +57,5 @@ public class HasCommandTagCondition implements LootCondition {
             return player.getCommandTags().contains(this.tagName);
         }
         return false;
-    }
-
-    /**
-     * 理论上这里要补上codec,但是没搞懂
-     */
-    public static class Serializer implements Codec<HasCommandTagCondition> {
-        private static final String TAG_KEY = "tag";
-
-        @Override
-        public <T> DataResult<Pair<HasCommandTagCondition, T>> decode(T input, DynamicOps<T> ops) {
-            return ops.getMap(input).flatMap(map -> {
-                DataResult<String> tagResult = ops.getStringValue(map.get(TAG_KEY));
-                return tagResult.map(tag -> Pair.of(new HasCommandTagCondition(tag), ops.empty()));
-            });
-        }
-
-        @Override
-        public <T> DataResult<T> encode(HasCommandTagCondition condition, DynamicOps<T> ops, T prefix) {
-            return ops.mapBuilder()
-                    .add(TAG_KEY, ops.createString(condition.tagName))
-                    .build(prefix);
-        }
     }
 }
