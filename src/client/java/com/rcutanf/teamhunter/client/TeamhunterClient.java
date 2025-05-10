@@ -42,7 +42,7 @@ public class TeamhunterClient implements ClientModInitializer {
         HudLayerRegistrationCallback.EVENT.register(r ->
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, TeamhunterClient::draw)
         );
-        ClientLoginNetworking.registerGlobalReceiver(NetWorking.CheckClientMod, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
+        ClientLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
 
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamAdvantagePacket.ID, (payload, context) -> {
             teamAdvantage = payload.advantageOrdinal();

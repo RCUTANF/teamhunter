@@ -43,11 +43,11 @@ public class Teamhunter implements ModInitializer {
                     });
                     synchronizer.waitFor(future);
                     var buf = new PacketByteBuf(Unpooled.buffer());
-                    sender.sendPacket(NetWorking.CheckClientMod, buf);
+                    sender.sendPacket(NetWorking.CHECK_CLIENT_MOD, buf);
                 }
         );
 
-        ServerLoginNetworking.registerGlobalReceiver(NetWorking.CheckClientMod, (server, handler, understood, buf, synchronizer, packetSender) -> {
+        ServerLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD, (server, handler, understood, buf, synchronizer, packetSender) -> {
             if (!understood)
                 handler.disconnect(Text.literal("install " + MOD_ID + " to join the server"));
         });

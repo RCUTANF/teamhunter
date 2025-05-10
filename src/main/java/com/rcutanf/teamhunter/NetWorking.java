@@ -6,12 +6,13 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public class NetWorking {
-    private static final Identifier Sync = Identifier.of(Teamhunter.MOD_ID, "sync");
-    public static final Identifier CheckClientMod = Identifier.of(Teamhunter.MOD_ID, "sync");
+    // 修复标识符重复问题
+    private static final Identifier SYNC_ID = Identifier.of(Teamhunter.MOD_ID, "sync");
+    public static final Identifier CHECK_CLIENT_MOD = Identifier.of(Teamhunter.MOD_ID, "check_client_mod");
 
     public record CounterSyncPacket(long countDownMilliseconds) implements CustomPayload {
 
-        public static final Id<CounterSyncPacket> ID = new Id<>(Sync);
+        public static final Id<CounterSyncPacket> ID = new Id<>(SYNC_ID);
         public static final PacketCodec<PacketByteBuf, CounterSyncPacket> CODEC = CustomPayload.codecOf(CounterSyncPacket::write, CounterSyncPacket::new);
 
         @Override
@@ -28,6 +29,7 @@ public class NetWorking {
         }
     }
 
+    // 必须确保TeamAdvantagePacket与服务器期望的类型兼容
     public record TeamAdvantagePacket(int advantageOrdinal) implements CustomPayload {
         public static final Identifier TEAM_ADVANTAGE_ID = Identifier.of(Teamhunter.MOD_ID, "team_advantage");
         public static final Id<TeamAdvantagePacket> ID = new Id<>(TEAM_ADVANTAGE_ID);
@@ -46,5 +48,4 @@ public class NetWorking {
             buf.writeInt(advantageOrdinal);
         }
     }
-
 }
