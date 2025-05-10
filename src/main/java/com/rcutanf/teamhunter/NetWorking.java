@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 public class NetWorking {
     // 修复标识符重复问题
     private static final Identifier SYNC_ID = Identifier.of(Teamhunter.MOD_ID, "sync");
-    public static final Identifier CHECK_CLIENT_MOD = Identifier.of(Teamhunter.MOD_ID, "check_client_mod");
+    public static final Identifier CHECK_CLIENT_MOD = Identifier.of(Teamhunter.MOD_ID, "sync");
 
     public record CounterSyncPacket(long countDownMilliseconds) implements CustomPayload {
 
