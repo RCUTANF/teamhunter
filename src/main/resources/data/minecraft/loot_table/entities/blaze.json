@@ -2,6 +2,12 @@
   "type": "minecraft:entity",
   "pools": [
     {
+      "conditions": [
+        {
+          "condition": "teamhunter:has_command_tag",
+          "tag": "can_drop_blaze_rod"
+        }
+      ],
       "rolls": 1,
       "entries": [
         {
@@ -12,26 +18,14 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 0,
-                "max": 1
-              }
-            },
-            {
-              "function": "minecraft:looting_enchant",
-              "count": {
-                "min": 0,
-                "max": 1
+                "min": 10,
+                "max": 10
               }
             }
           ]
         }
-      ],
-      "conditions": [
-        {
-          "condition": "teamhunter:has_command_tag",
-          "tag": "can_drop_blaze_rod"
-        }
       ]
     }
-  ]
+  ],
+  "random_sequence": "minecraft:entities/blaze"
 }

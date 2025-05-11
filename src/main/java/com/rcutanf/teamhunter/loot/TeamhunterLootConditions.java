@@ -1,8 +1,5 @@
 package com.rcutanf.teamhunter.loot;
 
-import com.mojang.serialization.MapCodec;
-import com.rcutanf.teamhunter.Teamhunter;
-import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

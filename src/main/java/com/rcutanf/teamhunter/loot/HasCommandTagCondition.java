@@ -1,9 +1,8 @@
 package com.rcutanf.teamhunter.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.rcutanf.teamhunter.Teamhunter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,31 +16,17 @@ import net.minecraft.util.Identifier;
 /**
  * 自定义战利品条件：检查击杀者是否有指定命令标签
  * 用于决定烈焰人是否掉落烈焰棒
+ *
+ * @param tag 需要检查的标签名
  */
-public class HasCommandTagCondition implements LootCondition {
+public record HasCommandTagCondition(String tag) implements LootCondition {
     // 标签条件的类型
     public static final Identifier ID = Identifier.of(Teamhunter.MOD_ID, "has_command_tag");
-    private final String tagName; // 需要检查的标签名
-
-    public static final MapCodec<HasCommandTagCondition> CODEC = Codec.STRING
-            .fieldOf("tag")
-            .xmap(HasCommandTagCondition::new, HasCommandTagCondition::getTagName);
-
-    /**
-     * 构造函数
-     * @param tagName 要检查的玩家命令标签
-     */
-    public HasCommandTagCondition(String tagName) {
-        this.tagName = tagName;
-    }
-
-    /**
-     * 获取标签名
-     * @return 标签名
-     */
-    public String getTagName() {
-        return this.tagName;
-    }
+    public static final MapCodec<HasCommandTagCondition> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    Codec.STRING.fieldOf("tag").forGetter(HasCommandTagCondition::tag)
+            ).apply(instance, HasCommandTagCondition::new)
+    );
 
     @Override
     public LootConditionType getType() {
@@ -56,8 +41,7 @@ public class HasCommandTagCondition implements LootCondition {
         System.out.println("killer: " + killer);
         // 检查击杀者是否是玩家且拥有指定标签
         if (killer instanceof PlayerEntity player) {
-
-            return player.getCommandTags().contains(this.tagName);
+            return player.getCommandTags().contains(this.tag);
         }
         return false;
     }
