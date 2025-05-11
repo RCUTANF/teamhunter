@@ -79,13 +79,13 @@ public class TeamhunterClient implements ClientModInitializer {
 
         int windowWidth = ctx.getScaledWindowWidth();
         int lineWidth = 100; // 横线宽度
-        int lineHeight = 30;  // 横线高度
+        int lineHeight = 3;  // 横线高度
         int y = 5;          // 距离顶部的距离
 
         // 根据优势队伍设置颜色（猎人红色，逃亡者绿色）
         int color = teamAdvantage == 1 ? 0xFFFF0000 : 0xFF00FF00;
 
-        CommandExecutor.executeCommand(MinecraftClient.getInstance().getServer(), "/say " + (teamAdvantage == 1 ? "猎人优势" : "逃亡者优势") + "\",\"color\":\"" + (teamAdvantage == 1 ? "red" : "green") + "\"}");
+        //CommandExecutor.executeCommand(MinecraftClient.getInstance().getServer(), "/say " + (teamAdvantage == 1 ? "猎人优势" : "逃亡者优势") + "\",\"color\":\"" + (teamAdvantage == 1 ? "red" : "green") + "\"}");
 
         // 绘制横线
         ctx.fill((windowWidth - lineWidth) / 2, y, (windowWidth + lineWidth) / 2, y + lineHeight, color);

@@ -37,8 +37,6 @@ public record HasCommandTagCondition(String tag) implements LootCondition {
     @Override
     public boolean test(LootContext context) {
         Entity killer = context.get(LootContextParameters.LAST_DAMAGE_PLAYER);
-        //打印killer
-        System.out.println("killer: " + killer);
         // 检查击杀者是否是玩家且拥有指定标签
         if (killer instanceof PlayerEntity player) {
             return player.getCommandTags().contains(this.tag);
