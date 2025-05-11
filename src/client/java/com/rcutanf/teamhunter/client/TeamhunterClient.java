@@ -75,7 +75,13 @@ public class TeamhunterClient implements ClientModInitializer {
 
     //渲染地狱优势队伍
     private static void drawAdvantageBar(DrawContext ctx, RenderTickCounter counter) {
-        if (teamAdvantage == 0) return; // 无优势不显示
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (teamAdvantage == 0 ||
+                phase != Phase.MATCH ||
+                client.player == null ||
+                !client.player.getWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether")) {
+            return; // 不满足条件则不显示
+        }
 
         int windowWidth = ctx.getScaledWindowWidth();
         int lineWidth = 100; // 横线宽度
