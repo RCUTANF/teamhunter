@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter;
 
+import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import com.rcutanf.teamhunter.loot.TeamhunterLootConditions;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -18,6 +19,7 @@ public class Teamhunter implements ModInitializer {
     public static final String MOD_ID = "teamhunter";
     private PlayerRespawnHandler playerRespawnHandler;
     private EnvironmentController environmentController;
+    private AdvancementListener advancementListener;
 
     @Override
     public void onInitialize() {
@@ -29,6 +31,7 @@ public class Teamhunter implements ModInitializer {
             phaseManager = new PhaseCombiner(s, new PhaseHandler(s));
             playerRespawnHandler = new PlayerRespawnHandler();
             environmentController = new EnvironmentController(s);
+            advancementListener = new AdvancementListener(s);
         });
         TeamhunterLootConditions.register();
         ServerLifecycleEvents.SERVER_STOPPING.register(s -> {
