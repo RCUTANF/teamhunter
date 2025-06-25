@@ -5,12 +5,15 @@ import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
+import com.rcutanf.teamhunter.client.ui.TeamScoreHud;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -26,18 +29,40 @@ public class TeamhunterClient implements ClientModInitializer {
 
     public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
     private static final Identifier advantageLayer = Identifier.of(Teamhunter.MOD_ID, "team-advantage");
+    private static final Identifier teamScoreLayer = Identifier.of(Teamhunter.MOD_ID, "team-score");
+
 
 
 
     @Override
     public void onInitializeClient() {
 
+        PayloadTypeRegistry.playC2S().register(NetWorking.TeamScorePacket.ID, NetWorking.TeamScorePacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(Phase.ID, (payload, context) -> {
             phase = payload;
         });
 
         ClientPlayNetworking.registerGlobalReceiver(CounterSyncPacket.ID, (payload, context) -> {
             countDown = Duration.ofMillis(payload.countDownMilliseconds());
+        });
+
+        // 注册网络监听器
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamScorePacket.ID, (payload, context) -> {
+            // 获取分数数据
+            int huntersScore = payload.huntersScore();
+            int runnersScore = payload.runnersScore();
+            int huntersAddedScore = payload.huntersAddedScore();
+            int runnersAddedScore = payload.runnersAddedScore();
+
+            // 在游戏主线程中更新UI数据
+            MinecraftClient.getInstance().execute(() -> {
+                TeamScoreHud.updateScores(
+                        huntersScore,
+                        runnersScore,
+                        huntersAddedScore,
+                        runnersAddedScore
+                );
+            });
         });
 
         HudLayerRegistrationCallback.EVENT.register(r ->
@@ -52,6 +77,17 @@ public class TeamhunterClient implements ClientModInitializer {
         HudLayerRegistrationCallback.EVENT.register(r ->
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, advantageLayer, TeamhunterClient::drawAdvantageBar)
         );
+
+        // 添加：注册团队分数 HUD 渲染
+        HudLayerRegistrationCallback.EVENT.register(r ->
+                r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, teamScoreLayer, (ctx, tickCounter) -> {
+                    TeamScoreHud.render(ctx);
+                })
+        );
+
+
+
+
     }
 
     public static Phase phase = Phase.WAITING;

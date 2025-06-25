@@ -12,6 +12,7 @@ public class NetWorking {
 
 
 
+
     public record CounterSyncPacket(long countDownMilliseconds) implements CustomPayload {
 
         public static final Id<CounterSyncPacket> ID = new Id<>(SYNC_ID);
@@ -48,6 +49,28 @@ public class NetWorking {
 
         public void write(PacketByteBuf buf) {
             buf.writeInt(advantageOrdinal);
+        }
+    }
+
+    public record TeamScorePacket(int huntersScore, int runnersScore, int huntersAddedScore, int runnersAddedScore) implements CustomPayload {
+        public static final Identifier TEAM_SCORE_ID = Identifier.of(Teamhunter.MOD_ID, "team_score");
+        public static final Id<TeamScorePacket> ID = new Id<>(TEAM_SCORE_ID);
+        public static final PacketCodec<PacketByteBuf, TeamScorePacket> CODEC = CustomPayload.codecOf(TeamScorePacket::write, TeamScorePacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public TeamScorePacket(PacketByteBuf buf) {
+            this(buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt());
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeInt(huntersScore);
+            buf.writeInt(runnersScore);
+            buf.writeInt(huntersAddedScore);
+            buf.writeInt(runnersAddedScore);
         }
     }
 }
