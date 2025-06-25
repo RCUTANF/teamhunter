@@ -14,12 +14,21 @@ import net.minecraft.util.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TeamScoreHud {
     private static int huntersScore = 0;
     private static int runnersScore = 0;
     private static int huntersAddedScore = 0;
     private static int runnersAddedScore = 0;
     private static long lastUpdateTime = 0;
+
+    // Buff 相关
+    private static final List<TeamBuff> huntersBuffs = new ArrayList<>();
+    private static final List<TeamBuff> runnersBuffs = new ArrayList<>();
+    private static final int BUFF_ICON_SIZE = 12; // Buff 图标尺寸
+    private static final int BUFF_SPACING = 2; // Buff 图标之间的间距
 
     // 动画参数
     private static final int ANIMATION_DURATION = 2000;
@@ -44,6 +53,45 @@ public class TeamScoreHud {
     // 剑图标纹理
     private static final Identifier SWORD_ICON = Identifier.of("teamhunter", "textures/ui/sword.png");
 
+    // 地狱劣势buff图标 - 新增
+    private static final Identifier NETHER_DEBUFF_ICON = Identifier.of("teamhunter", "textures/ui/nether_debuff.png");
+
+    /**
+     * 表示一个队伍效果（Buff/Debuff）
+     */
+    public static class TeamBuff {
+        private final Identifier icon;
+        private final String tooltip;
+        private boolean isActive = true;
+        private long addedTime;
+
+        public TeamBuff(Identifier icon, String tooltip) {
+            this.icon = icon;
+            this.tooltip = tooltip;
+            this.addedTime = System.currentTimeMillis();
+        }
+
+        public Identifier getIcon() {
+            return icon;
+        }
+
+        public String getTooltip() {
+            return tooltip;
+        }
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public void setActive(boolean active) {
+            this.isActive = active;
+        }
+
+        public long getAddedTime() {
+            return addedTime;
+        }
+    }
+
     /**
      * 从网络包更新分数数据
      */
@@ -54,6 +102,55 @@ public class TeamScoreHud {
         TeamScoreHud.huntersAddedScore = huntersAddedScore;
         TeamScoreHud.runnersAddedScore = runnersAddedScore;
         lastUpdateTime = System.currentTimeMillis();
+    }
+
+    /**
+     * 添加地狱劣势Buff给指定队伍
+     */
+    public static void addNetherDebuff(boolean isHunterTeam) {
+        TeamBuff netherDebuff = new TeamBuff(NETHER_DEBUFF_ICON, "地狱劣势");
+
+        if (isHunterTeam) {
+            // 移除之前的相同buff
+            huntersBuffs.removeIf(buff -> buff.getIcon().equals(NETHER_DEBUFF_ICON));
+            huntersBuffs.add(netherDebuff);
+        } else {
+            // 移除之前的相同buff
+            runnersBuffs.removeIf(buff -> buff.getIcon().equals(NETHER_DEBUFF_ICON));
+            runnersBuffs.add(netherDebuff);
+        }
+    }
+
+    /**
+     * 移除地狱劣势Buff
+     */
+    public static void removeNetherDebuff(boolean isHunterTeam) {
+        if (isHunterTeam) {
+            huntersBuffs.removeIf(buff -> buff.getIcon().equals(NETHER_DEBUFF_ICON));
+        } else {
+            runnersBuffs.removeIf(buff -> buff.getIcon().equals(NETHER_DEBUFF_ICON));
+        }
+    }
+
+    /**
+     * 添加自定义Buff
+     */
+    public static void addBuff(boolean isHunterTeam, Identifier icon, String tooltip) {
+        TeamBuff buff = new TeamBuff(icon, tooltip);
+
+        if (isHunterTeam) {
+            huntersBuffs.add(buff);
+        } else {
+            runnersBuffs.add(buff);
+        }
+    }
+
+    /**
+     * 清空所有Buff
+     */
+    public static void clearAllBuffs() {
+        huntersBuffs.clear();
+        runnersBuffs.clear();
     }
 
     /**
@@ -99,51 +196,7 @@ public class TeamScoreHud {
         }
 
         // 4. 绘制剑图标（使用正确的draw方法）
-        context.draw(vertexConsumerProvider -> {
-            RenderLayer renderLayer = RenderLayer.getText(SWORD_ICON);
-            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(renderLayer);
-
-            MatrixStack matrixStack = context.getMatrices();
-            matrixStack.push();
-
-            // 直接获取矩阵
-            Matrix4f positionMatrix = matrixStack.peek().getPositionMatrix();
-            Matrix3f normalMatrix = matrixStack.peek().getNormalMatrix();
-
-            // 左下角顶点
-            vertexConsumer.vertex(positionMatrix, swordX, swordY + SWORD_HEIGHT, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(0, 1);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 右下角顶点
-            vertexConsumer.vertex(positionMatrix, swordX + SWORD_WIDTH, swordY + SWORD_HEIGHT, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(1, 1);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 右上角顶点
-            vertexConsumer.vertex(positionMatrix, swordX + SWORD_WIDTH, swordY, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(1, 0);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 左上角顶点
-            vertexConsumer.vertex(positionMatrix, swordX, swordY, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(0, 0);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            matrixStack.pop();
-        });
+        drawTextureQuad(context, SWORD_ICON, swordX, swordY, SWORD_WIDTH, SWORD_HEIGHT);
 
         // 5. 获取动画进度
         float animationProgress = Math.min(1.0f,
@@ -159,14 +212,38 @@ public class TeamScoreHud {
         drawTextWithBounce(context, textRenderer, huntersText, huntersTextX, TEXT_Y, HUNTERS_COLOR,
                 huntersAddedScore > 0 ? bounceProgress : 1.0f);
 
-        // 7. 绘制逃亡者队分数（在进度条右侧）
+        // 7. 绘制猎人队的Buff (在分数左侧)
+        int hunterBuffX = huntersTextX - BUFF_ICON_SIZE - PADDING;
+        int buffY = TEXT_Y - 1; // 轻微调整，使buff图标与文本垂直居中
+
+        for (int i = 0; i < huntersBuffs.size(); i++) {
+            TeamBuff buff = huntersBuffs.get(i);
+            if (buff.isActive()) {
+                drawTextureQuad(context, buff.getIcon(), hunterBuffX - (BUFF_ICON_SIZE + BUFF_SPACING) * i,
+                        buffY, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
+            }
+        }
+
+        // 8. 绘制逃亡者队分数（在进度条右侧）
         String runnersText = String.valueOf(runnersScore);
         int runnersTextX = barRight + PADDING;
 
         drawTextWithBounce(context, textRenderer, runnersText, runnersTextX, TEXT_Y, RUNNERS_COLOR,
                 runnersAddedScore > 0 ? bounceProgress : 1.0f);
 
-        // 8. 绘制加分动画 - 修改为在总分下方跳出
+        // 9. 绘制逃亡者队的Buff (在分数右侧)
+        int runnersTextWidth = textRenderer.getWidth(runnersText);
+        int runnerBuffX = runnersTextX + runnersTextWidth + PADDING;
+
+        for (int i = 0; i < runnersBuffs.size(); i++) {
+            TeamBuff buff = runnersBuffs.get(i);
+            if (buff.isActive()) {
+                drawTextureQuad(context, buff.getIcon(), runnerBuffX + (BUFF_ICON_SIZE + BUFF_SPACING) * i,
+                        buffY, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
+            }
+        }
+
+        // 10. 绘制加分动画 - 修改为在总分下方跳出
         if (animationProgress < 1.0f) {
             // 缩短动画持续时间，使其更快速
             float fastAnimProgress = Math.min(1.0f, animationProgress * 2.5f);
@@ -241,5 +318,56 @@ public class TeamScoreHud {
         context.drawText(textRenderer, text, x, y, color, false);
 
         context.getMatrices().pop();
+    }
+
+    /**
+     * 绘制纹理方块（简化版的纹理绘制方法）
+     */
+    private static void drawTextureQuad(DrawContext context, Identifier texture, int x, int y, int width, int height) {
+        context.draw(vertexConsumerProvider -> {
+            RenderLayer renderLayer = RenderLayer.getText(texture);
+            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(renderLayer);
+
+            MatrixStack matrixStack = context.getMatrices();
+            matrixStack.push();
+
+            // 直接获取矩阵
+            Matrix4f positionMatrix = matrixStack.peek().getPositionMatrix();
+            Matrix3f normalMatrix = matrixStack.peek().getNormalMatrix();
+
+            // 左下角顶点
+            vertexConsumer.vertex(positionMatrix, x, y + height, 0);
+            vertexConsumer.color(255, 255, 255, 255);
+            vertexConsumer.texture(0, 1);
+            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
+            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
+
+            // 右下角顶点
+            vertexConsumer.vertex(positionMatrix, x + width, y + height, 0);
+            vertexConsumer.color(255, 255, 255, 255);
+            vertexConsumer.texture(1, 1);
+            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
+            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
+
+            // 右上角顶点
+            vertexConsumer.vertex(positionMatrix, x + width, y, 0);
+            vertexConsumer.color(255, 255, 255, 255);
+            vertexConsumer.texture(1, 0);
+            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
+            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
+
+            // 左上角顶点
+            vertexConsumer.vertex(positionMatrix, x, y, 0);
+            vertexConsumer.color(255, 255, 255, 255);
+            vertexConsumer.texture(0, 0);
+            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
+            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
+
+            matrixStack.pop();
+        });
     }
 }

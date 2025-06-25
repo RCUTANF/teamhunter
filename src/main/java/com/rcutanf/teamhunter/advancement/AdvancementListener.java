@@ -68,6 +68,24 @@ public class AdvancementListener {
                 "scoreboard players set runners TeamScore " + runnersScore
         );
 
+        //设置领先后的效果
+        if (huntersScore - runnersScore > 100) {
+            /*
+            CommandExecutor.executeCommand(server,
+                    "effect give @a[team=hunters] minecraft:speed 5 1 true");
+            CommandExecutor.executeCommand(server,
+                    "effect clear @a[team=runners] minecraft:speed");*/
+        } else if (runnersScore - huntersScore > 100) {
+            /*CommandExecutor.executeCommand(server,
+                    "effect give @a[team=runners] minecraft:speed 5 1 true");
+            CommandExecutor.executeCommand(server,
+                    "effect clear @a[team=hunters] minecraft:speed");*/
+        } else {
+            /*CommandExecutor.executeCommand(server,
+                    "effect clear @a[team=hunters] minecraft:speed");
+            CommandExecutor.executeCommand(server,
+                    "effect clear @a[team=runners] minecraft:speed");*/
+        }
         // 发送分数更新包
         sendTeamScoreUpdate(player.getServerWorld(), huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
     }
