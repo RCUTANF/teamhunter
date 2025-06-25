@@ -114,4 +114,56 @@ public class AdvancementListener {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
         }
     }
+
+    /**
+     * 减少指定队伍的分数
+     * @param teamName 队伍名称 ("hunters" 或 "runners")
+     * @param amount 要减少的分数值
+     * @param world 服务器世界实例，用于发送分数更新包
+     * @param message 可选的消息，解释为什么减少分数
+     * @return 减少后的新分数
+     */
+    public static int reduceTeamScore(String teamName, int amount, ServerWorld world, String message) {
+        // 验证参数
+        if (amount <= 0) {
+            return teamName.equals("hunters") ? huntersScore : runnersScore;
+        }
+
+        // 减少对应队伍的分数
+        int huntersReducedScore = 0;
+        int runnersReducedScore = 0;
+
+        if (teamName.equals("hunters")) {
+            huntersScore = Math.max(0, huntersScore - amount); // 确保分数不会变为负数
+            huntersReducedScore = amount;
+        } else if (teamName.equals("runners")) {
+            runnersScore = Math.max(0, runnersScore - amount); // 确保分数不会变为负数
+            runnersReducedScore = amount;
+        } else {
+            // 如果队伍名称无效，返回0
+            return 0;
+        }
+
+        // 更新计分板
+        MinecraftServer server = world.getServer();
+        CommandExecutor.executeCommand(server,
+                "scoreboard players set hunters TeamScore " + huntersScore
+        );
+        CommandExecutor.executeCommand(server,
+                "scoreboard players set runners TeamScore " + runnersScore
+        );
+
+        // 如果提供了消息，显示减分通知
+        if (message != null && !message.isEmpty()) {
+            CommandExecutor.executeCommand(server,
+                    String.format("say %s 队扣除 %d 分: %s",
+                            teamName, amount, message));
+        }
+
+        // 发送分数更新包，使用负值表示减少的分数
+        sendTeamScoreUpdate(world, huntersScore, runnersScore, -huntersReducedScore, -runnersReducedScore);
+
+        // 返回当前队伍的新分数
+        return teamName.equals("hunters") ? huntersScore : runnersScore;
+    }
 }

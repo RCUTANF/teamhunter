@@ -243,7 +243,7 @@ public class TeamScoreHud {
             }
         }
 
-        // 10. 绘制加分动画 - 修改为在总分下方跳出
+        // 10. 绘制分数变化动画 - 支持加分和减分
         if (animationProgress < 1.0f) {
             // 缩短动画持续时间，使其更快速
             float fastAnimProgress = Math.min(1.0f, animationProgress * 2.5f);
@@ -251,9 +251,14 @@ public class TeamScoreHud {
             // 只在动画没有完全淡出前显示
             float fadeStart = 0.7f;
             if (fastAnimProgress <= 1.0f) {  // 确保只在动画进行中显示
-                // 猎人队加分 - 使用猎人队颜色(红色)
-                if (huntersAddedScore > 0) {
-                    String addText = "+" + huntersAddedScore;
+                // 猎人队分数变化
+                if (huntersAddedScore != 0) {
+                    // 确定是加分还是减分，符号会自动显示
+                    String changeText = huntersAddedScore > 0 ?
+                            "+" + huntersAddedScore : String.valueOf(huntersAddedScore);
+                    // 始终使用队伍颜色
+                    int textColor = HUNTERS_COLOR;
+
                     // 从下往上移动的动画
                     int startY = TEXT_Y + textRenderer.fontHeight * 2;
                     int targetY = TEXT_Y;
@@ -266,16 +271,21 @@ public class TeamScoreHud {
                         if (fastAnimProgress >= 1.0f) alpha = 0;
                     }
 
-                    // 只在有可见度时绘制，使用猎人队颜色
+                    // 只在有可见度时绘制
                     if (alpha > 0) {
-                        int color = (alpha << 24) | (HUNTERS_COLOR & 0x00FFFFFF);
-                        context.drawText(textRenderer, addText, huntersTextX, offsetY, color, false);
+                        int color = (alpha << 24) | (textColor & 0x00FFFFFF);
+                        context.drawText(textRenderer, changeText, huntersTextX, offsetY, color, false);
                     }
                 }
 
-                // 逃亡者队加分 - 使用逃亡者队颜色(绿色)
-                if (runnersAddedScore > 0) {
-                    String addText = "+" + runnersAddedScore;
+                // 逃亡者队分数变化
+                if (runnersAddedScore != 0) {
+                    // 确定是加分还是减分，符号会自动显示
+                    String changeText = runnersAddedScore > 0 ?
+                            "+" + runnersAddedScore : String.valueOf(runnersAddedScore);
+                    // 始终使用队伍颜色
+                    int textColor = RUNNERS_COLOR;
+
                     int startY = TEXT_Y + textRenderer.fontHeight * 2;
                     int targetY = TEXT_Y;
                     int offsetY = startY - (int)((startY - targetY) * fastAnimProgress);
@@ -287,8 +297,8 @@ public class TeamScoreHud {
                     }
 
                     if (alpha > 0) {
-                        int color = (alpha << 24) | (RUNNERS_COLOR & 0x00FFFFFF);
-                        context.drawText(textRenderer, addText, runnersTextX, offsetY, color, false);
+                        int color = (alpha << 24) | (textColor & 0x00FFFFFF);
+                        context.drawText(textRenderer, changeText, runnersTextX, offsetY, color, false);
                     }
                 }
             }
