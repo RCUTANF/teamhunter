@@ -159,10 +159,10 @@ public class AdvancementListener {
         if (huntersHaveAdvantage) {
             // 猎人领先100分，启用猎人的指南针追踪功能
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 1");
+                    "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 1");
             // 关闭逃亡者的指南针追踪功能
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+                    "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
 
             // 发送网络包通知客户端更新UI
             if (!huntersHadAdvantage) {
@@ -174,10 +174,10 @@ public class AdvancementListener {
         } else if (runnersHaveAdvantage) {
             // 逃亡者领先100分，启用逃亡者的指南针追踪功能
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 1");
+                    "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 1");
             // 关闭猎人的指南针追踪功能
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+                    "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
 
             // 发送网络包通知客户端更新UI
             if (!runnersHadAdvantage) {
@@ -189,9 +189,9 @@ public class AdvancementListener {
         } else {
             // 无领先优势，关闭所有人的指南针追踪功能
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+                    "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
             CommandExecutor.executeCommand(server,
-                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+                    "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
 
             // 如果之前有队伍有优势，现在取消
             if (huntersHadAdvantage || runnersHadAdvantage) {
