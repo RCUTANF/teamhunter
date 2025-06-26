@@ -20,6 +20,9 @@ public class AdvancementListener {
     private static int huntersScore = 0;
     private static int runnersScore = 0;
 
+    private static boolean huntersHadAdvantage = false;
+    private static boolean runnersHadAdvantage = false;
+
     public AdvancementListener(MinecraftServer server) {
         this.server = server;
         this.scoreLoader = new AdvancementScoreLoader();
@@ -60,32 +63,10 @@ public class AdvancementListener {
                 String.format("say %s 为 %s 队获得成就 %s (+%d分)",
                         playerName, teamName, achievement, score));
 
-        // 可选：仍然保留计分板更新，用于其他地方显示
-        CommandExecutor.executeCommand(server,
-                "scoreboard players set hunters TeamScore " + huntersScore
-        );
-        CommandExecutor.executeCommand(server,
-                "scoreboard players set runners TeamScore " + runnersScore
-        );
 
-        //设置领先后的效果
-        if (huntersScore - runnersScore > 100) {
-            /*
-            CommandExecutor.executeCommand(server,
-                    "effect give @a[team=hunters] minecraft:speed 5 1 true");
-            CommandExecutor.executeCommand(server,
-                    "effect clear @a[team=runners] minecraft:speed");*/
-        } else if (runnersScore - huntersScore > 100) {
-            /*CommandExecutor.executeCommand(server,
-                    "effect give @a[team=runners] minecraft:speed 5 1 true");
-            CommandExecutor.executeCommand(server,
-                    "effect clear @a[team=hunters] minecraft:speed");*/
-        } else {
-            /*CommandExecutor.executeCommand(server,
-                    "effect clear @a[team=hunters] minecraft:speed");
-            CommandExecutor.executeCommand(server,
-                    "effect clear @a[team=runners] minecraft:speed");*/
-        }
+
+        // 替换原有代码
+        applyTeamAdvantageEffects(server, huntersScore, runnersScore);
         // 发送分数更新包
         sendTeamScoreUpdate(player.getServerWorld(), huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
     }
@@ -165,5 +146,71 @@ public class AdvancementListener {
 
         // 返回当前队伍的新分数
         return teamName.equals("hunters") ? huntersScore : runnersScore;
+    }
+
+    private void applyTeamAdvantageEffects(MinecraftServer server, int huntersScore, int runnersScore) {
+        // 存储上一次的领先状态
+
+
+        boolean huntersHaveAdvantage = huntersScore - runnersScore > 100;
+        boolean runnersHaveAdvantage = runnersScore - huntersScore > 100;
+
+        // 设置领先后的效果
+        if (huntersHaveAdvantage) {
+            // 猎人领先100分，启用猎人的指南针追踪功能
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 1");
+            // 关闭逃亡者的指南针追踪功能
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+
+            // 发送网络包通知客户端更新UI
+            if (!huntersHadAdvantage) {
+                sendAdvantageBuffUpdate(server.getOverworld(), true, true);
+                sendAdvantageBuffUpdate(server.getOverworld(), false, false);
+                huntersHadAdvantage = true;
+                runnersHadAdvantage = false;
+            }
+        } else if (runnersHaveAdvantage) {
+            // 逃亡者领先100分，启用逃亡者的指南针追踪功能
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 1");
+            // 关闭猎人的指南针追踪功能
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+
+            // 发送网络包通知客户端更新UI
+            if (!runnersHadAdvantage) {
+                sendAdvantageBuffUpdate(server.getOverworld(), false, true);
+                sendAdvantageBuffUpdate(server.getOverworld(), true, false);
+                runnersHadAdvantage = true;
+                huntersHadAdvantage = false;
+            }
+        } else {
+            // 无领先优势，关闭所有人的指南针追踪功能
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=hunters] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+            CommandExecutor.executeCommand(server,
+                    "execute as @a[team=runners] run scoreboard players set 敌人追踪器:显示距离 mh.settings 0");
+
+            // 如果之前有队伍有优势，现在取消
+            if (huntersHadAdvantage || runnersHadAdvantage) {
+                sendAdvantageBuffUpdate(server.getOverworld(), true, false);
+                sendAdvantageBuffUpdate(server.getOverworld(), false, false);
+                huntersHadAdvantage = false;
+                runnersHadAdvantage = false;
+            }
+        }
+    }
+
+    // 添加一个新方法发送优势Buff更新包
+    private void sendAdvantageBuffUpdate(ServerWorld world, boolean isHunterTeam, boolean hasAdvantage) {
+        // 创建一个新的网络包类型处理优势Buff的更新
+        NetWorking.AdvantageBuffPacket packet =
+            new NetWorking.AdvantageBuffPacket(isHunterTeam, hasAdvantage);
+
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
+        }
     }
 }

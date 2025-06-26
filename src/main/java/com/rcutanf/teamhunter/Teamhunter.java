@@ -27,6 +27,8 @@ public class Teamhunter implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(NetWorking.CounterSyncPacket.ID, NetWorking.CounterSyncPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.TeamAdvantagePacket.ID, NetWorking.TeamAdvantagePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.TeamScorePacket.ID, NetWorking.TeamScorePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.AdvantageBuffPacket.ID, NetWorking.AdvantageBuffPacket.CODEC);
+
         CommandRegistrationCallback.EVENT.register(Command::register);
         ServerLifecycleEvents.SERVER_STARTED.register(s -> {
             phaseManager = new PhaseCombiner(s, new PhaseHandler(s));

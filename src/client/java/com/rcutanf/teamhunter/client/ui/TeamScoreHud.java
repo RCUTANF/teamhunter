@@ -55,6 +55,9 @@ public class TeamScoreHud {
 
     // 地狱劣势buff图标 - 新增
     private static final Identifier NETHER_DEBUFF_ICON = Identifier.of("teamhunter", "textures/ui/nether_debuff.png");
+    // 领先优势buff图标
+    private static final Identifier ADVANTAGE_BUFF_ICON = Identifier.of("teamhunter", "textures/ui/advantage_buff.png");
+
 
     /**
      * 表示一个队伍效果（Buff/Debuff）
@@ -379,5 +382,33 @@ public class TeamScoreHud {
 
             matrixStack.pop();
         });
+    }
+
+    /**
+     * 添加领先优势Buff给指定队伍
+     */
+    public static void addAdvantageBuff(boolean isHunterTeam) {
+        TeamBuff advantageBuff = new TeamBuff(ADVANTAGE_BUFF_ICON, "领先优势：指南针追踪");
+
+        if (isHunterTeam) {
+            // 移除之前的相同buff
+            huntersBuffs.removeIf(buff -> buff.getIcon().equals(ADVANTAGE_BUFF_ICON));
+            huntersBuffs.add(advantageBuff);
+        } else {
+            // 移除之前的相同buff
+            runnersBuffs.removeIf(buff -> buff.getIcon().equals(ADVANTAGE_BUFF_ICON));
+            runnersBuffs.add(advantageBuff);
+        }
+    }
+
+    /**
+     * 移除领先优势Buff
+     */
+    public static void removeAdvantageBuff(boolean isHunterTeam) {
+        if (isHunterTeam) {
+            huntersBuffs.removeIf(buff -> buff.getIcon().equals(ADVANTAGE_BUFF_ICON));
+        } else {
+            runnersBuffs.removeIf(buff -> buff.getIcon().equals(ADVANTAGE_BUFF_ICON));
+        }
     }
 }

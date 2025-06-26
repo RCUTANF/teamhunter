@@ -70,6 +70,21 @@ public class TeamhunterClient implements ClientModInitializer {
             });
         });
 
+        // 注册优势Buff数据包接收器
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.AdvantageBuffPacket.ID, (payload, context) -> {
+            boolean isHunterTeam = payload.isHunterTeam();
+            boolean hasAdvantage = payload.hasAdvantage();
+
+            // 在游戏主线程中执行UI更新
+            MinecraftClient.getInstance().execute(() -> {
+                if (hasAdvantage) {
+                    TeamScoreHud.addAdvantageBuff(isHunterTeam);
+                } else {
+                    TeamScoreHud.removeAdvantageBuff(isHunterTeam);
+                }
+            });
+        });
+
         HudLayerRegistrationCallback.EVENT.register(r ->
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, TeamhunterClient::draw)
         );

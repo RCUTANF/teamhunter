@@ -73,4 +73,24 @@ public class NetWorking {
             buf.writeInt(runnersAddedScore);
         }
     }
+
+    public record AdvantageBuffPacket(boolean isHunterTeam, boolean hasAdvantage) implements CustomPayload {
+        public static final Identifier ADVANTAGE_BUFF_ID = Identifier.of(Teamhunter.MOD_ID, "advantage_buff");
+        public static final Id<AdvantageBuffPacket> ID = new Id<>(ADVANTAGE_BUFF_ID);
+        public static final PacketCodec<PacketByteBuf, AdvantageBuffPacket> CODEC = CustomPayload.codecOf(AdvantageBuffPacket::write, AdvantageBuffPacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public AdvantageBuffPacket(PacketByteBuf buf) {
+            this(buf.readBoolean(), buf.readBoolean());
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeBoolean(isHunterTeam);
+            buf.writeBoolean(hasAdvantage);
+        }
+    }
 }
