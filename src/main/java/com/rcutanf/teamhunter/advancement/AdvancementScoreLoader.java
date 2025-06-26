@@ -4,7 +4,6 @@ import net.minecraft.util.Identifier;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AdvancementScoreLoader {
     private final Map<Identifier, Integer> scores = new HashMap<>();

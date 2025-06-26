@@ -1,6 +1,5 @@
 package com.rcutanf.teamhunter.client;
 
-import com.rcutanf.teamhunter.CommandExecutor;
 import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
