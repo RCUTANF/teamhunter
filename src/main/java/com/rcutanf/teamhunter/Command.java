@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -35,6 +36,11 @@ public class Command {
     final static String INVINCIBILITY = "invincibility";
     final static String INVISIBILITY = "invisibility";
     final static String SPEED = "speed";
+    final static String ADD_SCORE = "addscore";
+    final static String REDUCE_SCORE = "reducescore";
+    final static String TEAM = "team";
+    final static String AMOUNT = "amount";
+    final static String REASON = "reason";
 
     private Command() {
     }
@@ -90,7 +96,35 @@ public class Command {
                                 )
                         )
                         .executes(Command::showResurrectionStatus)
-                );
+                )
+                .then(literal(ADD_SCORE)
+                    .then(argument(TEAM, StringArgumentType.word())
+                        .suggests((context, builder) -> {
+                            builder.suggest("hunters");
+                            builder.suggest("runners");
+                            return builder.buildFuture();
+                        })
+                        .then(argument(AMOUNT, IntegerArgumentType.integer(1))
+                            .executes(Command::addScore)
+                        )
+                    )
+                )
+                .then(literal(REDUCE_SCORE)
+                    .then(argument(TEAM, StringArgumentType.word())
+                        .suggests((context, builder) -> {
+                            builder.suggest("hunters");
+                            builder.suggest("runners");
+                            return builder.buildFuture();
+                        })
+                        .then(argument(AMOUNT, IntegerArgumentType.integer(1))
+                            .executes(Command::reduceScore)
+                            .then(argument(REASON, StringArgumentType.greedyString())
+                                .executes(Command::reduceScoreWithReason)
+                            )
+                        )
+                    )
+                )
+                ;
 
         dispatcher.register(cmd);
 
@@ -255,6 +289,94 @@ public class Command {
                 "- 速度: " + (ResurrectionProtection.isSpeedEnabled() ? "开启" : "关闭") + "\n" +
                 "持续时间: 10秒";
         context.getSource().sendFeedback(() -> Text.of(status), false);
+        return SINGLE_SUCCESS;
+    }
+
+    /**
+     * 增加队伍分数
+     */
+    private static int addScore(CommandContext<ServerCommandSource> context) {
+        String teamName = StringArgumentType.getString(context, TEAM);
+        int amount = IntegerArgumentType.getInteger(context, AMOUNT);
+
+        if (!teamName.equals("hunters") && !teamName.equals("runners")) {
+            context.getSource().sendError(Text.of("无效的队伍名称，必须是 hunters 或 runners"));
+            return 0;
+        }
+
+        // 获取当前分数
+        int currentHuntersScore = AdvancementListener.getHuntersScore();
+        int currentRunnersScore = AdvancementListener.getRunnersScore();
+
+        // 计算新分数
+        int huntersAddedScore = 0;
+        int runnersAddedScore = 0;
+        int newHuntersScore = currentHuntersScore;
+        int newRunnersScore = currentRunnersScore;
+
+        if (teamName.equals("hunters")) {
+            newHuntersScore += amount;
+            huntersAddedScore = amount;
+        } else {
+            newRunnersScore += amount;
+            runnersAddedScore = amount;
+        }
+
+        // 发送消息
+        context.getSource().sendFeedback(() -> Text.of("已为 " + teamName + " 队增加 " + amount + " 分"), true);
+
+        // 更新计分板
+        CommandExecutor.executeCommand(context.getSource().getServer(),
+                "scoreboard players set hunters TeamScore " + newHuntersScore);
+        CommandExecutor.executeCommand(context.getSource().getServer(),
+                "scoreboard players set runners TeamScore " + newRunnersScore);
+
+        // 发送分数更新包
+        AdvancementListener.sendTeamScoreUpdate(
+            context.getSource().getWorld(),
+            newHuntersScore,
+            newRunnersScore,
+            huntersAddedScore,
+            runnersAddedScore
+        );
+
+        return SINGLE_SUCCESS;
+    }
+
+    /**
+     * 减少队伍分数
+     */
+    private static int reduceScore(CommandContext<ServerCommandSource> context) {
+        String teamName = StringArgumentType.getString(context, TEAM);
+        int amount = IntegerArgumentType.getInteger(context, AMOUNT);
+
+        if (!teamName.equals("hunters") && !teamName.equals("runners")) {
+            context.getSource().sendError(Text.of("无效的队伍名称，必须是 hunters 或 runners"));
+            return 0;
+        }
+
+        // 调用 AdvancementListener 的减分方法
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), "测试命令");
+
+        return SINGLE_SUCCESS;
+    }
+
+    /**
+     * 减少队伍分数并提供原因
+     */
+    private static int reduceScoreWithReason(CommandContext<ServerCommandSource> context) {
+        String teamName = StringArgumentType.getString(context, TEAM);
+        int amount = IntegerArgumentType.getInteger(context, AMOUNT);
+        String reason = StringArgumentType.getString(context, REASON);
+
+        if (!teamName.equals("hunters") && !teamName.equals("runners")) {
+            context.getSource().sendError(Text.of("无效的队伍名称，必须是 hunters 或 runners"));
+            return 0;
+        }
+
+        // 调用 AdvancementListener 的减分方法
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), reason);
+
         return SINGLE_SUCCESS;
     }
 }
