@@ -4,6 +4,7 @@ import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.CommandExecutor;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -205,11 +206,12 @@ public class AdvancementListener {
 
     // 添加一个新方法发送优势Buff更新包
     private void sendAdvantageBuffUpdate(ServerWorld world, boolean isHunterTeam, boolean hasAdvantage) {
-        // 创建一个新的网络包类型处理优势Buff的更新
+        // 创建一个新的优势Buff数据包
         NetWorking.AdvantageBuffPacket packet =
-            new NetWorking.AdvantageBuffPacket(isHunterTeam, hasAdvantage);
+                new NetWorking.AdvantageBuffPacket(isHunterTeam, hasAdvantage);
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
+        // 使用与其他数据包一致的发送方式
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
         }
     }

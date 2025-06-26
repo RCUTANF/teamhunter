@@ -90,7 +90,7 @@ public class TeamhunterClient implements ClientModInitializer {
         );
         ClientLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
 
-        // 接收团队优势信息
+        // 接收团队优势信息(这个是地狱的包用的)
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamAdvantagePacket.ID, (payload, context) -> {
             teamAdvantage = payload.advantageOrdinal();
 
