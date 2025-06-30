@@ -2,6 +2,8 @@ package com.rcutanf.teamhunter;
 
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import com.rcutanf.teamhunter.loot.TeamhunterLootConditions;
+import com.rcutanf.teamhunter.shop.ShopCommand;
+import com.rcutanf.teamhunter.shop.ShopManager;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -64,6 +66,12 @@ public class Teamhunter implements ModInitializer {
             var phase = phaseManager.Phase();
             ServerPlayNetworking.send(handler.player, phase);
         }));
+
+        // 在其他命令注册之后添加
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            ShopCommand.register(dispatcher);
+        });
+        ShopManager.loadItems();
 
 
     }
