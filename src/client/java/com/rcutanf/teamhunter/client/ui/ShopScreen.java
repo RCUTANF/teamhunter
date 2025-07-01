@@ -10,40 +10,39 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.ColorHelper;
-import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShopScreen extends Screen {
-    private static final int ITEMS_PER_PAGE = 7;
-    private static final int BUTTON_WIDTH = 180;
-    private static final int BUTTON_HEIGHT = 20;
-    private static final int PADDING = 10;
+    // 背景纹理
+    private static final Identifier BACKGROUND = Identifier.of("textures/gui/advancements/backgrounds/stone.png");
+    private static final int ICON_SIZE = 32;
+    private static final int GRID_SPACING = 16;
 
-    private int currentPage = 0;
+    // 滚动相关
+    private double scrollX;
+    private double scrollY;
+    private boolean isDragging;
+    private int lastMouseX;
+    private int lastMouseY;
+
     private List<ShopItem> shopItems = new ArrayList<>();
     private int teamScore = 0;
     private boolean isHunterTeam = false;
 
-    private ButtonWidget nextPageButton;
-    private ButtonWidget prevPageButton;
-
     private static ShopScreen INSTANCE;
-
-    // 商店物品缓存
     private static List<ShopItem> cachedShopItems = null;
+
+    // 悬停的物品索引
+    private int hoveredItemIndex = -1;
 
     public ShopScreen() {
         super(Text.translatable("teamhunter.shop.title"));
     }
 
-    /**
-     * 获取商店界面实例
-     */
     public static ShopScreen getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ShopScreen();
@@ -51,30 +50,19 @@ public class ShopScreen extends Screen {
         return INSTANCE;
     }
 
-    /**
-     * 打开商店界面
-     */
     public static void open() {
         ShopScreen screen = getInstance();
 
-        // 先加载缓存数据（如果有）
         if (cachedShopItems != null && !cachedShopItems.isEmpty()) {
             screen.shopItems = new ArrayList<>(cachedShopItems);
         } else {
-            // 无缓存则加载默认数据
             screen.loadDefaultItems();
         }
 
-        // 请求最新数据
         screen.requestShopItems();
-
-        // 显示界面
         MinecraftClient.getInstance().setScreen(screen);
     }
 
-    /**
-     * 内部类表示商店物品
-     */
     static class ShopItem {
         final String id;
         final int price;
@@ -83,16 +71,11 @@ public class ShopScreen extends Screen {
         ShopItem(String id, int price) {
             this.id = id;
             this.price = price;
-
-            // 从物品ID创建ItemStack
             Item item = Registries.ITEM.get(Identifier.of(id));
             this.stack = new ItemStack(item);
         }
     }
 
-    /**
-     * 加载默认商店物品
-     */
     private void loadDefaultItems() {
         shopItems.add(new ShopItem("minecraft:diamond_sword", 50));
         shopItems.add(new ShopItem("minecraft:diamond_helmet", 40));
@@ -110,7 +93,7 @@ public class ShopScreen extends Screen {
     protected void init() {
         super.init();
 
-        // 确定当前玩家队伍和分数
+        // 设置团队和分数
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null && client.player.getScoreboardTeam() != null) {
             String teamName = client.player.getScoreboardTeam().getName();
@@ -118,71 +101,25 @@ public class ShopScreen extends Screen {
             teamScore = isHunterTeam ? TeamScoreHud.getHuntersScore() : TeamScoreHud.getRunnersScore();
         }
 
-        // 计算屏幕中心
-        int centerX = width / 2;
-        int startY = 50;
-
-        // 添加商店物品按钮
-        int maxPage = (int) Math.ceil(shopItems.size() / (double) ITEMS_PER_PAGE);
-        int startIdx = currentPage * ITEMS_PER_PAGE;
-        int endIdx = Math.min(startIdx + ITEMS_PER_PAGE, shopItems.size());
-
-        for (int i = startIdx; i < endIdx; i++) {
-            ShopItem item = shopItems.get(i);
-            int buttonY = startY + (i - startIdx) * (BUTTON_HEIGHT + 5);
-
-            ButtonWidget button = ButtonWidget.builder(
-                    Text.literal(item.stack.getName().getString() + " - " + item.price + " 分"),
-                    btn -> purchaseItem(item))
-                .dimensions(centerX - BUTTON_WIDTH / 2, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT)
-                .build();
-
-            // 如果积分不足，禁用按钮
-            button.active = teamScore >= item.price;
-
-            this.addDrawableChild(button);
-        }
-
-        // 添加翻页按钮
-        if (maxPage > 1) {
-            prevPageButton = ButtonWidget.builder(
-                    Text.literal("上一页"),
-                    btn -> {
-                        currentPage = Math.max(0, currentPage - 1);
-                        this.clearAndInit();
-                    })
-                .dimensions(centerX - BUTTON_WIDTH / 2, height - 60, 80, BUTTON_HEIGHT)
-                .build();
-
-            nextPageButton = ButtonWidget.builder(
-                    Text.literal("下一页"),
-                    btn -> {
-                        currentPage = Math.min(maxPage - 1, currentPage + 1);
-                        this.clearAndInit();
-                    })
-                .dimensions(centerX + BUTTON_WIDTH / 2 - 80, height - 60, 80, BUTTON_HEIGHT)
-                .build();
-
-            prevPageButton.active = currentPage > 0;
-            nextPageButton.active = currentPage < maxPage - 1;
-
-            this.addDrawableChild(prevPageButton);
-            this.addDrawableChild(nextPageButton);
-        }
-
         // 添加关闭按钮
         this.addDrawableChild(ButtonWidget.builder(
                 Text.literal("关闭"),
                 btn -> this.close())
-            .dimensions(centerX - 40, height - 30, 80, BUTTON_HEIGHT)
+            .dimensions(width / 2 - 40, height - 30, 80, 20)
             .build());
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
+        // 绘制背景
+        //TODO: 存在背景模糊bug
+        renderBackground(context, mouseX, mouseY, delta);
+        renderGridBackground(context);
 
-        // 绘制标题
+        // 绘制物品网格
+        renderItemGrid(context, mouseX, mouseY);
+
+        // 绘制标题和分数
         context.drawCenteredTextWithShadow(
                 this.textRenderer,
                 this.title,
@@ -190,7 +127,6 @@ public class ShopScreen extends Screen {
                 20,
                 0xFFFFFFFF);
 
-        // 绘制团队分数
         String teamText = (isHunterTeam ? "猎人队" : "逃亡者队") + " 分数: " + teamScore;
         context.drawCenteredTextWithShadow(
                 this.textRenderer,
@@ -199,67 +135,179 @@ public class ShopScreen extends Screen {
                 35,
                 isHunterTeam ? 0xFFFF5555 : 0xFF55FFFF);
 
-        // 绘制物品图标
-        int centerX = width / 2;
-        int startY = 50;
-        int startIdx = currentPage * ITEMS_PER_PAGE;
-        int endIdx = Math.min(startIdx + ITEMS_PER_PAGE, shopItems.size());
-
-        for (int i = startIdx; i < endIdx; i++) {
-            ShopItem item = shopItems.get(i);
-            int buttonY = startY + (i - startIdx) * (BUTTON_HEIGHT + 5);
-
-            // 在按钮左侧绘制物品图标
-            context.drawItem(item.stack, centerX - BUTTON_WIDTH / 2 - 20, buttonY + 2);
+        // 渲染悬停提示
+        if (hoveredItemIndex >= 0 && hoveredItemIndex < shopItems.size()) {
+            renderTooltip(context, mouseX, mouseY, shopItems.get(hoveredItemIndex));
         }
 
         super.render(context, mouseX, mouseY, delta);
     }
 
-    /**
-     * 请求商店物品列表
-     */
+    private void renderGridBackground(DrawContext context) {
+        // 绘制类似进度界面的背景纹理
+        int centerX = width / 2;
+        int centerY = height / 2;
+        int size = Math.max(width, height);
+
+        // 使用进度界面的石头背景纹理
+        context.drawTexture(
+                identifier -> RenderLayer.getGuiTextured(identifier),  // 渲染层函数
+                BACKGROUND,                                 // 纹理标识符
+                centerX - size / 2 + (int)scrollX,          // x坐标
+                centerY - size / 2 + (int)scrollY,          // y坐标
+                0,                                          // u纹理坐标
+                0,                                          // v纹理坐标
+                size,                                       // 宽度
+                size,                                       // 高度
+                16,                                         // 纹理宽度
+                16                                          // 纹理高度
+        );
+    }
+
+    private void renderItemGrid(DrawContext context, int mouseX, int mouseY) {
+        hoveredItemIndex = -1;
+
+        // 计算网格开始位置
+        int centerX = width / 2;
+        int centerY = height / 2;
+        int startX = centerX - (ICON_SIZE * 3) / 2;
+        int startY = centerY - (ICON_SIZE * 3) / 2;
+
+        // 每行显示5个物品
+        int itemsPerRow = 5;
+
+        for (int i = 0; i < shopItems.size(); i++) {
+            ShopItem item = shopItems.get(i);
+
+            int row = i / itemsPerRow;
+            int col = i % itemsPerRow;
+
+            int x = startX + col * (ICON_SIZE + GRID_SPACING) + (int)scrollX;
+            int y = startY + row * (ICON_SIZE + GRID_SPACING) + (int)scrollY;
+
+            // 判断是否超出屏幕，如果是则不渲染
+            if (x < -ICON_SIZE || x > width || y < -ICON_SIZE || y > height) {
+                continue;
+            }
+
+            // 绘制背景框
+            int bgColor = teamScore >= item.price ? 0x80FFFFFF : 0x80FF5555;
+            context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, bgColor);
+
+            // 绘制物品
+            context.drawItem(item.stack, x + ICON_SIZE/2 - 8, y + ICON_SIZE/2 - 8);
+
+            // 绘制价格
+            context.drawText(textRenderer, String.valueOf(item.price),
+                    x + ICON_SIZE/2 - textRenderer.getWidth(String.valueOf(item.price))/2,
+                    y + ICON_SIZE - 10, 0xFFFFFF, true);
+
+            // 检查鼠标悬停
+            if (mouseX >= x && mouseX <= x + ICON_SIZE && mouseY >= y && mouseY <= y + ICON_SIZE) {
+                // 高亮选中的物品
+                context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, 0x80FFFFFF);
+                hoveredItemIndex = i;
+            }
+        }
+    }
+
+    private void renderTooltip(DrawContext context, int mouseX, int mouseY, ShopItem item) {
+        List<Text> tooltip = new ArrayList<>();
+        tooltip.add(item.stack.getName());
+        tooltip.add(Text.literal("价格: " + item.price + " 分"));
+
+        if (teamScore < item.price) {
+            tooltip.add(Text.literal("§c积分不足!"));
+        } else {
+            tooltip.add(Text.literal("§a点击购买"));
+        }
+
+        context.drawTooltip(textRenderer, tooltip, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+
+        if (button == 0 && hoveredItemIndex >= 0 && hoveredItemIndex < shopItems.size()) {
+            // 尝试购买物品
+            ShopItem item = shopItems.get(hoveredItemIndex);
+            if (teamScore >= item.price) {
+                purchaseItem(item);
+                return true;
+            }
+        }
+
+        // 开始拖动
+        if (button == 0) {
+            isDragging = true;
+            lastMouseX = (int) mouseX;
+            lastMouseY = (int) mouseY;
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            isDragging = false;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (isDragging) {
+            scrollX += mouseX - lastMouseX;
+            scrollY += mouseY - lastMouseY;
+            lastMouseX = (int) mouseX;
+            lastMouseY = (int) mouseY;
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        // 滚轮滚动
+        scrollY += verticalAmount * 16;
+        return true;
+    }
+
     private void requestShopItems() {
-        // 发送请求商店物品列表的数据包
         ClientPlayNetworking.send(new NetWorking.ShopItemsRequestPacket());
     }
 
-    /**
-     * 设置商店物品列表（由网络回调调用）
-     */
     public void setShopItems(List<ShopItem> items) {
         this.shopItems = items;
-        // 刷新界面
         this.clearAndInit();
     }
 
-    /**
-     * 购买物品
-     */
     private void purchaseItem(ShopItem item) {
-        // 直接发送购买命令
         String itemName = item.id.replace("minecraft:", "");
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            // 使用/shop buy命令进行购买
             client.player.sendMessage(Text.literal("/shop buy " + itemName), false);
-
         }
 
-        // 关闭屏幕
         this.close();
     }
 
-    /**
-     * 更新商店物品并保存到缓存
-     */
     public void updateShopItemsFromData(List<NetWorking.ShopItemData> dataList) {
         List<ShopItem> items = new ArrayList<>();
         for (NetWorking.ShopItemData data : dataList) {
             items.add(new ShopItem(data.id(), data.price()));
         }
-        // 更新缓存
         cachedShopItems = new ArrayList<>(items);
+    }
+
+    @Override
+    public boolean shouldPause() {
+        return false;  // 防止游戏暂停，同时也会禁用背景模糊
     }
 }
