@@ -5,10 +5,14 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NetWorking {
 
     private static final Identifier SYNC_ID = Identifier.of(Teamhunter.MOD_ID, "sync");
     public static final Identifier CHECK_CLIENT_MOD = Identifier.of(Teamhunter.MOD_ID, "sync");
+
 
 
 
@@ -91,6 +95,51 @@ public class NetWorking {
         public void write(PacketByteBuf buf) {
             buf.writeBoolean(isHunterTeam);
             buf.writeBoolean(hasAdvantage);
+        }
+    }
+
+    public record ShopItemsRequestPacket() implements CustomPayload {
+        public static final Identifier SHOP_ITEMS_REQUEST_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_request");
+        public static final Id<ShopItemsRequestPacket> ID = new Id<>(SHOP_ITEMS_REQUEST_ID);
+        public static final PacketCodec<PacketByteBuf, ShopItemsRequestPacket> CODEC = CustomPayload.codecOf(
+                (packet, buf) -> {}, // 无需写入数据，但需要两个参数
+                buf -> new ShopItemsRequestPacket()
+        );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    public record ShopItemData(String id, int price) {}
+
+    public record ShopItemsResponsePacket(List<ShopItemData> items) implements CustomPayload {
+        public static final Identifier SHOP_ITEMS_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_response");
+        public static final Id<ShopItemsResponsePacket> ID = new Id<>(SHOP_ITEMS_RESPONSE_ID);
+        public static final PacketCodec<PacketByteBuf, ShopItemsResponsePacket> CODEC = CustomPayload.codecOf(
+                (packet, buf) -> {
+                    buf.writeInt(packet.items.size());
+                    for (ShopItemData item : packet.items) {
+                        buf.writeString(item.id());
+                        buf.writeInt(item.price());
+                    }
+                },
+                buf -> {
+                    int size = buf.readInt();
+                    List<ShopItemData> items = new ArrayList<>(size);
+                    for (int i = 0; i < size; i++) {
+                        String id = buf.readString();
+                        int price = buf.readInt();
+                        items.add(new ShopItemData(id, price));
+                    }
+                    return new ShopItemsResponsePacket(items);
+                }
+        );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
         }
     }
 }

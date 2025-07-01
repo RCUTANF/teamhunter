@@ -4,9 +4,12 @@ import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
+import com.rcutanf.teamhunter.client.ui.ShopScreen;
 import com.rcutanf.teamhunter.client.ui.TeamScoreHud;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
@@ -15,11 +18,16 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class TeamhunterClient implements ClientModInitializer {
@@ -33,6 +41,8 @@ public class TeamhunterClient implements ClientModInitializer {
     // 上一次的队伍劣势状态
     private static int lastTeamAdvantage = 0;
     public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
+
+    private static KeyBinding shopKeyBinding;
 
     @Override
     public void onInitializeClient() {
@@ -115,6 +125,43 @@ public class TeamhunterClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             checkDimensionAndUpdateBuffs();
         });
+
+        ClientCommands.register();
+
+
+
+        // 注册商店物品列表响应接收器
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsResponsePacket.ID, (payload, context) -> {
+            List<NetWorking.ShopItemData> itemDataList = payload.items();
+
+            // 在游戏主线程中处理UI更新
+            MinecraftClient.getInstance().execute(() -> {
+                // 如果当前屏幕是ShopScreen，则更新它
+                if (MinecraftClient.getInstance().currentScreen instanceof ShopScreen shopScreen) {
+                    shopScreen.updateShopItemsFromData(itemDataList);
+                }
+
+            });
+        });
+
+        // 注册商店键绑定 - 使用T键
+        shopKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.teamhunter.shop", // 翻译键
+                InputUtil.Type.KEYSYM,  // 键盘输入类型
+                GLFW.GLFW_KEY_T,        // T键的GLFW键值
+                "category.teamhunter.keys" // 分类
+        ));
+
+        // 注册按键处理事件
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            // 检查商店键是否被按下
+            if (shopKeyBinding.wasPressed() && client.player != null && client.currentScreen == null) {
+                // 打开商店界面
+                ShopScreen.open();
+            }
+        });
+
+
     }
 
     public static Phase phase = Phase.WAITING;

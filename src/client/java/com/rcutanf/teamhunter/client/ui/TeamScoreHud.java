@@ -411,4 +411,17 @@ public class TeamScoreHud {
             runnersBuffs.removeIf(buff -> buff.getIcon().equals(ADVANTAGE_BUFF_ICON));
         }
     }
+
+    /**
+     * 获取猎人队分数
+     */
+    public static int getHuntersScore() {
+        return huntersScore;
+    }
+    /**
+     * 获取逃亡者队分数
+     */
+    public static int getRunnersScore() {
+        return runnersScore;
+    }
 }

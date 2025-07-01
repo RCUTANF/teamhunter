@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter.shop;
 
 import com.rcutanf.teamhunter.CommandExecutor;
+import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
@@ -24,16 +25,19 @@ public class ShopManager {
         private final String name;       // 物品名称
         private final String command;    // 给予物品的命令
         private final int price;         // 价格(分数)
+        private final String itemId;     // 物品的完整标识符
 
-        public ShopItem(String name, String command, int price) {
+        public ShopItem(String name, String command, int price, String itemId) {
             this.name = name;
             this.command = command;
             this.price = price;
+            this.itemId = itemId;
         }
 
         public String getName() { return name; }
         public String getCommand() { return command; }
         public int getPrice() { return price; }
+        public String getItemId() { return itemId; }
     }
 
     /**
@@ -44,12 +48,11 @@ public class ShopManager {
         List<ShopConfig.ShopItemConfig> configItems = ShopConfig.loadShopItems();
 
         for (ShopConfig.ShopItemConfig item : configItems) {
-            String itemId = item.getName();
+            String itemId = item.getName(); // 这是完整的物品ID，如 minecraft:diamond_sword
             int price = item.getPrice();
-            // 直接用物品ID生成命令
             String command = "give @s " + itemId;
-            // 使用物品ID作为显示名称（可以在显示时做格式化处理）
-            addItem(formatItemName(itemId), command, price);
+            // 使用格式化的名称作为显示名，但保留原始itemId
+            addItem(formatItemName(itemId), command, price, itemId);
         }
 
         System.out.println("已加载 " + shopItems.size() + " 个商店物品");
@@ -79,8 +82,8 @@ public class ShopManager {
     /**
      * 添加商店物品
      */
-    public static void addItem(String name, String command, int price) {
-        shopItems.put(name.toLowerCase(), new ShopItem(name, command, price));
+    public static void addItem(String name, String command, int price, String itemId) {
+        shopItems.put(name.toLowerCase(), new ShopItem(name, command, price, itemId));
     }
 
     /**
@@ -175,5 +178,17 @@ public class ShopManager {
         }
 
         return true;
+    }
+
+    /**
+     * 获取所有商店物品数据用于网络传输
+     * @return 包含所有物品ID和价格的列表
+     */
+    public static List<NetWorking.ShopItemData> getAllItemsForNetwork() {
+        List<NetWorking.ShopItemData> result = new ArrayList<>();
+        for (ShopItem item : getAllItems()) {
+            result.add(new NetWorking.ShopItemData(item.getItemId(), item.getPrice()));
+        }
+        return result;
     }
 }

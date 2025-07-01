@@ -12,8 +12,10 @@ import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class Teamhunter implements ModInitializer {
@@ -30,6 +32,11 @@ public class Teamhunter implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(NetWorking.TeamAdvantagePacket.ID, NetWorking.TeamAdvantagePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.TeamScorePacket.ID, NetWorking.TeamScorePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.AdvantageBuffPacket.ID, NetWorking.AdvantageBuffPacket.CODEC);
+        // 在 Teamhunter.java 的 onInitialize 方法中添加
+        PayloadTypeRegistry.playC2S().register(NetWorking.ShopItemsRequestPacket.ID, NetWorking.ShopItemsRequestPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.ShopItemsResponsePacket.ID, NetWorking.ShopItemsResponsePacket.CODEC);
+
+
 
         CommandRegistrationCallback.EVENT.register(Command::register);
         ServerLifecycleEvents.SERVER_STARTED.register(s -> {
@@ -72,6 +79,17 @@ public class Teamhunter implements ModInitializer {
             ShopCommand.register(dispatcher);
         });
         ShopManager.loadItems();
+
+        // 注册商店物品请求处理器
+        ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsRequestPacket.ID, (packet,context) -> {
+            // 获取商店物品列表
+            List<NetWorking.ShopItemData> shopItems = ShopManager.getAllItemsForNetwork();
+            // 创建响应数据包
+            NetWorking.ShopItemsResponsePacket responsePacket = new NetWorking.ShopItemsResponsePacket(shopItems);
+            // 发送响应到客户端
+            ServerPlayNetworking.send(context.player(), responsePacket);
+        });
+
 
 
     }
