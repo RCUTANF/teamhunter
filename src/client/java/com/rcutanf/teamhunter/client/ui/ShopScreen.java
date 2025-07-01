@@ -112,8 +112,8 @@ public class ShopScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         // 绘制背景
-        //TODO: 存在背景模糊bug
-        renderBackground(context, mouseX, mouseY, delta);
+        //renderBackground(context, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
         renderGridBackground(context);
 
         // 绘制物品网格
@@ -140,7 +140,7 @@ public class ShopScreen extends Screen {
             renderTooltip(context, mouseX, mouseY, shopItems.get(hoveredItemIndex));
         }
 
-        super.render(context, mouseX, mouseY, delta);
+
     }
 
     private void renderGridBackground(DrawContext context) {
