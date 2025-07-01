@@ -148,7 +148,7 @@ public class TeamhunterClient implements ClientModInitializer {
         shopKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.teamhunter.shop", // 翻译键
                 InputUtil.Type.KEYSYM,  // 键盘输入类型
-                GLFW.GLFW_KEY_Z,        // T键的GLFW键值
+                GLFW.GLFW_KEY_O,        // T键的GLFW键值
                 "category.teamhunter.keys" // 分类
         ));
 
