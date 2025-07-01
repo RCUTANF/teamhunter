@@ -101,6 +101,27 @@ public class ShopManager {
     }
 
     /**
+     * 通过物品ID获取商店物品
+     * @param itemId 物品ID，如 "iron_axe" 或 "minecraft:iron_axe"
+     * @return 找到的商店物品，如果不存在则返回null
+     */
+    private static ShopItem getItemById(String itemId) {
+        for (ShopItem item : shopItems.values()) {
+            // 处理以下情况：
+            // 1. 完全匹配
+            // 2. 输入不带minecraft:前缀，但存储的ID带前缀
+            // 3. 输入带minecraft:前缀，但存储的ID不带前缀
+            if (item.getItemId().equalsIgnoreCase(itemId) ||
+                item.getItemId().equalsIgnoreCase("minecraft:" + itemId) ||
+                (itemId.startsWith("minecraft:") &&
+                 item.getItemId().equalsIgnoreCase(itemId.substring("minecraft:".length())))) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 重载商店配置
      */
     public static boolean reloadConfig() {
@@ -111,6 +132,27 @@ public class ShopManager {
             System.err.println("重载商店配置失败: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * 通过物品ID购买物品
+     * @return 是否购买成功
+     */
+    public static boolean purchaseItemById(ServerPlayerEntity player, String itemId) {
+        // 检查比赛是否在进行中
+        if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
+            player.sendMessage(Text.of("§c商店只在比赛阶段可用！"), false);
+            return false;
+        }
+
+        // 获取物品
+        ShopItem item = getItemById(itemId);
+        if (item == null) {
+            player.sendMessage(Text.of("§c找不到ID为 " + itemId + " 的物品！"), false);
+            return false;
+        }
+
+        return processPurchase(player, item);
     }
 
     /**
@@ -131,6 +173,13 @@ public class ShopManager {
             return false;
         }
 
+        return processPurchase(player, item);
+    }
+
+    /**
+     * 处理购买流程
+     */
+    private static boolean processPurchase(ServerPlayerEntity player, ShopItem item) {
         // 获取玩家队伍
         String teamName = player.getScoreboardTeam() != null
                 ? player.getScoreboardTeam().getName() : null;

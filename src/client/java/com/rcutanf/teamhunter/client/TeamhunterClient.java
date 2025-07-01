@@ -155,9 +155,14 @@ public class TeamhunterClient implements ClientModInitializer {
         // 注册按键处理事件
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // 检查商店键是否被按下
-            if (shopKeyBinding.wasPressed() && client.player != null && client.currentScreen == null) {
-                // 打开商店界面
-                ShopScreen.open();
+            if (shopKeyBinding.wasPressed() && client.player != null) {
+                if (client.currentScreen instanceof ShopScreen) {
+                    // 如果当前已经打开商店界面，则关闭它
+                    client.setScreen(null);
+                } else {
+                    // 如果当前没有打开商店界面，则打开它
+                    ShopScreen.open();
+                }
             }
         });
 

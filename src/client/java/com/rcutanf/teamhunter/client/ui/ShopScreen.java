@@ -240,12 +240,15 @@ public class ShopScreen extends Screen {
             }
         }
 
-        // 开始拖动
         if (button == 0) {
-            isDragging = true;
-            lastMouseX = (int) mouseX;
-            lastMouseY = (int) mouseY;
-            return true;
+            // 检查是否在有效的拖动区域内（避开UI元素和物品）
+            boolean inDragArea = hoveredItemIndex < 0 && mouseY > 50 && mouseY < height - 40;
+            if (inDragArea) {
+                isDragging = true;
+                lastMouseX = (int) mouseX;
+                lastMouseY = (int) mouseY;
+                return true;
+            }
         }
 
         return false;
@@ -288,14 +291,13 @@ public class ShopScreen extends Screen {
     }
 
     private void purchaseItem(ShopItem item) {
-        String itemName = item.id.replace("minecraft:", "");
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            client.player.sendMessage(Text.literal("/shop buy " + itemName), false);
+            client.player.networkHandler.sendChatCommand("shop buyid " + item.id);
         }
 
-        this.close();
+        //this.close();
     }
 
     public void updateShopItemsFromData(List<NetWorking.ShopItemData> dataList) {

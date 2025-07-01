@@ -26,6 +26,11 @@ public class ShopCommand {
                         .executes(ShopCommand::buyItem)
                     )
                 )
+                .then(literal("buyid")
+                        .then(argument("itemId", StringArgumentType.word())
+                                .executes(ShopCommand::buyItemById)
+                        )
+                )
                 .then(literal("reload")
                     .requires(source -> source.hasPermissionLevel(2)) // 需要OP权限
                     .executes(ShopCommand::reloadConfig)
@@ -46,6 +51,7 @@ public class ShopCommand {
         player.sendMessage(Text.of("§6===== 团队商店命令 ====="), false);
         player.sendMessage(Text.of("§e/shop list §7- 查看所有可购买物品"), false);
         player.sendMessage(Text.of("§e/shop buy <物品名称> §7- 购买指定物品"), false);
+        player.sendMessage(Text.of("§e/shop buyid <物品ID> §7- 通过物品ID购买物品"), false);
         if (player.hasPermissionLevel(2)) {
             player.sendMessage(Text.of("§e/shop reload §7- 重载商店配置文件"), false);
         }
@@ -99,5 +105,20 @@ public class ShopCommand {
         }
 
         return success ? 1 : 0;
+    }
+
+    private static int buyItemById(CommandContext<ServerCommandSource> context) {
+        ServerPlayerEntity player;
+        try {
+            player = context.getSource().getPlayerOrThrow();
+        } catch (Exception e) {
+            context.getSource().sendError(Text.of("此命令只能由玩家执行"));
+            return 0;
+        }
+
+        String itemId = StringArgumentType.getString(context, "itemId");
+        ShopManager.purchaseItemById(player, itemId);
+
+        return 1;
     }
 }
