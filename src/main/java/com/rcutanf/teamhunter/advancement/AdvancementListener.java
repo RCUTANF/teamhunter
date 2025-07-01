@@ -44,17 +44,6 @@ public class AdvancementListener {
 
         if (!teamName.equals("hunters") && !teamName.equals("runners")) return;
 
-        // 添加队伍分数（不再使用计分板，而是直接更新变量）
-        int huntersAddedScore = 0;
-        int runnersAddedScore = 0;
-
-        if (teamName.equals("hunters")) {
-            huntersScore += score;
-            huntersAddedScore = score;
-        } else {
-            runnersScore += score;
-            runnersAddedScore = score;
-        }
 
         // 调试信息（直接在控制台打印）
         String playerName = player.getName().getString();
@@ -63,12 +52,9 @@ public class AdvancementListener {
                 String.format("say %s 为 %s 队获得成就 %s (+%d分)",
                         playerName, teamName, achievement, score));
 
-
-
-        // 替换原有代码
-        applyTeamAdvantageEffects(server, huntersScore, runnersScore);
-        // 发送分数更新包
-        sendTeamScoreUpdate(player.getServerWorld(), huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
+        // 更新分数
+        addTeamScore(teamName, score, player.getServerWorld(),
+                String.format("%s 获得成就 %s", playerName, achievement));
     }
 
     // 获取当前猎人队伍分数
@@ -94,6 +80,56 @@ public class AdvancementListener {
         for (ServerPlayerEntity player : world.getPlayers()) {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
         }
+    }
+
+    /**
+     * 增加指定队伍的分数
+     * @param teamName 队伍名称 ("hunters" 或 "runners")
+     * @param amount 要增加的分数值
+     * @param world 服务器世界实例，用于发送分数更新包
+     * @param message 可选的消息，解释为什么增加分数
+     * @return 增加后的新分数
+     */
+    public static int addTeamScore(String teamName, int amount, ServerWorld world, String message) {
+        // 验证参数
+        if (amount <= 0) {
+            return teamName.equals("hunters") ? huntersScore : runnersScore;
+        }
+
+        // 增加对应队伍的分数
+        int huntersAddedScore = 0;
+        int runnersAddedScore = 0;
+
+        if (teamName.equals("hunters")) {
+            huntersScore += amount;
+            huntersAddedScore = amount;
+        } else if (teamName.equals("runners")) {
+            runnersScore += amount;
+            runnersAddedScore = amount;
+        } else {
+            // 如果队伍名称无效，返回0
+            return 0;
+        }
+
+        // 更新计分板
+        MinecraftServer server = world.getServer();
+
+
+        // 如果提供了消息，显示加分通知
+        if (message != null && !message.isEmpty()) {
+            CommandExecutor.executeCommand(server,
+                    String.format("say %s 队增加 %d 分: %s",
+                            teamName, amount, message));
+        }
+
+        // 应用队伍优势效果
+        applyTeamAdvantageEffects(server, huntersScore, runnersScore);
+
+        // 发送分数更新包
+        sendTeamScoreUpdate(world, huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
+
+        // 返回当前队伍的新分数
+        return teamName.equals("hunters") ? huntersScore : runnersScore;
     }
 
     /**
@@ -127,12 +163,7 @@ public class AdvancementListener {
 
         // 更新计分板
         MinecraftServer server = world.getServer();
-        CommandExecutor.executeCommand(server,
-                "scoreboard players set hunters TeamScore " + huntersScore
-        );
-        CommandExecutor.executeCommand(server,
-                "scoreboard players set runners TeamScore " + runnersScore
-        );
+
 
         // 如果提供了消息，显示减分通知
         if (message != null && !message.isEmpty()) {
@@ -141,6 +172,9 @@ public class AdvancementListener {
                             teamName, amount, message));
         }
 
+        // 应用队伍优势效果
+        applyTeamAdvantageEffects(server, huntersScore, runnersScore);
+
         // 发送分数更新包，使用负值表示减少的分数
         sendTeamScoreUpdate(world, huntersScore, runnersScore, -huntersReducedScore, -runnersReducedScore);
 
@@ -148,7 +182,7 @@ public class AdvancementListener {
         return teamName.equals("hunters") ? huntersScore : runnersScore;
     }
 
-    private void applyTeamAdvantageEffects(MinecraftServer server, int huntersScore, int runnersScore) {
+    private static void applyTeamAdvantageEffects(MinecraftServer server, int huntersScore, int runnersScore) {
         // 存储上一次的领先状态
 
 
@@ -187,11 +221,6 @@ public class AdvancementListener {
                 huntersHadAdvantage = false;
             }
         } else {
-            // 无领先优势，关闭所有人的指南针追踪功能
-            CommandExecutor.executeCommand(server,
-                    "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
-            CommandExecutor.executeCommand(server,
-                    "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
 
             // 如果之前有队伍有优势，现在取消
             if (huntersHadAdvantage || runnersHadAdvantage) {
@@ -199,16 +228,22 @@ public class AdvancementListener {
                 sendAdvantageBuffUpdate(server.getOverworld(), false, false);
                 huntersHadAdvantage = false;
                 runnersHadAdvantage = false;
+                // 无领先优势，关闭所有人的指南针追踪功能
+                CommandExecutor.executeCommand(server,
+                        "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
+                CommandExecutor.executeCommand(server,
+                        "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
             }
         }
     }
 
     // 添加一个新方法发送优势Buff更新包
-    private void sendAdvantageBuffUpdate(ServerWorld world, boolean isHunterTeam, boolean hasAdvantage) {
+    private static void sendAdvantageBuffUpdate(ServerWorld world, boolean isHunterTeam, boolean hasAdvantage) {
         // 创建一个新的优势Buff数据包
         NetWorking.AdvantageBuffPacket packet =
                 new NetWorking.AdvantageBuffPacket(isHunterTeam, hasAdvantage);
 
+        MinecraftServer server = world.getServer();
         // 使用与其他数据包一致的发送方式
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));

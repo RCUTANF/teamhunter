@@ -304,41 +304,8 @@ public class Command {
             return 0;
         }
 
-        // 获取当前分数
-        int currentHuntersScore = AdvancementListener.getHuntersScore();
-        int currentRunnersScore = AdvancementListener.getRunnersScore();
-
-        // 计算新分数
-        int huntersAddedScore = 0;
-        int runnersAddedScore = 0;
-        int newHuntersScore = currentHuntersScore;
-        int newRunnersScore = currentRunnersScore;
-
-        if (teamName.equals("hunters")) {
-            newHuntersScore += amount;
-            huntersAddedScore = amount;
-        } else {
-            newRunnersScore += amount;
-            runnersAddedScore = amount;
-        }
-
-        // 发送消息
-        context.getSource().sendFeedback(() -> Text.of("已为 " + teamName + " 队增加 " + amount + " 分"), true);
-
-        // 更新计分板
-        CommandExecutor.executeCommand(context.getSource().getServer(),
-                "scoreboard players set hunters TeamScore " + newHuntersScore);
-        CommandExecutor.executeCommand(context.getSource().getServer(),
-                "scoreboard players set runners TeamScore " + newRunnersScore);
-
-        // 发送分数更新包
-        AdvancementListener.sendTeamScoreUpdate(
-            context.getSource().getWorld(),
-            newHuntersScore,
-            newRunnersScore,
-            huntersAddedScore,
-            runnersAddedScore
-        );
+        // 调用 AdvancementListener 的增加分数方法
+        AdvancementListener.addTeamScore(teamName, amount, context.getSource().getWorld(), "管理员加分");
 
         return SINGLE_SUCCESS;
     }
