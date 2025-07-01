@@ -148,13 +148,14 @@ public class TeamhunterClient implements ClientModInitializer {
         shopKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.teamhunter.shop", // 翻译键
                 InputUtil.Type.KEYSYM,  // 键盘输入类型
-                GLFW.GLFW_KEY_T,        // T键的GLFW键值
+                GLFW.GLFW_KEY_Z,        // T键的GLFW键值
                 "category.teamhunter.keys" // 分类
         ));
 
         // 注册按键处理事件
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // 检查商店键是否被按下
+            //TODO:不知道怎么去通过打开的按键关闭商店按钮，可能是screen本身机制的拦截？
             if (shopKeyBinding.wasPressed() && client.player != null) {
                 if (client.currentScreen instanceof ShopScreen) {
                     // 如果当前已经打开商店界面，则关闭它
