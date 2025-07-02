@@ -17,13 +17,18 @@ import java.util.List;
 
 public class ShopConfig {
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+    private static final String CONFIG_FOLDER = "teamhunter";
     private static final String CONFIG_FILENAME = "teamhunter_shop.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static File configFile;
 
     static {
-        configFile = new File(CONFIG_DIR.toFile(), CONFIG_FILENAME);
+        File teamhunterDir = new File(CONFIG_DIR.toFile(), CONFIG_FOLDER);
+        if (!teamhunterDir.exists()) {
+            teamhunterDir.mkdirs();
+        }
+        configFile = new File(teamhunterDir, CONFIG_FILENAME);
     }
 
     public static class ShopItemConfig {
