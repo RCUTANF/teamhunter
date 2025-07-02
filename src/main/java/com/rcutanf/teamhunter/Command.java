@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static net.minecraft.server.command.CommandManager.argument;
@@ -42,6 +43,9 @@ public class Command {
     final static String AMOUNT = "amount";
     final static String REASON = "reason";
     final static String RELOAD_CONFIG = "reloadconfig";
+    final static String GAMEMODE = "gamemode";
+    final static String LIST = "list";
+    final static String SWITCH = "switch";
 
     private Command() {}
 
@@ -127,6 +131,14 @@ public class Command {
                 .then(literal(RELOAD_CONFIG)
                         .requires(source -> source.hasPermissionLevel(4)) // 需要OP权限
                         .executes(Command::reloadConfig)
+                )
+                .then(literal(GAMEMODE)
+                        .requires(source -> source.hasPermissionLevel(2))
+                        .then(literal(LIST)
+                                .executes(Command::listGamemodes))
+                        .then(literal(SWITCH)
+                                .then(argument("gamemode", StringArgumentType.word())
+                                        .executes(Command::switchGamemode)))
                 )
                 ;
 
@@ -362,5 +374,41 @@ public class Command {
         CommandConfig.loadConfig();
         context.getSource().sendFeedback(() -> Text.of("已重新加载命令配置文件"), true);
         return SINGLE_SUCCESS;
+    }
+
+
+
+    /**
+     * 列出所有可用的玩法
+     */
+    private static int listGamemodes(CommandContext<ServerCommandSource> context) {
+        List<String> gamemodes = CommandConfig.getAvailableGamemodes();
+        String currentGamemode = CommandConfig.getCurrentGamemode();
+
+        context.getSource().sendFeedback(() -> Text.of("当前玩法: " + currentGamemode), false);
+        context.getSource().sendFeedback(() -> Text.of("可用玩法列表:"), false);
+
+        for (String gamemode : gamemodes) {
+            Text message = Text.of("- " + gamemode + (gamemode.equals(currentGamemode) ? " (当前)" : ""));
+            context.getSource().sendFeedback(() -> message, false);
+        }
+
+        return SINGLE_SUCCESS;
+    }
+
+    /**
+     * 切换到指定玩法
+     */
+    private static int switchGamemode(CommandContext<ServerCommandSource> context) {
+        String gamemode = StringArgumentType.getString(context, "gamemode");
+        boolean success = CommandConfig.switchGamemode(gamemode);
+
+        if (success) {
+            context.getSource().sendFeedback(() -> Text.of("已切换到玩法: " + gamemode), true);
+        } else {
+            context.getSource().sendError(Text.of("切换玩法失败: " + gamemode));
+        }
+
+        return success ? SINGLE_SUCCESS : 0;
     }
 }
