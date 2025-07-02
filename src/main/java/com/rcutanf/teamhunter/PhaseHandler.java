@@ -49,48 +49,16 @@ public class PhaseHandler {
 
     // WARMUP 阶段逻辑
     public void onWarmupStart() {
-        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* false");
-        //设置牢房
-        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:barrier");
-        CommandExecutor.executeCommand(server, "/fill 9 257 9 -9 260 -9 minecraft:air");
-
-        CommandExecutor.executeCommand(server, "/tp @a 0 257 0");
-        CommandExecutor.executeCommand(server, "/gamemode survival @a[team=runners]");
-        CommandExecutor.executeCommand(server, "/gamemode survival @a[team=hunters]");
-        CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode false");
-
-        CommandExecutor.executeCommand(server, "/clear @a[team=runners]");
-        CommandExecutor.executeCommand(server, "/clear @a[team=hunters]");
-
-        //设置玩家无敌
-        CommandExecutor.executeCommand(server, "/effect give @a[team=runners] minecraft:resistance 1000000 255 true");
-        CommandExecutor.executeCommand(server, "/effect give @a[team=hunters] minecraft:resistance 1000000 255 true");
-        CommandExecutor.executeCommand(server, "/say 赛前热身阶段，请各位玩家充分交流，制定计划，做好准备");
-
-        //计分板
-        CommandExecutor.executeCommand(server, "/scoreboard objectives add Deaths deathCount \"死亡次数\"");
-        CommandExecutor.executeCommand(server, "/scoreboard objectives setdisplay sidebar Deaths");
+        for (String command : CommandConfig.getCommandsForPhase("warmup")) {
+            CommandExecutor.executeCommand(server, command);
+        }
     }
 
     // PREPARE 阶段逻辑
     public void onPrepareStart() {
-        CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn true");
-        CommandExecutor.executeCommand(server, "/kill @a[team=runners]");
-        CommandExecutor.executeCommand(server, "/kill @a[team=hunters]");
-
-        CommandExecutor.executeCommand(server, "/scoreboard players reset @a[team=runners] Deaths");
-        CommandExecutor.executeCommand(server, "/scoreboard players reset @a[team=hunters] Deaths");
-        CommandExecutor.executeCommand(server, "/team modify hunters friendlyFire false");
-        CommandExecutor.executeCommand(server, "/team modify runners friendlyFire false");
-        CommandExecutor.executeCommand(server, "/time set day");
-        CommandExecutor.executeCommand(server, "/say 准备阶段，请及时确认你的伙伴位置");
-
-
-        // 将玩家血量翻倍（从默认20点增加到40点）
-        CommandExecutor.executeCommand(server, "/execute as @a[team=runners] run attribute @s minecraft:max_health base set 40");
-        CommandExecutor.executeCommand(server, "/execute as @a[team=hunters] run attribute @s minecraft:max_health base set 40");
-        // 确保玩家血量被填满
-        CommandExecutor.executeCommand(server, "/effect give @a minecraft:instant_health 1 10 true");
+        for (String command : CommandConfig.getCommandsForPhase("prepare")) {
+            CommandExecutor.executeCommand(server, command);
+        }
 
 
         // 设置世界边界
@@ -115,12 +83,9 @@ public class PhaseHandler {
 
     // MATCH 阶段逻辑
     public void onMatchStart() {
-        CommandExecutor.executeCommand(server, "/say §aGO!");
-        CommandExecutor.executeCommand(server, "/gamerule doImmediateRespawn false");
-        CommandExecutor.executeCommand(server, "/fill 10 256 10 -10 260 -10 minecraft:air");
-
-        // 设置世界边界以每秒1格的速度扩展
-        CommandExecutor.executeCommand(server, "/worldborder add 100000 100000");
+        for (String command : CommandConfig.getCommandsForPhase("match")) {
+            CommandExecutor.executeCommand(server, command);
+        }
 
 
         unFreezeAllPlayers(server);

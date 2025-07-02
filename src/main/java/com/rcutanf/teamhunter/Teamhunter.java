@@ -79,6 +79,7 @@ public class Teamhunter implements ModInitializer {
             ShopCommand.register(dispatcher);
         });
         ShopManager.loadItems();
+        CommandConfig.loadConfig();
 
         // 注册商店物品请求处理器
         ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsRequestPacket.ID, (packet,context) -> {

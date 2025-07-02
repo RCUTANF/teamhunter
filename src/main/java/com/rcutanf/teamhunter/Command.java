@@ -41,9 +41,9 @@ public class Command {
     final static String TEAM = "team";
     final static String AMOUNT = "amount";
     final static String REASON = "reason";
+    final static String RELOAD_CONFIG = "reloadconfig";
 
-    private Command() {
-    }
+    private Command() {}
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
 
@@ -123,6 +123,10 @@ public class Command {
                             )
                         )
                     )
+                )
+                .then(literal(RELOAD_CONFIG)
+                        .requires(source -> source.hasPermissionLevel(4)) // 需要OP权限
+                        .executes(Command::reloadConfig)
                 )
                 ;
 
@@ -344,6 +348,19 @@ public class Command {
         // 调用 AdvancementListener 的减分方法
         AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), reason);
 
+        return SINGLE_SUCCESS;
+    }
+
+
+    /**
+     * 重载阶段执行的命令配置文件
+     *
+     * @param context 命令上下文
+     * @return 执行结果
+     */
+    private static int reloadConfig(CommandContext<ServerCommandSource> context) {
+        CommandConfig.loadConfig();
+        context.getSource().sendFeedback(() -> Text.of("已重新加载命令配置文件"), true);
         return SINGLE_SUCCESS;
     }
 }
