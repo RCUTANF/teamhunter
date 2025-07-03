@@ -112,7 +112,7 @@ public class NetWorking {
         }
     }
 
-    public record ShopItemData(String id, int price) {}
+    public record ShopItemData(String id, String name, int price, String nbt) {}
 
     public record ShopItemsResponsePacket(List<ShopItemData> items) implements CustomPayload {
         public static final Identifier SHOP_ITEMS_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_response");
@@ -122,7 +122,12 @@ public class NetWorking {
                     buf.writeInt(packet.items.size());
                     for (ShopItemData item : packet.items) {
                         buf.writeString(item.id());
+                        buf.writeString(item.name());
                         buf.writeInt(item.price());
+
+                        // 写入 NBT 数据，如果为 null 则写入空字符串
+                        String nbt = item.nbt() != null ? item.nbt() : "";
+                        buf.writeString(nbt);
                     }
                 },
                 buf -> {
@@ -130,8 +135,16 @@ public class NetWorking {
                     List<ShopItemData> items = new ArrayList<>(size);
                     for (int i = 0; i < size; i++) {
                         String id = buf.readString();
+                        String name = buf.readString();
                         int price = buf.readInt();
-                        items.add(new ShopItemData(id, price));
+                        String nbt = buf.readString();
+
+                        // 如果 NBT 字符串为空，设置为 null
+                        if (nbt.isEmpty()) {
+                            nbt = null;
+                        }
+
+                        items.add(new ShopItemData(id, name, price, nbt));
                     }
                     return new ShopItemsResponsePacket(items);
                 }

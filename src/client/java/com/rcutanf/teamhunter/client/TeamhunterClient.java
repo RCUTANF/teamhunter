@@ -109,11 +109,6 @@ public class TeamhunterClient implements ClientModInitializer {
             });
         });
 
-        // 不再需要单独的横条渲染层
-        // HudLayerRegistrationCallback.EVENT.register(r ->
-        //         r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, advantageLayer, TeamhunterClient::drawAdvantageBar)
-        // );
-
         // 添加：注册团队分数 HUD 渲染
         HudLayerRegistrationCallback.EVENT.register(r ->
                 r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, teamScoreLayer, (ctx, tickCounter) -> {
@@ -136,10 +131,8 @@ public class TeamhunterClient implements ClientModInitializer {
 
             // 在游戏主线程中处理UI更新
             MinecraftClient.getInstance().execute(() -> {
-                // 如果当前屏幕是ShopScreen，则更新它
-                if (MinecraftClient.getInstance().currentScreen instanceof ShopScreen shopScreen) {
-                    shopScreen.updateShopItemsFromData(itemDataList);
-                }
+
+                ShopScreen.getInstance().updateShopItemsFromData(itemDataList);
 
             });
         });
@@ -223,11 +216,4 @@ public class TeamhunterClient implements ClientModInitializer {
             TeamScoreHud.removeNetherDebuff(false);
         }
     }
-
-    // 旧方法不再需要，已被buff系统替代
-    /*
-    private static void drawAdvantageBar(DrawContext ctx, RenderTickCounter counter) {
-        // 此方法已不再需要，由Buff系统替代
-    }
-    */
 }

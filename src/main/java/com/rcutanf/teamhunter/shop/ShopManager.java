@@ -26,18 +26,21 @@ public class ShopManager {
         private final String command;    // 给予物品的命令
         private final int price;         // 价格(分数)
         private final String itemId;     // 物品的完整标识符
+        private final String nbt;        // 物品的NBT数据（如果有的话）
 
-        public ShopItem(String name, String command, int price, String itemId) {
+        public ShopItem(String name, String command, int price, String itemId, String nbt) {
             this.name = name;
             this.command = command;
             this.price = price;
             this.itemId = itemId;
+            this.nbt = nbt;
         }
 
         public String getName() { return name; }
         public String getCommand() { return command; }
         public int getPrice() { return price; }
         public String getItemId() { return itemId; }
+        public String getNbt() { return nbt; }
     }
 
     /**
@@ -48,42 +51,23 @@ public class ShopManager {
         List<ShopConfig.ShopItemConfig> configItems = ShopConfig.loadShopItems();
 
         for (ShopConfig.ShopItemConfig item : configItems) {
-            String itemId = item.getName(); // 这是完整的物品ID，如 minecraft:diamond_sword
+            String itemId = item.getId(); // 这是完整的物品ID，如 minecraft:diamond_sword
+            String itemName = item.getName();
             int price = item.getPrice();
             String command = "give @s " + itemId;
+            String nbt = item.getNbt();
             // 使用格式化的名称作为显示名，但保留原始itemId
-            addItem(formatItemName(itemId), command, price, itemId);
+            addItem(itemName, command, price, itemId, nbt);
         }
 
         System.out.println("已加载 " + shopItems.size() + " 个商店物品");
     }
 
     /**
-     * 格式化物品名称显示
-     */
-    private static String formatItemName(String itemId) {
-        // 将物品ID转换为更友好的显示形式
-        // 例如：diamond_sword -> 钻石剑
-        // 这只是简单示例，可以根据需要扩展
-        String displayName = itemId.replace("_", " ");
-        // 首字母大写
-        String[] words = displayName.split(" ");
-        StringBuilder formatted = new StringBuilder();
-        for (String word : words) {
-            if (word.length() > 0) {
-                formatted.append(Character.toUpperCase(word.charAt(0)))
-                        .append(word.substring(1))
-                        .append(" ");
-            }
-        }
-        return formatted.toString().trim();
-    }
-
-    /**
      * 添加商店物品
      */
-    public static void addItem(String name, String command, int price, String itemId) {
-        shopItems.put(name.toLowerCase(), new ShopItem(name, command, price, itemId));
+    public static void addItem(String name, String command, int price, String itemId, String nbt) {
+        shopItems.put(name, new ShopItem(name, command, price, itemId, nbt));
     }
 
     /**
@@ -97,7 +81,7 @@ public class ShopManager {
      * 获取指定物品
      */
     public static ShopItem getItem(String name) {
-        return shopItems.get(name.toLowerCase());
+        return shopItems.get(name);
     }
 
     /**
@@ -209,17 +193,26 @@ public class ShopManager {
                 player.getName().getString() + " 购买了 " + item.getName()
         );
 
-        // 给予物品
-        String[] commands = item.getCommand().split("\n");
-        for (String cmd : commands) {
-            CommandExecutor.executeCommand(server, "/execute as " + player.getName().getString() + " run " + cmd);
+        // 给予物品（支持NBT数据）
+        //TODO：可以看到不应该多出一个数据结构command，应该是当初混乱了，先这样用着后面再修
+        String playerName = player.getName().getString();
+        if (item.getNbt() != null && !item.getNbt().isEmpty()) {
+            // 如果有NBT数据，创建包含NBT的give命令
+            String giveCommand = "/give " + playerName + " " + item.getItemId() + item.getNbt();
+            CommandExecutor.executeCommand(server, giveCommand);
+        } else {
+            // 如果没有NBT数据，使用原有命令逻辑
+            String[] commands = item.getCommand().split("\n");
+            for (String cmd : commands) {
+                CommandExecutor.executeCommand(server, "/execute as " + playerName + " run " + cmd);
+            }
         }
 
         // 发送成功消息
         player.sendMessage(Text.of("§a成功购买 " + item.getName() + "，扣除 " + item.getPrice() + " 分！"), false);
 
         // 通知团队
-        String teamMessage = "§e" + player.getName().getString() + " 购买了 " + item.getName() + "，消耗团队 " + item.getPrice() + " 分！";
+        String teamMessage = "§e" + playerName + " 购买了 " + item.getName() + "，消耗团队 " + item.getPrice() + " 分！";
         for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
             if (p.getScoreboardTeam() != null && p.getScoreboardTeam().getName().equals(teamName) && p != player) {
                 p.sendMessage(Text.of(teamMessage), false);
@@ -231,12 +224,17 @@ public class ShopManager {
 
     /**
      * 获取所有商店物品数据用于网络传输
-     * @return 包含所有物品ID和价格的列表
+     * @return 包含所有物品完整信息的列表
      */
     public static List<NetWorking.ShopItemData> getAllItemsForNetwork() {
         List<NetWorking.ShopItemData> result = new ArrayList<>();
         for (ShopItem item : getAllItems()) {
-            result.add(new NetWorking.ShopItemData(item.getItemId(), item.getPrice()));
+            result.add(new NetWorking.ShopItemData(
+                item.getItemId(),   // 物品ID
+                item.getName(),     // 物品名称
+                item.getPrice(),    // 物品价格
+                item.getNbt()       // NBT数据
+            ));
         }
         return result;
     }
