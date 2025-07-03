@@ -19,7 +19,12 @@ public enum Phase implements CustomPayload {
     }
 
     Phase(boolean showCountDown) {
-        this(showCountDown, true);
+        String gamemode = CommandConfig.getCurrentGamemode();
+        switch (gamemode) {
+            case "as" -> this.showPhaseName = true;
+            default -> this.showPhaseName = showCountDown;
+        }
+        this.showCountDown = showCountDown;
     }
 
     public final boolean showCountDown;

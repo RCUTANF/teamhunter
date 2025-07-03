@@ -37,7 +37,7 @@ dependencies {
     mappings("net.fabricmc:yarn:$yarn_mappings:v2")
     modImplementation("net.fabricmc:fabric-loader:$loader_version")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
-
+    include("org.yaml:snakeyaml:2.0")
     implementation("org.yaml:snakeyaml:2.0")
 }
 

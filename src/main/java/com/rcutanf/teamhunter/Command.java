@@ -53,7 +53,7 @@ public class Command {
 
         var cmd = literal(BASE_COMMAND)
                 .then(literal(START)
-                        .then(argument(MINUTES, IntegerArgumentType.integer(0))
+                        .then(argument(SECONDS, IntegerArgumentType.integer(0))
                                 .executes(Command::start)
                         )
                 ).then(literal(CANCEL)
@@ -148,16 +148,29 @@ public class Command {
 
     /**
      * 开始比赛
+     * 此处定义了阶段执行顺序及其倒计时
      *
      * @param context
      * @return
      */
     private static int start(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
-        var minutes = IntegerArgumentType.getInteger(context, MINUTES);
-        Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofMinutes(minutes))
-                .then(Phase.PREPARE, Duration.ofSeconds(10))
-                .then(Phase.MATCH);
+        var seconds = IntegerArgumentType.getInteger(context, SECONDS);
+        if(CommandConfig.getCurrentGamemode().equals("ct")) {
+            Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
+                    .then(Phase.PREPARE, Duration.ofSeconds(10))
+                    .then(Phase.MATCH);
+        } else if(CommandConfig.getCurrentGamemode().equals("as")){
+            Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
+                    .then(Phase.PREPARE, Duration.ofSeconds(10))
+                    .then(Phase.MATCH, Duration.ofMinutes(40))
+                    .then(Phase.END);
+        }
+        else {
+            Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
+                    .then(Phase.PREPARE, Duration.ofSeconds(10))
+                    .then(Phase.MATCH);
+        }
         return SINGLE_SUCCESS;
     }
 

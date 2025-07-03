@@ -161,7 +161,8 @@ public class TeamScoreHud {
      */
     public static void render(DrawContext context) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || TeamhunterClient.phase != Phase.MATCH) return;
+        if ((client.player == null) ||
+                PhaseCountdownHud.getPhase() != Phase.MATCH && PhaseCountdownHud.getPhase() != Phase.END ) return;
 
         int width = context.getScaledWindowWidth();
         int centerX = width / 2;

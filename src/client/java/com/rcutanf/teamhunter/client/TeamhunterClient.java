@@ -4,6 +4,7 @@ import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
+import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
 import com.rcutanf.teamhunter.client.ui.TeamScoreHud;
 import io.netty.buffer.Unpooled;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+
 public class TeamhunterClient implements ClientModInitializer {
 
     private static final Identifier countDownLayer = Identifier.of(Teamhunter.MOD_ID, "count-down");
@@ -49,7 +51,7 @@ public class TeamhunterClient implements ClientModInitializer {
 
         PayloadTypeRegistry.playC2S().register(NetWorking.TeamScorePacket.ID, NetWorking.TeamScorePacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(Phase.ID, (payload, context) -> {
-            phase = payload;
+            PhaseCountdownHud.setPhase(payload); // 更新到新类
             // 阶段变化时清空所有buff
             if (payload != Phase.MATCH) {
                 TeamScoreHud.clearAllBuffs();
@@ -57,8 +59,9 @@ public class TeamhunterClient implements ClientModInitializer {
         });
 
         ClientPlayNetworking.registerGlobalReceiver(CounterSyncPacket.ID, (payload, context) -> {
-            countDown = Duration.ofMillis(payload.countDownMilliseconds());
+            PhaseCountdownHud.setCountDown(Duration.ofMillis(payload.countDownMilliseconds())); // 更新到新类
         });
+
 
         // 注册网络监听器
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamScorePacket.ID, (payload, context) -> {
@@ -95,7 +98,7 @@ public class TeamhunterClient implements ClientModInitializer {
         });
 
         HudLayerRegistrationCallback.EVENT.register(r ->
-                r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, TeamhunterClient::draw)
+                r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, countDownLayer, PhaseCountdownHud::draw) // 使用新类的方法
         );
         ClientLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD, (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
 
@@ -170,29 +173,11 @@ public class TeamhunterClient implements ClientModInitializer {
 
     }
 
-    public static Phase phase = Phase.WAITING;
-    public static Duration countDown = Duration.ZERO;
-
-    public static boolean shouldShowCountDown() {
-        return phase.showCountDown;
-    }
-
-    private static void draw(DrawContext ctx, RenderTickCounter counter) {
-        if (!shouldShowCountDown()) return;
-        var textRenderer = MinecraftClient.getInstance().textRenderer;
-        var windowWidth = ctx.getScaledWindowWidth();
-        var textHeight = textRenderer.fontHeight;
-
-        var text = String.valueOf(countDown.toSeconds());
-
-        ctx.drawCenteredTextWithShadow(textRenderer, phase.name(), windowWidth / 2, 10, 0xFFFFFFFF);
-        ctx.drawCenteredTextWithShadow(textRenderer, text, windowWidth / 2, 10 + textHeight + 4, 0xFFFFFFFF);
-    }
 
     // 检测玩家维度并更新Buff
     private static void checkDimensionAndUpdateBuffs() {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || phase != Phase.MATCH) return;
+        if (client.player == null || PhaseCountdownHud.getPhase() != Phase.MATCH) return;
 
         boolean isInNether = client.player.getWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether");
 
