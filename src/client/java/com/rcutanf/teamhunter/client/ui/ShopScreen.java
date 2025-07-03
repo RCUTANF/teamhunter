@@ -7,6 +7,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -73,28 +75,51 @@ public class ShopScreen extends Screen {
 
     static class ShopItem {
         final String id;
+        final String name;
         final int price;
+        final String nbt;
         final ItemStack stack;
 
-        ShopItem(String id, int price) {
+        ShopItem(String id, String name, int price, String nbt) {
             this.id = id;
+            this.name = name;
             this.price = price;
+            this.nbt = nbt;
+
+            // 创建物品并应用NBT数据
             Item item = Registries.ITEM.get(Identifier.of(id));
-            this.stack = new ItemStack(item);
+            ItemStack itemStack = new ItemStack(item);
+
+            // 如果有NBT数据，则应用
+            if (nbt != null && !nbt.isEmpty()) {
+                try {
+                    NbtCompound nbtData = StringNbtReader.parse(nbt);
+                    itemStack.setTag(nbtData); // 使用setTag而不是setNbt
+                } catch (Exception e) {
+                    System.out.println("解析NBT数据错误: " + e.getMessage());
+                }
+            }
+
+            // 如果有自定义名称，则应用
+            if (name != null && !name.isEmpty()) {
+                itemStack.setCustomName(Text.literal(name));
+            }
+
+            this.stack = itemStack;
         }
     }
 
     private void loadDefaultItems() {
-        shopItems.add(new ShopItem("minecraft:diamond_sword", 50));
-        shopItems.add(new ShopItem("minecraft:diamond_helmet", 40));
-        shopItems.add(new ShopItem("minecraft:diamond_chestplate", 50));
-        shopItems.add(new ShopItem("minecraft:diamond_leggings", 45));
-        shopItems.add(new ShopItem("minecraft:diamond_boots", 35));
-        shopItems.add(new ShopItem("minecraft:enchanted_golden_apple", 100));
-        shopItems.add(new ShopItem("minecraft:ender_pearl", 40));
-        shopItems.add(new ShopItem("minecraft:arrow", 25));
-        shopItems.add(new ShopItem("minecraft:golden_carrot", 20));
-        shopItems.add(new ShopItem("minecraft:iron_axe", 45));
+        shopItems.add(new ShopItem("minecraft:diamond_sword", "钻石剑", 50, null));
+        shopItems.add(new ShopItem("minecraft:diamond_helmet", "钻石头盔", 40, null));
+        shopItems.add(new ShopItem("minecraft:diamond_chestplate", "钻石胸甲", 50, null));
+        shopItems.add(new ShopItem("minecraft:diamond_leggings", "钻石护腿", 45, null));
+        shopItems.add(new ShopItem("minecraft:diamond_boots", "钻石靴子", 35, null));
+        shopItems.add(new ShopItem("minecraft:enchanted_golden_apple", "附魔金苹果", 100, null));
+        shopItems.add(new ShopItem("minecraft:ender_pearl", "末影珍珠", 40, null));
+        shopItems.add(new ShopItem("minecraft:arrow", "箭", 25, null));
+        shopItems.add(new ShopItem("minecraft:golden_carrot", "金胡萝卜", 20, null));
+        shopItems.add(new ShopItem("minecraft:iron_axe", "铁斧", 45, null));
     }
 
     @Override
@@ -370,9 +395,21 @@ public class ShopScreen extends Screen {
     public void updateShopItemsFromData(List<NetWorking.ShopItemData> dataList) {
         List<ShopItem> items = new ArrayList<>();
         for (NetWorking.ShopItemData data : dataList) {
-            items.add(new ShopItem(data.id(), data.price()));
+            try {
+                items.add(new ShopItem(data.id(), data.name(), data.price(), data.nbt()));
+            } catch (Exception e) {
+                System.out.println("处理商店物品数据错误: " + data.id() + ", 价格: " + data.price() + ", 错误: " + e.getMessage());
+                // 可以在这里添加更详细的日志记录
+            }
         }
         cachedShopItems = new ArrayList<>(items);
+
+        // 检查当前界面是否为ShopScreen，如果是则刷新
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.currentScreen instanceof ShopScreen) {
+            // 更新当前界面的商品列表并刷新
+            ((ShopScreen) client.currentScreen).setShopItems(items);
+        }
     }
 
     @Override
