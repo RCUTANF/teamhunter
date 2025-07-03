@@ -9,9 +9,10 @@ public enum Phase implements CustomPayload {
     WAITING(true, false),
     WARMUP(true),
     PREPARE(true),
-    MATCH(false),
+    MATCH(true),
     PAUSED(false),
     END(false);
+    //TODO:计划干掉枚举改为动态的值控制，不然后面痛苦
 
     Phase(boolean showCountDown, boolean showPhaseName) {
         this.showCountDown = showCountDown;
@@ -19,12 +20,7 @@ public enum Phase implements CustomPayload {
     }
 
     Phase(boolean showCountDown) {
-        String gamemode = CommandConfig.getCurrentGamemode();
-        switch (gamemode) {
-            case "as" -> this.showCountDown = true;
-            default -> this.showCountDown = showCountDown;
-        }
-        this.showPhaseName = true;
+        this(showCountDown, true);
     }
 
     public final boolean showCountDown;
