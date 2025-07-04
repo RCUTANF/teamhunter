@@ -3,16 +3,17 @@ package com.rcutanf.teamhunter;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import com.rcutanf.teamhunter.loot.TeamhunterLootConditions;
 import com.rcutanf.teamhunter.shop.ShopCommand;
+import com.rcutanf.teamhunter.shop.ShopComponentTypes;
 import com.rcutanf.teamhunter.shop.ShopManager;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -21,9 +22,16 @@ import java.util.concurrent.CompletableFuture;
 public class Teamhunter implements ModInitializer {
 
     public static final String MOD_ID = "teamhunter";
+    public static PhaseCombiner phaseManager;
     private PlayerRespawnHandler playerRespawnHandler;
     private EnvironmentController environmentController;
     private AdvancementListener advancementListener;
+
+    public static void broadcastPacket(MinecraftServer server, CustomPayload payload) {
+        server.getPlayerManager()
+                .getPlayerList()
+                .forEach(player -> ServerPlayNetworking.send(player, payload));
+    }
 
     @Override
     public void onInitialize() {
@@ -35,7 +43,6 @@ public class Teamhunter implements ModInitializer {
         // 在 Teamhunter.java 的 onInitialize 方法中添加
         PayloadTypeRegistry.playC2S().register(NetWorking.ShopItemsRequestPacket.ID, NetWorking.ShopItemsRequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.ShopItemsResponsePacket.ID, NetWorking.ShopItemsResponsePacket.CODEC);
-
 
 
         CommandRegistrationCallback.EVENT.register(Command::register);
@@ -78,31 +85,22 @@ public class Teamhunter implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             ShopCommand.register(dispatcher);
         });
-        ShopManager.loadItems();
         CommandConfig.loadConfig();
 
         // 注册商店物品请求处理器
-        ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsRequestPacket.ID, (packet,context) -> {
+        ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsRequestPacket.ID, (packet, context) -> {
             // 获取商店物品列表
-            List<NetWorking.ShopItemData> shopItems = ShopManager.getAllItemsForNetwork();
+            List<ItemStack> shopItems = ShopManager.getAllItems(context.player());
             // 创建响应数据包
             NetWorking.ShopItemsResponsePacket responsePacket = new NetWorking.ShopItemsResponsePacket(shopItems);
             // 发送响应到客户端
             ServerPlayNetworking.send(context.player(), responsePacket);
         });
 
+        new ShopComponentTypes();
 
 
     }
-
-
-    public static void broadcastPacket(MinecraftServer server, CustomPayload payload) {
-        server.getPlayerManager()
-                .getPlayerList()
-                .forEach(player -> ServerPlayNetworking.send(player, payload));
-    }
-
-    public static PhaseCombiner phaseManager;
 
 
 }
