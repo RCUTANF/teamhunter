@@ -3,6 +3,9 @@ package com.rcutanf.teamhunter.shop;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextParameters;
@@ -17,6 +20,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.context.ContextType;
 
 import java.util.List;
+
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.ID;
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.PRICE;
 
 public class ShopManager {
     public static final ContextType SHOP_CONTEXT = new ContextType.Builder().allow(LootContextParameters.THIS_ENTITY).build();
@@ -72,40 +78,64 @@ public class ShopManager {
      * 处理购买流程
      */
     private static boolean processPurchase(ServerPlayerEntity player, ItemStack item) {
-        // 获取玩家队伍
+        // 获取并校验玩家队伍
         String teamName = player.getScoreboardTeam() != null ? player.getScoreboardTeam().getName() : null;
-
         if (teamName == null || (!teamName.equals("hunters") && !teamName.equals("runners"))) {
             player.sendMessage(Text.of("§c你不属于任何可用团队！"), false);
             return false;
         }
 
-        // 检查团队分数是否足够
-        int teamScore = teamName.equals("hunters") ? AdvancementListener.getHuntersScore() : AdvancementListener.getRunnersScore();
+        // 单价
+        var unitPrice = item.get(PRICE);
+        if (unitPrice == null || unitPrice <= 0) return false;
 
-        var price = item.get(ShopComponentTypes.PRICE);
-        if (teamScore < price) {
-            player.sendMessage(Text.of("§c团队分数不足！需要 " + price + " 分，当前只有 " + teamScore + " 分"), false);
-            return false;
+        // 构造可插入物品（移除自定义组件）
+        ItemStack buyItem = item.copy();
+        buyItem.remove(PRICE);
+        buyItem.remove(ID);
+
+        // 准备变量
+        long inserted;
+        long cost;
+
+        // 向背包插入物品并保持事务开启
+        try (var tx = Transaction.openOuter()) {
+            inserted = PlayerInventoryStorage.of(player).offer(ItemVariant.of(buyItem), item.getCount(), tx);
+            if (inserted == 0) {
+                player.sendMessage(Text.of("§c背包空间不足或交易失败！"), false);
+                return false;            // 自动回滚
+            }
+
+            cost = (long) unitPrice * inserted;
+
+            // 检查团队分数
+            int teamScore = teamName.equals("hunters") ? AdvancementListener.getHuntersScore()
+                                                       : AdvancementListener.getRunnersScore();
+            if (teamScore < cost) {
+                player.sendMessage(Text.of("§c团队分数不足！需要 " + cost + " 分，当前只有 " + teamScore + " 分"), false);
+                return false;            // 自动回滚
+            }
+
+            // 扣除团队分数（非物品事务，但必须先成功）
+            ServerWorld world = player.getServerWorld();
+            AdvancementListener.reduceTeamScore(teamName, (int) cost, world,
+                    player.getName().getString() + " 购买了 " + item.getName() + " ×" + inserted);
+
+            // 分数扣除成功后提交物品事务
+            tx.commit();
         }
 
-        // 扣除团队分数
-        MinecraftServer server = player.getServer();
-        ServerWorld world = player.getServerWorld();
-        int newScore = AdvancementListener.reduceTeamScore(teamName, price, world, player.getName().getString() + " 购买了 " + item.getName());
+        // 至此物品和分数均已生效
+        // 成功提示
+        player.sendMessage(Text.of("§a成功购买 " + item.getName() + " ×" + inserted + "，扣除 " + cost + " 分！"), false);
 
-        // 给予物品（支持NBT数据）
-        //TODO：可以看到不应该多出一个数据结构command，应该是当初混乱了，先这样用着后面再修
+        // 通知团队其他成员
         String playerName = player.getName().getString();
-
-
-        // 发送成功消息
-        player.sendMessage(Text.of("§a成功购买 " + item.getName() + "，扣除 " + price + " 分！"), false);
-
-        // 通知团队
-        String teamMessage = "§e" + playerName + " 购买了 " + item.getName() + "，消耗团队 " + price + " 分！";
+        String teamMessage = "§e" + playerName + " 购买了 " + item.getName() + " ×" + inserted + "，消耗团队 " + cost + " 分！";
+        MinecraftServer server = player.getServer();
         for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
-            if (p.getScoreboardTeam() != null && p.getScoreboardTeam().getName().equals(teamName) && p != player) {
+            if (p != player && p.getScoreboardTeam() != null
+                    && p.getScoreboardTeam().getName().equals(teamName)) {
                 p.sendMessage(Text.of(teamMessage), false);
             }
         }
