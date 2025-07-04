@@ -163,7 +163,7 @@ public class Command {
         } else if(CommandConfig.getCurrentGamemode().equals("as")){
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
                     .then(Phase.PREPARE, Duration.ofSeconds(10))
-                    .then(Phase.MATCH, Duration.ofMinutes(40))
+                    .then(Phase.MATCH, Duration.ofMinutes(CommandConfig.getCurrentMatchDuration()))
                     .then(Phase.END);
         }
         else {

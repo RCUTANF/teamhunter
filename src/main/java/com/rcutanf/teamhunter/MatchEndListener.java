@@ -43,7 +43,16 @@ public class MatchEndListener {
         });
     }
 
-    // 从计分板获取队伍死亡总数
+
+    /**
+     * 辅助方法，从计分板获取指定队伍所有成员的死亡总数
+     * 该方法会遍历指定队伍的所有玩家，并从计分板的"Deaths"目标中
+     * 获取每个玩家的死亡分数，然后累加得到队伍总死亡次数。
+     *
+     * @param server 游戏服务器实例
+     * @param teamName 队伍名称（如"hunters"或"runners"）
+     * @return 指定队伍的总死亡次数；如果计分板中没有"Deaths"目标则返回0
+     */
     private int calculateTeamDeaths(MinecraftServer server, String teamName) {
         int deaths = 0;
         Scoreboard scoreboard = server.getScoreboard();
@@ -59,7 +68,16 @@ public class MatchEndListener {
         return deaths;
     }
 
-    // 检查死亡次数并在达到上限时结束比赛
+
+    /**
+     * 检查团队死亡次数并在达到上限时结束比赛
+     * 该方法计算"hunters"和"runners"队伍的总死亡次数，并更新计分板显示。
+     * 如果任一队伍的死亡次数达到或超过上限（队伍最大人数 * 5 + 1），则结束比赛。
+     * 计分板显示格式为"死亡次数 §c[猎人死亡数]§f:§a[逃亡者死亡数]"，其中猎人队以红色显示，
+     * 逃亡者队以绿色显示。
+     *
+     * @param server Minecraft服务器实例，用于获取计分板和执行命令
+     */
     private void checkDeathsAndEndMatch(MinecraftServer server) {
         // 计算当前队伍死亡总数
         int hunterDeaths = calculateTeamDeaths(server, "hunters");

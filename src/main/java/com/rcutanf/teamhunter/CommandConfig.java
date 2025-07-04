@@ -14,10 +14,12 @@ public class CommandConfig {
     private static final String CONFIG_DIR = "config/teamhunter";
     private static final String COMMANDS_FILE_PREFIX = "commands_";
     private static final String COMMANDS_FILE_SUFFIX = ".yaml";
-    private static final String CURRENT_GAMEMODE_FILE = "current_gamemode.yaml";
-    private static final String DEFAULT_GAMEMODE = "default";
+    private static final String CONFIG_FILE = "teamhunter.yaml";
+    private static final String DEFAULT_GAMEMODE = "cs";
 
     private static String currentGamemode = DEFAULT_GAMEMODE;
+    private static final int DEFAULT_MATCH_DURATION = 40; // 默认比赛时长40分钟
+    private static Map<String, Map<String, Object>> gamemodeConfigs = new HashMap<>();
     private static Map<String, List<String>> phaseCommands = new HashMap<>();
 
     public static void loadConfig() {
@@ -29,7 +31,7 @@ public class CommandConfig {
             }
 
             // 加载当前玩法设置
-            loadCurrentGamemode();
+            loadMainConfig();
 
             // 配置文件完整路径
             Path configFilePath = getCommandsFilePath(currentGamemode);
@@ -49,46 +51,158 @@ public class CommandConfig {
         }
     }
 
-    private static void loadCurrentGamemode() {
-        Path gamemodeFilePath = Paths.get(CONFIG_DIR, CURRENT_GAMEMODE_FILE);
+    private static void loadMainConfig() {
+        Path configFilePath = Paths.get(CONFIG_DIR, CONFIG_FILE);
 
-        if (!Files.exists(gamemodeFilePath)) {
-            saveCurrentGamemode(DEFAULT_GAMEMODE);
+        if (!Files.exists(configFilePath)) {
+            saveMainConfig(DEFAULT_GAMEMODE);
             currentGamemode = DEFAULT_GAMEMODE;
             return;
         }
 
         try {
             Yaml yaml = new Yaml();
-            try (InputStream inputStream = new FileInputStream(gamemodeFilePath.toFile())) {
+            try (InputStream inputStream = new FileInputStream(configFilePath.toFile())) {
                 Map<String, Object> config = yaml.load(inputStream);
+                if (config == null) {
+                    config = new HashMap<>();
+                }
+
+                // 加载当前玩法
                 currentGamemode = (String) config.get("current_gamemode");
                 if (currentGamemode == null) {
                     currentGamemode = DEFAULT_GAMEMODE;
-                    saveCurrentGamemode(DEFAULT_GAMEMODE);
+                    saveMainConfig(DEFAULT_GAMEMODE);
+                }
+
+                // 加载玩法配置
+                Map<String, Object> gamemodes = (Map<String, Object>) config.get("gamemodes");
+                if (gamemodes != null) {
+                    gamemodeConfigs.clear();
+                    for (Map.Entry<String, Object> entry : gamemodes.entrySet()) {
+                        gamemodeConfigs.put(entry.getKey(), (Map<String, Object>) entry.getValue());
+                    }
                 }
             }
         } catch (Exception e) {
-            System.err.println("加载当前玩法配置失败");
+            System.err.println("加载游戏配置失败");
             currentGamemode = DEFAULT_GAMEMODE;
-            saveCurrentGamemode(DEFAULT_GAMEMODE);
+            saveMainConfig(DEFAULT_GAMEMODE);
         }
     }
 
-    public static void saveCurrentGamemode(String gamemode) {
+    public static void saveMainConfig(String gamemode) {
         try {
-            Path gamemodeFilePath = Paths.get(CONFIG_DIR, CURRENT_GAMEMODE_FILE);
-            Map<String, String> config = new HashMap<>();
+            Path configFilePath = Paths.get(CONFIG_DIR, CONFIG_FILE);
+            Map<String, Object> config = new HashMap<>();
+
+            // 如果配置文件已存在，先读取现有配置
+            if (Files.exists(configFilePath)) {
+                try (InputStream inputStream = new FileInputStream(configFilePath.toFile())) {
+                    Yaml yaml = new Yaml();
+                    Map<String, Object> existingConfig = yaml.load(inputStream);
+                    if (existingConfig != null) {
+                        config.putAll(existingConfig);
+                    }
+                } catch (Exception e) {
+                    System.err.println("读取现有配置失败");
+                }
+            }
+
+            // 更新当前玩法设置
             config.put("current_gamemode", gamemode);
 
+            // 确保gamemodes部分存在
+            if (!config.containsKey("gamemodes")) {
+                config.put("gamemodes", new HashMap<String, Object>());
+            }
+
             Yaml yaml = new Yaml();
-            try (FileWriter writer = new FileWriter(gamemodeFilePath.toFile())) {
+            try (FileWriter writer = new FileWriter(configFilePath.toFile())) {
                 yaml.dump(config, writer);
             }
 
             currentGamemode = gamemode;
         } catch (Exception e) {
-            System.err.println("保存当前玩法配置失败");
+            System.err.println("保存游戏配置失败");
+        }
+    }
+
+    // 获取指定玩法的match阶段时长
+    public static int getMatchDuration(String gamemode) {
+        Map<String, Object> gamemodeConfig = gamemodeConfigs.get(gamemode);
+        if (gamemodeConfig != null && gamemodeConfig.containsKey("match_duration")) {
+            Object duration = gamemodeConfig.get("match_duration");
+            if (duration instanceof Integer) {
+                return (Integer) duration;
+            }
+            if (duration instanceof String) {
+                try {
+                    return Integer.parseInt((String) duration);
+                } catch (NumberFormatException e) {
+                    // 忽略转换错误
+                }
+            }
+        }
+        return DEFAULT_MATCH_DURATION;
+    }
+
+    // 获取当前玩法的match阶段时长
+    public static int getCurrentMatchDuration() {
+        return getMatchDuration(currentGamemode);
+    }
+
+    // 设置指定玩法的match阶段时长
+    public static void setMatchDuration(String gamemode, int minutes) {
+        try {
+            Path configFilePath = Paths.get(CONFIG_DIR, CONFIG_FILE);
+            Map<String, Object> config = new HashMap<>();
+
+            // 读取现有配置
+            if (Files.exists(configFilePath)) {
+                try (InputStream inputStream = new FileInputStream(configFilePath.toFile())) {
+                    Yaml yaml = new Yaml();
+                    Map<String, Object> existingConfig = yaml.load(inputStream);
+                    if (existingConfig != null) {
+                        config.putAll(existingConfig);
+                    }
+                }
+            }
+
+            // 确保gamemodes部分存在
+            Map<String, Object> gamemodes;
+            if (!config.containsKey("gamemodes")) {
+                gamemodes = new HashMap<>();
+                config.put("gamemodes", gamemodes);
+            } else {
+                gamemodes = (Map<String, Object>) config.get("gamemodes");
+            }
+
+            // 确保指定玩法的配置存在
+            Map<String, Object> gamemodeConfig;
+            if (!gamemodes.containsKey(gamemode)) {
+                gamemodeConfig = new HashMap<>();
+                gamemodes.put(gamemode, gamemodeConfig);
+            } else {
+                gamemodeConfig = (Map<String, Object>) gamemodes.get(gamemode);
+            }
+
+            // 设置match时长
+            gamemodeConfig.put("match_duration", minutes);
+
+            // 更新内存中的配置
+            if (!gamemodeConfigs.containsKey(gamemode)) {
+                gamemodeConfigs.put(gamemode, new HashMap<>());
+            }
+            gamemodeConfigs.get(gamemode).put("match_duration", minutes);
+
+            // 保存到文件
+            Yaml yaml = new Yaml();
+            try (FileWriter writer = new FileWriter(configFilePath.toFile())) {
+                yaml.dump(config, writer);
+            }
+        } catch (Exception e) {
+            System.err.println("保存玩法时长配置失败: " + e.getMessage());
         }
     }
 
@@ -186,7 +300,7 @@ public class CommandConfig {
             loadCommandsFile(configFilePath);
 
             // 保存当前玩法设置
-            saveCurrentGamemode(gamemode);
+            saveMainConfig(gamemode);
 
             return true;
         } catch (Exception e) {
