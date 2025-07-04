@@ -1,22 +1,20 @@
 package com.rcutanf.teamhunter.client.ui;
 
 import com.rcutanf.teamhunter.NetWorking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.item.Item;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.render.RenderLayer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.PRICE;
 
 public class ShopScreen extends Screen {
     // 背景纹理
@@ -27,25 +25,19 @@ public class ShopScreen extends Screen {
     private static final int WINDOW_HEIGHT = 166;
     private static final int ICON_SIZE = 32;
     private static final int GRID_SPACING = 16;
-
+    private static ShopScreen INSTANCE;
+    public List<ItemStack> shopItems = new ArrayList<>();
     // 窗口位置
     private int guiLeft;
     private int guiTop;
-
     // 滚动相关
     private double scrollX;
     private double scrollY;
     private boolean isDragging;
     private int lastMouseX;
     private int lastMouseY;
-
-    private List<ShopItem> shopItems = new ArrayList<>();
     private int teamScore = 0;
     private boolean isHunterTeam = false;
-
-    private static ShopScreen INSTANCE;
-    private static List<ShopItem> cachedShopItems = null;
-
     // 悬停的物品索引
     private int hoveredItemIndex = -1;
 
@@ -62,64 +54,9 @@ public class ShopScreen extends Screen {
 
     public static void open() {
         ShopScreen screen = getInstance();
+        ClientPlayNetworking.send(NetWorking.ShopItemsRequestPacket.INSTANCE);
 
-        if (cachedShopItems != null && !cachedShopItems.isEmpty()) {
-            screen.shopItems = new ArrayList<>(cachedShopItems);
-        } else {
-            screen.loadDefaultItems();
-        }
-
-        screen.requestShopItems();
         MinecraftClient.getInstance().setScreen(screen);
-    }
-
-    static class ShopItem {
-        final String id;
-        final String name;
-        final int price;
-        final String nbt;
-        final ItemStack stack;
-
-        ShopItem(String id, String name, int price, String nbt) {
-            this.id = id;
-            this.name = name;
-            this.price = price;
-            this.nbt = nbt;
-
-            // 创建物品并应用NBT数据
-            Item item = Registries.ITEM.get(Identifier.of(id));
-            ItemStack itemStack = new ItemStack(item);
-
-            // 如果有NBT数据，则应用
-            if (nbt != null && !nbt.isEmpty()) {
-                try {
-                    NbtCompound nbtData = StringNbtReader.parse(nbt);
-                    itemStack.setTag(nbtData); // 使用setTag而不是setNbt
-                } catch (Exception e) {
-                    System.out.println("解析NBT数据错误: " + e.getMessage());
-                }
-            }
-
-            // 如果有自定义名称，则应用
-            if (name != null && !name.isEmpty()) {
-                itemStack.setCustomName(Text.literal(name));
-            }
-
-            this.stack = itemStack;
-        }
-    }
-
-    private void loadDefaultItems() {
-        shopItems.add(new ShopItem("minecraft:diamond_sword", "钻石剑", 50, null));
-        shopItems.add(new ShopItem("minecraft:diamond_helmet", "钻石头盔", 40, null));
-        shopItems.add(new ShopItem("minecraft:diamond_chestplate", "钻石胸甲", 50, null));
-        shopItems.add(new ShopItem("minecraft:diamond_leggings", "钻石护腿", 45, null));
-        shopItems.add(new ShopItem("minecraft:diamond_boots", "钻石靴子", 35, null));
-        shopItems.add(new ShopItem("minecraft:enchanted_golden_apple", "附魔金苹果", 100, null));
-        shopItems.add(new ShopItem("minecraft:ender_pearl", "末影珍珠", 40, null));
-        shopItems.add(new ShopItem("minecraft:arrow", "箭", 25, null));
-        shopItems.add(new ShopItem("minecraft:golden_carrot", "金胡萝卜", 20, null));
-        shopItems.add(new ShopItem("minecraft:iron_axe", "铁斧", 45, null));
     }
 
     @Override
@@ -224,8 +161,8 @@ public class ShopScreen extends Screen {
         context.drawTexture(
                 identifier -> RenderLayer.getGuiTextured(identifier),  // 渲染层函数
                 BACKGROUND,                                 // 纹理标识符
-                centerX - size / 2 + (int)scrollX,          // x坐标
-                centerY - size / 2 + (int)scrollY,          // y坐标
+                centerX - size / 2 + (int) scrollX,          // x坐标
+                centerY - size / 2 + (int) scrollY,          // y坐标
                 0,                                          // u纹理坐标
                 0,                                          // v纹理坐标
                 size,                                       // 宽度
@@ -257,36 +194,37 @@ public class ShopScreen extends Screen {
         );
 
         for (int i = 0; i < shopItems.size(); i++) {
-            ShopItem item = shopItems.get(i);
+            ItemStack item = shopItems.get(i);
+            var price = item.get(PRICE);
 
             int row = i / itemsPerRow;
             int col = i % itemsPerRow;
 
-            int x = startX + col * (ICON_SIZE + GRID_SPACING) + (int)scrollX;
-            int y = startY + row * (ICON_SIZE + GRID_SPACING) + (int)scrollY;
+            int x = startX + col * (ICON_SIZE + GRID_SPACING) + (int) scrollX;
+            int y = startY + row * (ICON_SIZE + GRID_SPACING) + (int) scrollY;
 
             // 判断是否在可视区域内
             if (x < guiLeft || x > guiLeft + WINDOW_WIDTH - ICON_SIZE ||
-                    y < guiTop + 40 || y > guiTop + WINDOW_HEIGHT - 30) {
+                y < guiTop + 40 || y > guiTop + WINDOW_HEIGHT - 30) {
                 continue;
             }
 
             // 绘制背景框
-            int bgColor = teamScore >= item.price ? 0x80FFFFFF : 0x80FF5555;
+            int bgColor = teamScore >= price ? 0x80FFFFFF : 0x80FF5555;
             context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, bgColor);
 
             // 绘制物品
-            context.drawItem(item.stack, x + ICON_SIZE/2 - 8, y + ICON_SIZE/2 - 8);
+            context.drawItem(item, x + ICON_SIZE / 2 - 8, y + ICON_SIZE / 2 - 8);
 
             // 绘制价格
-            context.drawText(textRenderer, String.valueOf(item.price),
-                    x + ICON_SIZE/2 - textRenderer.getWidth(String.valueOf(item.price))/2,
+            context.drawText(textRenderer, String.valueOf(price),
+                    x + ICON_SIZE / 2 - textRenderer.getWidth(String.valueOf(price)) / 2,
                     y + ICON_SIZE - 10, 0xFFFFFF, true);
 
             // 检查鼠标悬停（需要在窗口内）
             if (mouseX >= x && mouseX <= x + ICON_SIZE && mouseY >= y && mouseY <= y + ICON_SIZE &&
-                    mouseX >= guiLeft && mouseX <= guiLeft + WINDOW_WIDTH &&
-                    mouseY >= guiTop && mouseY <= guiTop + WINDOW_HEIGHT) {
+                mouseX >= guiLeft && mouseX <= guiLeft + WINDOW_WIDTH &&
+                mouseY >= guiTop && mouseY <= guiTop + WINDOW_HEIGHT) {
                 // 高亮选中的物品
                 context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, 0x80FFFFFF);
                 hoveredItemIndex = i;
@@ -296,12 +234,12 @@ public class ShopScreen extends Screen {
         context.disableScissor();// 关闭裁剪区域
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY, ShopItem item) {
+    private void renderTooltip(DrawContext context, int mouseX, int mouseY, ItemStack item) {
         List<Text> tooltip = new ArrayList<>();
-        tooltip.add(item.stack.getName());
-        tooltip.add(Text.literal("价格: " + item.price + " 分"));
+        tooltip.add(item.getName());
+        tooltip.add(Text.literal("价格: " + item.get(PRICE) + " 分"));
 
-        if (teamScore < item.price) {
+        if (teamScore < item.get(PRICE)) {
             tooltip.add(Text.literal("§c积分不足!"));
         } else {
             tooltip.add(Text.literal("§a点击购买"));
@@ -318,23 +256,23 @@ public class ShopScreen extends Screen {
 
         // 确保点击在窗口内
         if (mouseX < guiLeft || mouseX > guiLeft + WINDOW_WIDTH ||
-                mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
+            mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
             return false;
         }
 
         if (button == 0 && hoveredItemIndex >= 0 && hoveredItemIndex < shopItems.size()) {
             // 尝试购买物品
-            ShopItem item = shopItems.get(hoveredItemIndex);
-            if (teamScore >= item.price) {
-                purchaseItem(item);
-                return true;
-            }
+            ItemStack item = shopItems.get(hoveredItemIndex);
+//            if (teamScore >= price) {
+            purchaseItem(item);
+            return true;
+//            }
         }
 
         if (button == 0) {
             // 检查是否在可拖动区域内
             boolean inDragArea = hoveredItemIndex < 0 &&
-                    mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
+                                 mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
             if (inDragArea) {
                 isDragging = true;
                 lastMouseX = (int) mouseX;
@@ -373,43 +311,14 @@ public class ShopScreen extends Screen {
         return true;
     }
 
-    private void requestShopItems() {
-        ClientPlayNetworking.send(new NetWorking.ShopItemsRequestPacket());
-    }
-
-    public void setShopItems(List<ShopItem> items) {
-        this.shopItems = items;
-        this.clearAndInit();
-    }
-
-    private void purchaseItem(ShopItem item) {
+    private void purchaseItem(ItemStack item) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            client.player.networkHandler.sendChatCommand("shop buyid " + item.id);
+            client.player.networkHandler.sendChatCommand("shop buyid ");
         }
 
         //this.close();
-    }
-
-    public void updateShopItemsFromData(List<NetWorking.ShopItemData> dataList) {
-        List<ShopItem> items = new ArrayList<>();
-        for (NetWorking.ShopItemData data : dataList) {
-            try {
-                items.add(new ShopItem(data.id(), data.name(), data.price(), data.nbt()));
-            } catch (Exception e) {
-                System.out.println("处理商店物品数据错误: " + data.id() + ", 价格: " + data.price() + ", 错误: " + e.getMessage());
-                // 可以在这里添加更详细的日志记录
-            }
-        }
-        cachedShopItems = new ArrayList<>(items);
-
-        // 检查当前界面是否为ShopScreen，如果是则刷新
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof ShopScreen) {
-            // 更新当前界面的商品列表并刷新
-            ((ShopScreen) client.currentScreen).setShopItems(items);
-        }
     }
 
     @Override

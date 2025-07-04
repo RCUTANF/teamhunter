@@ -27,8 +27,6 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -39,12 +37,63 @@ public class TeamhunterClient implements ClientModInitializer {
 
     // 移除优势层标识，因为现在使用buff系统
     // private static final Identifier advantageLayer = Identifier.of(Teamhunter.MOD_ID, "team-advantage");
-
+    public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
+    public static Phase phase = Phase.WAITING;
+    public static Duration countDown = Duration.ZERO;
     // 上一次的队伍劣势状态
     private static int lastTeamAdvantage = 0;
-    public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
-
     private static KeyBinding shopKeyBinding;
+
+    public static boolean shouldShowCountDown() {
+        return phase.showCountDown;
+    }
+
+    private static void draw(DrawContext ctx, RenderTickCounter counter) {
+        if (!shouldShowCountDown()) return;
+        var textRenderer = MinecraftClient.getInstance().textRenderer;
+        var windowWidth = ctx.getScaledWindowWidth();
+        var textHeight = textRenderer.fontHeight;
+
+        var text = String.valueOf(countDown.toSeconds());
+
+        ctx.drawCenteredTextWithShadow(textRenderer, phase.name(), windowWidth / 2, 10, 0xFFFFFFFF);
+        ctx.drawCenteredTextWithShadow(textRenderer, text, windowWidth / 2, 10 + textHeight + 4, 0xFFFFFFFF);
+    }
+
+    // 检测玩家维度并更新Buff
+    private static void checkDimensionAndUpdateBuffs() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null || phase != Phase.MATCH) return;
+
+        boolean isInNether = client.player.getWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether");
+
+        // 只在地狱内并且有优势状态时显示Buff
+        if (isInNether && teamAdvantage != 0) {
+            updateNetherDisadvantageBuff();
+        } else if (!isInNether) {
+            // 不在地狱时，清除所有地狱劣势buff
+            TeamScoreHud.removeNetherDebuff(true);
+            TeamScoreHud.removeNetherDebuff(false);
+        }
+    }
+
+    // 更新地狱劣势Buff
+    private static void updateNetherDisadvantageBuff() {
+        // 优势队伍意味着对方是劣势
+        if (teamAdvantage == 1) {
+            // 猎人有优势，逃亡者有地狱劣势
+            TeamScoreHud.removeNetherDebuff(true);
+            TeamScoreHud.addNetherDebuff(false);
+        } else if (teamAdvantage == 2) {
+            // 逃亡者有优势，猎人有地狱劣势
+            TeamScoreHud.removeNetherDebuff(false);
+            TeamScoreHud.addNetherDebuff(true);
+        } else {
+            // 无优势状态，清除所有地狱劣势buff
+            TeamScoreHud.removeNetherDebuff(true);
+            TeamScoreHud.removeNetherDebuff(false);
+        }
+    }
 
     @Override
     public void onInitializeClient() {
@@ -127,15 +176,14 @@ public class TeamhunterClient implements ClientModInitializer {
         ClientCommands.register();
 
 
-
         // 注册商店物品列表响应接收器
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsResponsePacket.ID, (payload, context) -> {
-            List<NetWorking.ShopItemData> itemDataList = payload.items();
+            var itemDataList = payload.items();
 
             // 在游戏主线程中处理UI更新
             MinecraftClient.getInstance().execute(() -> {
 
-                ShopScreen.getInstance().updateShopItemsFromData(itemDataList);
+                ShopScreen.getInstance().shopItems = itemDataList;
 
             });
         });
