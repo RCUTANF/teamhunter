@@ -17,14 +17,15 @@ public class MatchEndListener {
     public MatchEndListener() {
         // 注册末影龙死亡事件监听器
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
-            if (CommandConfig.getCurrentGamemode().equals("ct")) {
+            if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
                 // 检查被杀死的实体是否为末影龙
                 if (killed instanceof EnderDragonEntity) {
                     CommandExecutor.executeCommand(
                             world.getServer(),
                             "/say source:" + entity
                     );
-                    PhaseHandler.matchEnd(world.getServer());
+                    Teamhunter.phaseManager.clear();
+                    Teamhunter.phaseManager.then(Phase.END);
                 }
             }
         });
@@ -36,7 +37,7 @@ public class MatchEndListener {
                 if (server == null) return;
 
                 // 只有在"ct"玩法下才检查死亡次数
-                if (CommandConfig.getCurrentGamemode().equals("ct")) {
+                if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
                     checkDeathsAndEndMatch(server);
                 }
             }
@@ -96,7 +97,8 @@ public class MatchEndListener {
         if (hunterDeaths >= deathsMax || runnerDeaths >= deathsMax) {
             CommandExecutor.executeCommand(server, "/say 死亡上限: " + deathsMax +
                     " (猎人: " + hunterDeaths + ", 逃亡者: " + runnerDeaths + ")");
-            PhaseHandler.matchEnd(server);
+            Teamhunter.phaseManager.clear();
+            Teamhunter.phaseManager.then(Phase.END);
         }
     }
 }

@@ -59,6 +59,7 @@ public final class PhaseCombiner implements AutoCloseable {
                 case WARMUP -> phaseHandler.onWarmupStart();
                 case PREPARE -> phaseHandler.onPrepareStart();
                 case MATCH -> phaseHandler.onMatchStart();
+                case END ->  phaseHandler.onMatchEnd();
             }
         });
     }

@@ -249,7 +249,9 @@ public class CommandConfig {
                "    - \"/say " + gamemode + " 玩法准备阶段开始\"\n" +
                "  match:\n" +
                "    # 这里是比赛阶段的命令\n" +
-               "    - \"/say " + gamemode + " 玩法比赛开始！\"\n";
+               "    - \"/say " + gamemode + " 玩法比赛开始！\"\n" +
+                "  end:\n" +
+                "    - \"/say " + gamemode + " 玩法比赛结束！\"\n";
     }
 
     public static List<String> getCommandsForPhase(String phase) {

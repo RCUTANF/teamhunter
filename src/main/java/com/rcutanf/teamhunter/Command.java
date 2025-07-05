@@ -204,7 +204,14 @@ public class Command {
      * @return
      */
     private static int end(CommandContext<ServerCommandSource> context) {
-        PhaseHandler.matchEnd(context.getSource().getServer());
+        if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
+            context.getSource().sendError(Text.of("当前不是比赛阶段，无法结束比赛"));
+            return 0;
+        }
+        else {
+            Teamhunter.phaseManager.clear();
+            Teamhunter.phaseManager.then(Phase.END);
+        }
         return SINGLE_SUCCESS;
     }
     /**

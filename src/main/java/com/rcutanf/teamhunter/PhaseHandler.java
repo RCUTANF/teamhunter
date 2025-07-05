@@ -74,6 +74,12 @@ public class PhaseHandler {
         unFreezeAllPlayers(server);
     }
 
+    public void onMatchEnd() {
+        for (String command : CommandConfig.getCommandsForPhase("end")) {
+            CommandExecutor.executeCommand(server, command);
+        }
+    }
+
 
     // 共用方法
     public static void freezePlayer(MinecraftServer server, ServerPlayerEntity player){
@@ -150,21 +156,6 @@ public class PhaseHandler {
         }
 
          */
-    }
-
-
-
-    public static void matchEnd(MinecraftServer server) {
-        if (Teamhunter.phaseManager.Phase() == Phase.MATCH) {
-            CommandExecutor.executeCommand(server, "/say §4比赛已结束");
-            CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.trigger.* true");
-            CommandExecutor.executeCommand(server, "/luckperms group default permission set minecraft.command.gamemode true");
-            //取消边界
-            CommandExecutor.executeCommand(server, "/worldborder set 29999984"); // 将世界边界重置为Minecraft的默认值
-
-            Teamhunter.phaseManager.clear();
-            Teamhunter.phaseManager.then(Phase.END);
-        }
     }
 
 }
