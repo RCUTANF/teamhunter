@@ -64,13 +64,6 @@ public class ShopScreen extends Screen {
         super.init();
 
         // 设置团队和分数
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && client.player.getScoreboardTeam() != null) {
-            String teamName = client.player.getScoreboardTeam().getName();
-            isHunterTeam = "hunters".equals(teamName);
-            teamScore = isHunterTeam ? TeamScoreHud.getHuntersScore() : TeamScoreHud.getRunnersScore();
-        }
-
         // 计算窗口位置（居中）
         this.guiLeft = (this.width - WINDOW_WIDTH) / 2;
         this.guiTop = (this.height - WINDOW_HEIGHT) / 2;
@@ -97,6 +90,13 @@ public class ShopScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.player.getScoreboardTeam() != null) {
+            String teamName = client.player.getScoreboardTeam().getName();
+            isHunterTeam = "hunters".equals(teamName);
+            teamScore = isHunterTeam ? TeamScoreHud.getHuntersScore() : TeamScoreHud.getRunnersScore();
+        }
+
         // 绘制背景
         renderBackground(context, mouseX, mouseY, delta);
         //super.render(context, mouseX, mouseY, delta);
@@ -261,12 +261,8 @@ public class ShopScreen extends Screen {
         }
 
         if (button == 0 && hoveredItemIndex >= 0 && hoveredItemIndex < shopItems.size()) {
-            // 尝试购买物品
-            ItemStack item = shopItems.get(hoveredItemIndex);
-//            if (teamScore >= price) {
-            purchaseItem(item);
+            purchaseItem(hoveredItemIndex);
             return true;
-//            }
         }
 
         if (button == 0) {
@@ -311,14 +307,10 @@ public class ShopScreen extends Screen {
         return true;
     }
 
-    private void purchaseItem(ItemStack item) {
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        if (client.player != null) {
-            client.player.networkHandler.sendChatCommand("shop buyid ");
-        }
-
-        //this.close();
+    private void purchaseItem(int index) {
+        ClientPlayNetworking.send(
+                new NetWorking.ShopPurchasePacket(index)
+        );
     }
 
     @Override

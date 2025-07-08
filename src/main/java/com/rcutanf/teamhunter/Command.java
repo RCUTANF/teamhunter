@@ -6,7 +6,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -339,7 +338,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), "测试命令");
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), Text.of("测试命令"));
 
         return SINGLE_SUCCESS;
     }
@@ -358,7 +357,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), reason);
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), Text.of(reason));
 
         return SINGLE_SUCCESS;
     }

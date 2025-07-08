@@ -116,6 +116,19 @@ public class NetWorking {
         }
     }
 
+    public record ShopPurchasePacket(int id) implements CustomPayload {
+        public static final Identifier SHOP_PURCHASE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_purchase");
+        public static final Id<ShopPurchasePacket> ID = new Id<>(SHOP_PURCHASE_ID);
+        public static final PacketCodec<RegistryByteBuf, ShopPurchasePacket> CODEC = PacketCodec.tuple(
+                PacketCodecs.VAR_INT, ShopPurchasePacket::id, ShopPurchasePacket::new
+        );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
 
     public record ShopItemsResponsePacket(List<ItemStack> items) implements CustomPayload {
         public static final Identifier SHOP_ITEMS_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_response");

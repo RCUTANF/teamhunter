@@ -34,7 +34,7 @@ public class ShopManager {
      *
      * @return 是否购买成功
      */
-    public static boolean purchaseItemById(ServerPlayerEntity player, String itemId) {
+    public static boolean purchaseItemByIndex(ServerPlayerEntity player, int index) {
         // 检查比赛是否在进行中
         if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
             player.sendMessage(Text.of("§c商店只在比赛阶段可用！"), false);
@@ -42,9 +42,9 @@ public class ShopManager {
         }
 
         // 获取物品
-        var item = ItemStack.EMPTY;
-        if (item == null) {
-            player.sendMessage(Text.of("§c找不到ID为 " + itemId + " 的物品！"), false);
+        var item = getAllItems(player).get(index);
+        if (item.isEmpty()) {
+            player.sendMessage(Text.of("§c找不到ID为 " + index + " 的物品！"), false);
             return false;
         }
 
@@ -65,7 +65,9 @@ public class ShopManager {
         }
 
         // 获取物品
-        var item = ItemStack.EMPTY;
+        var item = getAllItems(player).stream().filter(i->i.getItemName().getString().equalsIgnoreCase(itemName)||i.getCustomName().getString().equalsIgnoreCase(itemName))
+                .findFirst().orElse(null);
+
         if (item == null) {
             player.sendMessage(Text.of("§c该物品不存在！"), false);
             return false;
@@ -110,7 +112,7 @@ public class ShopManager {
 
             // 检查团队分数
             int teamScore = teamName.equals("hunters") ? AdvancementListener.getHuntersScore()
-                                                       : AdvancementListener.getRunnersScore();
+                    : AdvancementListener.getRunnersScore();
             if (teamScore < cost) {
                 player.sendMessage(Text.of("§c团队分数不足！需要 " + cost + " 分，当前只有 " + teamScore + " 分"), false);
                 return false;            // 自动回滚
@@ -119,7 +121,7 @@ public class ShopManager {
             // 扣除团队分数（非物品事务，但必须先成功）
             ServerWorld world = player.getServerWorld();
             AdvancementListener.reduceTeamScore(teamName, (int) cost, world,
-                    player.getName().getString() + " 购买了 " + item.getName() + " ×" + inserted);
+                    player.getName().copy().append(" 购买了 ").append( item.getName()).append(  " ×" + inserted));
 
             // 分数扣除成功后提交物品事务
             tx.commit();
@@ -127,16 +129,18 @@ public class ShopManager {
 
         // 至此物品和分数均已生效
         // 成功提示
-        player.sendMessage(Text.of("§a成功购买 " + item.getName() + " ×" + inserted + "，扣除 " + cost + " 分！"), false);
+        player.sendMessage(Text.of("§a成功购买 ").copy().append(item.getName()).append(" ×" + inserted + "，扣除 " + cost + " 分！"), false);
 
         // 通知团队其他成员
         String playerName = player.getName().getString();
-        String teamMessage = "§e" + playerName + " 购买了 " + item.getName() + " ×" + inserted + "，消耗团队 " + cost + " 分！";
+        var teamMessage = Text.of("§e" + playerName + " 购买了 ").copy().append(item.getName()).append(" ×" + inserted + "，消耗团队 " + cost + " 分！");
         MinecraftServer server = player.getServer();
-        for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
-            if (p != player && p.getScoreboardTeam() != null
+        if (server != null) {
+            for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+                if (p != player && p.getScoreboardTeam() != null
                     && p.getScoreboardTeam().getName().equals(teamName)) {
-                p.sendMessage(Text.of(teamMessage), false);
+                    p.sendMessage(teamMessage, false);
+                }
             }
         }
 
