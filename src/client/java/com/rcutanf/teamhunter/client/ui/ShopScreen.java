@@ -1,20 +1,20 @@
 package com.rcutanf.teamhunter.client.ui;
 
 import com.rcutanf.teamhunter.NetWorking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.item.Item;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.render.RenderLayer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.PRICE;
 
 public class ShopScreen extends Screen {
     // 背景纹理
@@ -25,25 +25,19 @@ public class ShopScreen extends Screen {
     private static final int WINDOW_HEIGHT = 166;
     private static final int ICON_SIZE = 32;
     private static final int GRID_SPACING = 16;
-
+    private static ShopScreen INSTANCE;
+    public List<ItemStack> shopItems = new ArrayList<>();
     // 窗口位置
     private int guiLeft;
     private int guiTop;
-
     // 滚动相关
     private double scrollX;
     private double scrollY;
     private boolean isDragging;
     private int lastMouseX;
     private int lastMouseY;
-
-    private List<ShopItem> shopItems = new ArrayList<>();
     private int teamScore = 0;
     private boolean isHunterTeam = false;
-
-    private static ShopScreen INSTANCE;
-    private static List<ShopItem> cachedShopItems = null;
-
     // 悬停的物品索引
     private int hoveredItemIndex = -1;
 
@@ -60,41 +54,9 @@ public class ShopScreen extends Screen {
 
     public static void open() {
         ShopScreen screen = getInstance();
+        ClientPlayNetworking.send(NetWorking.ShopItemsRequestPacket.INSTANCE);
 
-        if (cachedShopItems != null && !cachedShopItems.isEmpty()) {
-            screen.shopItems = new ArrayList<>(cachedShopItems);
-        } else {
-            screen.loadDefaultItems();
-        }
-
-        screen.requestShopItems();
         MinecraftClient.getInstance().setScreen(screen);
-    }
-
-    static class ShopItem {
-        final String id;
-        final int price;
-        final ItemStack stack;
-
-        ShopItem(String id, int price) {
-            this.id = id;
-            this.price = price;
-            Item item = Registries.ITEM.get(Identifier.of(id));
-            this.stack = new ItemStack(item);
-        }
-    }
-
-    private void loadDefaultItems() {
-        shopItems.add(new ShopItem("minecraft:diamond_sword", 50));
-        shopItems.add(new ShopItem("minecraft:diamond_helmet", 40));
-        shopItems.add(new ShopItem("minecraft:diamond_chestplate", 50));
-        shopItems.add(new ShopItem("minecraft:diamond_leggings", 45));
-        shopItems.add(new ShopItem("minecraft:diamond_boots", 35));
-        shopItems.add(new ShopItem("minecraft:enchanted_golden_apple", 100));
-        shopItems.add(new ShopItem("minecraft:ender_pearl", 40));
-        shopItems.add(new ShopItem("minecraft:arrow", 25));
-        shopItems.add(new ShopItem("minecraft:golden_carrot", 20));
-        shopItems.add(new ShopItem("minecraft:iron_axe", 45));
     }
 
     @Override
@@ -102,13 +64,6 @@ public class ShopScreen extends Screen {
         super.init();
 
         // 设置团队和分数
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && client.player.getScoreboardTeam() != null) {
-            String teamName = client.player.getScoreboardTeam().getName();
-            isHunterTeam = "hunters".equals(teamName);
-            teamScore = isHunterTeam ? TeamScoreHud.getHuntersScore() : TeamScoreHud.getRunnersScore();
-        }
-
         // 计算窗口位置（居中）
         this.guiLeft = (this.width - WINDOW_WIDTH) / 2;
         this.guiTop = (this.height - WINDOW_HEIGHT) / 2;
@@ -135,6 +90,13 @@ public class ShopScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.player.getScoreboardTeam() != null) {
+            String teamName = client.player.getScoreboardTeam().getName();
+            isHunterTeam = "hunters".equals(teamName);
+            teamScore = isHunterTeam ? TeamScoreHud.getHuntersScore() : TeamScoreHud.getRunnersScore();
+        }
+
         // 绘制背景
         renderBackground(context, mouseX, mouseY, delta);
         //super.render(context, mouseX, mouseY, delta);
@@ -199,8 +161,8 @@ public class ShopScreen extends Screen {
         context.drawTexture(
                 identifier -> RenderLayer.getGuiTextured(identifier),  // 渲染层函数
                 BACKGROUND,                                 // 纹理标识符
-                centerX - size / 2 + (int)scrollX,          // x坐标
-                centerY - size / 2 + (int)scrollY,          // y坐标
+                centerX - size / 2 + (int) scrollX,          // x坐标
+                centerY - size / 2 + (int) scrollY,          // y坐标
                 0,                                          // u纹理坐标
                 0,                                          // v纹理坐标
                 size,                                       // 宽度
@@ -232,36 +194,37 @@ public class ShopScreen extends Screen {
         );
 
         for (int i = 0; i < shopItems.size(); i++) {
-            ShopItem item = shopItems.get(i);
+            ItemStack item = shopItems.get(i);
+            var price = item.get(PRICE);
 
             int row = i / itemsPerRow;
             int col = i % itemsPerRow;
 
-            int x = startX + col * (ICON_SIZE + GRID_SPACING) + (int)scrollX;
-            int y = startY + row * (ICON_SIZE + GRID_SPACING) + (int)scrollY;
+            int x = startX + col * (ICON_SIZE + GRID_SPACING) + (int) scrollX;
+            int y = startY + row * (ICON_SIZE + GRID_SPACING) + (int) scrollY;
 
             // 判断是否在可视区域内
             if (x < guiLeft || x > guiLeft + WINDOW_WIDTH - ICON_SIZE ||
-                    y < guiTop + 40 || y > guiTop + WINDOW_HEIGHT - 30) {
+                y < guiTop + 40 || y > guiTop + WINDOW_HEIGHT - 30) {
                 continue;
             }
 
             // 绘制背景框
-            int bgColor = teamScore >= item.price ? 0x80FFFFFF : 0x80FF5555;
+            int bgColor = teamScore >= price ? 0x80FFFFFF : 0x80FF5555;
             context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, bgColor);
 
             // 绘制物品
-            context.drawItem(item.stack, x + ICON_SIZE/2 - 8, y + ICON_SIZE/2 - 8);
+            context.drawItem(item, x + ICON_SIZE / 2 - 8, y + ICON_SIZE / 2 - 8);
 
             // 绘制价格
-            context.drawText(textRenderer, String.valueOf(item.price),
-                    x + ICON_SIZE/2 - textRenderer.getWidth(String.valueOf(item.price))/2,
+            context.drawText(textRenderer, String.valueOf(price),
+                    x + ICON_SIZE / 2 - textRenderer.getWidth(String.valueOf(price)) / 2,
                     y + ICON_SIZE - 10, 0xFFFFFF, true);
 
             // 检查鼠标悬停（需要在窗口内）
             if (mouseX >= x && mouseX <= x + ICON_SIZE && mouseY >= y && mouseY <= y + ICON_SIZE &&
-                    mouseX >= guiLeft && mouseX <= guiLeft + WINDOW_WIDTH &&
-                    mouseY >= guiTop && mouseY <= guiTop + WINDOW_HEIGHT) {
+                mouseX >= guiLeft && mouseX <= guiLeft + WINDOW_WIDTH &&
+                mouseY >= guiTop && mouseY <= guiTop + WINDOW_HEIGHT) {
                 // 高亮选中的物品
                 context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, 0x80FFFFFF);
                 hoveredItemIndex = i;
@@ -271,12 +234,12 @@ public class ShopScreen extends Screen {
         context.disableScissor();// 关闭裁剪区域
     }
 
-    private void renderTooltip(DrawContext context, int mouseX, int mouseY, ShopItem item) {
+    private void renderTooltip(DrawContext context, int mouseX, int mouseY, ItemStack item) {
         List<Text> tooltip = new ArrayList<>();
-        tooltip.add(item.stack.getName());
-        tooltip.add(Text.literal("价格: " + item.price + " 分"));
+        tooltip.add(item.getName());
+        tooltip.add(Text.literal("价格: " + item.get(PRICE) + " 分"));
 
-        if (teamScore < item.price) {
+        if (teamScore < item.get(PRICE)) {
             tooltip.add(Text.literal("§c积分不足!"));
         } else {
             tooltip.add(Text.literal("§a点击购买"));
@@ -293,23 +256,19 @@ public class ShopScreen extends Screen {
 
         // 确保点击在窗口内
         if (mouseX < guiLeft || mouseX > guiLeft + WINDOW_WIDTH ||
-                mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
+            mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
             return false;
         }
 
         if (button == 0 && hoveredItemIndex >= 0 && hoveredItemIndex < shopItems.size()) {
-            // 尝试购买物品
-            ShopItem item = shopItems.get(hoveredItemIndex);
-            if (teamScore >= item.price) {
-                purchaseItem(item);
-                return true;
-            }
+            purchaseItem(hoveredItemIndex);
+            return true;
         }
 
         if (button == 0) {
             // 检查是否在可拖动区域内
             boolean inDragArea = hoveredItemIndex < 0 &&
-                    mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
+                                 mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
             if (inDragArea) {
                 isDragging = true;
                 lastMouseX = (int) mouseX;
@@ -348,31 +307,10 @@ public class ShopScreen extends Screen {
         return true;
     }
 
-    private void requestShopItems() {
-        ClientPlayNetworking.send(new NetWorking.ShopItemsRequestPacket());
-    }
-
-    public void setShopItems(List<ShopItem> items) {
-        this.shopItems = items;
-        this.clearAndInit();
-    }
-
-    private void purchaseItem(ShopItem item) {
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        if (client.player != null) {
-            client.player.networkHandler.sendChatCommand("shop buyid " + item.id);
-        }
-
-        //this.close();
-    }
-
-    public void updateShopItemsFromData(List<NetWorking.ShopItemData> dataList) {
-        List<ShopItem> items = new ArrayList<>();
-        for (NetWorking.ShopItemData data : dataList) {
-            items.add(new ShopItem(data.id(), data.price()));
-        }
-        cachedShopItems = new ArrayList<>(items);
+    private void purchaseItem(int index) {
+        ClientPlayNetworking.send(
+                new NetWorking.ShopPurchasePacket(index)
+        );
     }
 
     @Override

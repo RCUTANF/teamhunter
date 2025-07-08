@@ -1,144 +1,40 @@
 package com.rcutanf.teamhunter.shop;
 
-import com.rcutanf.teamhunter.CommandExecutor;
-import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootWorldContext;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.context.ContextType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.ID;
+import static com.rcutanf.teamhunter.shop.ShopComponentTypes.PRICE;
 
 public class ShopManager {
-    private static final Map<String, ShopItem> shopItems = new HashMap<>();
+    public static final ContextType SHOP_CONTEXT = new ContextType.Builder().allow(LootContextParameters.THIS_ENTITY).build();
 
-    /**
-     * 商店物品类
-     */
-    public static class ShopItem {
-        private final String name;       // 物品名称
-        private final String command;    // 给予物品的命令
-        private final int price;         // 价格(分数)
-        private final String itemId;     // 物品的完整标识符
-
-        public ShopItem(String name, String command, int price, String itemId) {
-            this.name = name;
-            this.command = command;
-            this.price = price;
-            this.itemId = itemId;
-        }
-
-        public String getName() { return name; }
-        public String getCommand() { return command; }
-        public int getPrice() { return price; }
-        public String getItemId() { return itemId; }
-    }
-
-    /**
-     * 加载商店物品
-     */
-    public static void loadItems() {
-        shopItems.clear();
-        List<ShopConfig.ShopItemConfig> configItems = ShopConfig.loadShopItems();
-
-        for (ShopConfig.ShopItemConfig item : configItems) {
-            String itemId = item.getName(); // 这是完整的物品ID，如 minecraft:diamond_sword
-            int price = item.getPrice();
-            String command = "give @s " + itemId;
-            // 使用格式化的名称作为显示名，但保留原始itemId
-            addItem(formatItemName(itemId), command, price, itemId);
-        }
-
-        System.out.println("已加载 " + shopItems.size() + " 个商店物品");
-    }
-
-    /**
-     * 格式化物品名称显示
-     */
-    private static String formatItemName(String itemId) {
-        // 将物品ID转换为更友好的显示形式
-        // 例如：diamond_sword -> 钻石剑
-        // 这只是简单示例，可以根据需要扩展
-        String displayName = itemId.replace("_", " ");
-        // 首字母大写
-        String[] words = displayName.split(" ");
-        StringBuilder formatted = new StringBuilder();
-        for (String word : words) {
-            if (word.length() > 0) {
-                formatted.append(Character.toUpperCase(word.charAt(0)))
-                        .append(word.substring(1))
-                        .append(" ");
-            }
-        }
-        return formatted.toString().trim();
-    }
-
-    /**
-     * 添加商店物品
-     */
-    public static void addItem(String name, String command, int price, String itemId) {
-        shopItems.put(name.toLowerCase(), new ShopItem(name, command, price, itemId));
-    }
-
-    /**
-     * 获取所有商店物品
-     */
-    public static List<ShopItem> getAllItems() {
-        return new ArrayList<>(shopItems.values());
-    }
-
-    /**
-     * 获取指定物品
-     */
-    public static ShopItem getItem(String name) {
-        return shopItems.get(name.toLowerCase());
-    }
-
-    /**
-     * 通过物品ID获取商店物品
-     * @param itemId 物品ID，如 "iron_axe" 或 "minecraft:iron_axe"
-     * @return 找到的商店物品，如果不存在则返回null
-     */
-    private static ShopItem getItemById(String itemId) {
-        for (ShopItem item : shopItems.values()) {
-            // 处理以下情况：
-            // 1. 完全匹配
-            // 2. 输入不带minecraft:前缀，但存储的ID带前缀
-            // 3. 输入带minecraft:前缀，但存储的ID不带前缀
-            if (item.getItemId().equalsIgnoreCase(itemId) ||
-                item.getItemId().equalsIgnoreCase("minecraft:" + itemId) ||
-                (itemId.startsWith("minecraft:") &&
-                 item.getItemId().equalsIgnoreCase(itemId.substring("minecraft:".length())))) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 重载商店配置
-     */
-    public static boolean reloadConfig() {
-        try {
-            loadItems();
-            return true;
-        } catch (Exception e) {
-            System.err.println("重载商店配置失败: " + e.getMessage());
-            return false;
-        }
-    }
+    public static final RegistryKey<LootTable> SHOP_LOOT_TABLE = RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.of(Teamhunter.MOD_ID, "shop"));
 
     /**
      * 通过物品ID购买物品
+     *
      * @return 是否购买成功
      */
-    public static boolean purchaseItemById(ServerPlayerEntity player, String itemId) {
+    public static boolean purchaseItemByIndex(ServerPlayerEntity player, int index) {
         // 检查比赛是否在进行中
         if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
             player.sendMessage(Text.of("§c商店只在比赛阶段可用！"), false);
@@ -146,9 +42,9 @@ public class ShopManager {
         }
 
         // 获取物品
-        ShopItem item = getItemById(itemId);
-        if (item == null) {
-            player.sendMessage(Text.of("§c找不到ID为 " + itemId + " 的物品！"), false);
+        var item = getAllItems(player).get(index);
+        if (item.isEmpty()) {
+            player.sendMessage(Text.of("§c找不到ID为 " + index + " 的物品！"), false);
             return false;
         }
 
@@ -157,9 +53,11 @@ public class ShopManager {
 
     /**
      * 购买物品
+     *
      * @return 是否购买成功
      */
     public static boolean purchaseItem(ServerPlayerEntity player, String itemName) {
+
         // 检查比赛是否在进行中
         if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
             player.sendMessage(Text.of("§c商店只在比赛阶段可用！"), false);
@@ -167,7 +65,9 @@ public class ShopManager {
         }
 
         // 获取物品
-        ShopItem item = getItem(itemName.toLowerCase());
+        var item = getAllItems(player).stream().filter(i->i.getItemName().getString().equalsIgnoreCase(itemName)||i.getCustomName().getString().equalsIgnoreCase(itemName))
+                .findFirst().orElse(null);
+
         if (item == null) {
             player.sendMessage(Text.of("§c该物品不存在！"), false);
             return false;
@@ -179,65 +79,83 @@ public class ShopManager {
     /**
      * 处理购买流程
      */
-    private static boolean processPurchase(ServerPlayerEntity player, ShopItem item) {
-        // 获取玩家队伍
-        String teamName = player.getScoreboardTeam() != null
-                ? player.getScoreboardTeam().getName() : null;
-
+    private static boolean processPurchase(ServerPlayerEntity player, ItemStack item) {
+        // 获取并校验玩家队伍
+        String teamName = player.getScoreboardTeam() != null ? player.getScoreboardTeam().getName() : null;
         if (teamName == null || (!teamName.equals("hunters") && !teamName.equals("runners"))) {
             player.sendMessage(Text.of("§c你不属于任何可用团队！"), false);
             return false;
         }
 
-        // 检查团队分数是否足够
-        int teamScore = teamName.equals("hunters")
-                ? AdvancementListener.getHuntersScore()
-                : AdvancementListener.getRunnersScore();
+        // 单价
+        var unitPrice = item.get(PRICE);
+        if (unitPrice == null || unitPrice <= 0) return false;
 
-        if (teamScore < item.getPrice()) {
-            player.sendMessage(Text.of("§c团队分数不足！需要 " + item.getPrice() + " 分，当前只有 " + teamScore + " 分"), false);
-            return false;
+        // 构造可插入物品（移除自定义组件）
+        ItemStack buyItem = item.copy();
+        buyItem.remove(PRICE);
+        buyItem.remove(ID);
+
+        // 准备变量
+        long inserted;
+        long cost;
+
+        // 向背包插入物品并保持事务开启
+        try (var tx = Transaction.openOuter()) {
+            inserted = PlayerInventoryStorage.of(player).offer(ItemVariant.of(buyItem), item.getCount(), tx);
+            if (inserted == 0) {
+                player.sendMessage(Text.of("§c背包空间不足或交易失败！"), false);
+                return false;            // 自动回滚
+            }
+
+            cost = (long) unitPrice * inserted;
+
+            // 检查团队分数
+            int teamScore = teamName.equals("hunters") ? AdvancementListener.getHuntersScore()
+                    : AdvancementListener.getRunnersScore();
+            if (teamScore < cost) {
+                player.sendMessage(Text.of("§c团队分数不足！需要 " + cost + " 分，当前只有 " + teamScore + " 分"), false);
+                return false;            // 自动回滚
+            }
+
+            // 扣除团队分数（非物品事务，但必须先成功）
+            ServerWorld world = player.getServerWorld();
+            AdvancementListener.reduceTeamScore(teamName, (int) cost, world,
+                    player.getName().copy().append(" 购买了 ").append( item.getName()).append(  " ×" + inserted));
+
+            // 分数扣除成功后提交物品事务
+            tx.commit();
         }
 
-        // 扣除团队分数
+        // 至此物品和分数均已生效
+        // 成功提示
+        player.sendMessage(Text.of("§a成功购买 ").copy().append(item.getName()).append(" ×" + inserted + "，扣除 " + cost + " 分！"), false);
+
+        // 通知团队其他成员
+        String playerName = player.getName().getString();
+        var teamMessage = Text.of("§e" + playerName + " 购买了 ").copy().append(item.getName()).append(" ×" + inserted + "，消耗团队 " + cost + " 分！");
         MinecraftServer server = player.getServer();
-        ServerWorld world = player.getServerWorld();
-        int newScore = AdvancementListener.reduceTeamScore(
-                teamName,
-                item.getPrice(),
-                world,
-                player.getName().getString() + " 购买了 " + item.getName()
-        );
-
-        // 给予物品
-        String[] commands = item.getCommand().split("\n");
-        for (String cmd : commands) {
-            CommandExecutor.executeCommand(server, "/execute as " + player.getName().getString() + " run " + cmd);
-        }
-
-        // 发送成功消息
-        player.sendMessage(Text.of("§a成功购买 " + item.getName() + "，扣除 " + item.getPrice() + " 分！"), false);
-
-        // 通知团队
-        String teamMessage = "§e" + player.getName().getString() + " 购买了 " + item.getName() + "，消耗团队 " + item.getPrice() + " 分！";
-        for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
-            if (p.getScoreboardTeam() != null && p.getScoreboardTeam().getName().equals(teamName) && p != player) {
-                p.sendMessage(Text.of(teamMessage), false);
+        if (server != null) {
+            for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+                if (p != player && p.getScoreboardTeam() != null
+                    && p.getScoreboardTeam().getName().equals(teamName)) {
+                    p.sendMessage(teamMessage, false);
+                }
             }
         }
 
         return true;
     }
 
-    /**
-     * 获取所有商店物品数据用于网络传输
-     * @return 包含所有物品ID和价格的列表
-     */
-    public static List<NetWorking.ShopItemData> getAllItemsForNetwork() {
-        List<NetWorking.ShopItemData> result = new ArrayList<>();
-        for (ShopItem item : getAllItems()) {
-            result.add(new NetWorking.ShopItemData(item.getItemId(), item.getPrice()));
+    public static List<ItemStack> getAllItems(ServerPlayerEntity player) {
+        var server = player.getServer();
+        final var world = player.getWorld();
+        if (server == null || !(world instanceof ServerWorld serverWorld)) {
+            return List.of();
         }
-        return result;
+        var lootTable = server.getReloadableRegistries().getLootTable(SHOP_LOOT_TABLE);
+        final var lootWorldContext = new LootWorldContext.Builder(serverWorld).add(LootContextParameters.THIS_ENTITY, player).build(SHOP_CONTEXT);
+        return lootTable.generateLoot(lootWorldContext);
     }
+
 }
