@@ -27,8 +27,6 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -217,38 +215,5 @@ public class TeamhunterClient implements ClientModInitializer {
     }
 
 
-    // 检测玩家维度并更新Buff
-    private static void checkDimensionAndUpdateBuffs() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || PhaseCountdownHud.getPhase() != Phase.MATCH) return;
 
-        boolean isInNether = client.player.getWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether");
-
-        // 只在地狱内并且有优势状态时显示Buff
-        if (isInNether && teamAdvantage != 0) {
-            updateNetherDisadvantageBuff();
-        } else if (!isInNether) {
-            // 不在地狱时，清除所有地狱劣势buff
-            TeamScoreHud.removeNetherDebuff(true);
-            TeamScoreHud.removeNetherDebuff(false);
-        }
-    }
-
-    // 更新地狱劣势Buff
-    private static void updateNetherDisadvantageBuff() {
-        // 优势队伍意味着对方是劣势
-        if (teamAdvantage == 1) {
-            // 猎人有优势，逃亡者有地狱劣势
-            TeamScoreHud.removeNetherDebuff(true);
-            TeamScoreHud.addNetherDebuff(false);
-        } else if (teamAdvantage == 2) {
-            // 逃亡者有优势，猎人有地狱劣势
-            TeamScoreHud.removeNetherDebuff(false);
-            TeamScoreHud.addNetherDebuff(true);
-        } else {
-            // 无优势状态，清除所有地狱劣势buff
-            TeamScoreHud.removeNetherDebuff(true);
-            TeamScoreHud.removeNetherDebuff(false);
-        }
-    }
 }
