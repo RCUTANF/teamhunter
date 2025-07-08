@@ -43,6 +43,7 @@ public class Teamhunter implements ModInitializer {
         // 在 Teamhunter.java 的 onInitialize 方法中添加
         PayloadTypeRegistry.playC2S().register(NetWorking.ShopItemsRequestPacket.ID, NetWorking.ShopItemsRequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.ShopItemsResponsePacket.ID, NetWorking.ShopItemsResponsePacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(NetWorking.ShopPurchasePacket.ID, NetWorking.ShopPurchasePacket.CODEC);
 
 
         CommandRegistrationCallback.EVENT.register(Command::register);
@@ -95,6 +96,10 @@ public class Teamhunter implements ModInitializer {
             NetWorking.ShopItemsResponsePacket responsePacket = new NetWorking.ShopItemsResponsePacket(shopItems);
             // 发送响应到客户端
             ServerPlayNetworking.send(context.player(), responsePacket);
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopPurchasePacket.ID, (packet, context) -> {
+            ShopManager.purchaseItemByIndex(context.player(), packet.id());
         });
 
         new ShopComponentTypes();
