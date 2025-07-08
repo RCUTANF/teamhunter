@@ -1,16 +1,16 @@
 package com.rcutanf.teamhunter.advancement;
 
+import com.rcutanf.teamhunter.CommandExecutor;
 import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
-import com.rcutanf.teamhunter.CommandExecutor;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 public class AdvancementListener {
     private final MinecraftServer server;
@@ -153,7 +153,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么减少分数
      * @return 减少后的新分数
      */
-    public static int reduceTeamScore(String teamName, int amount, ServerWorld world, String message) {
+    public static int reduceTeamScore(String teamName, int amount, ServerWorld world, Text message) {
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -179,10 +179,11 @@ public class AdvancementListener {
 
 
         // 如果提供了消息，显示减分通知
-        if (message != null && !message.isEmpty()) {
-            CommandExecutor.executeCommand(server,
-                    String.format("say %s 队扣除 %d 分: %s",
-                            teamName, amount, message));
+        if (message != null) {
+            server.getPlayerManager().broadcast(Text.of(
+                    String.format("%s 队扣除 %d 分: ",
+                            teamName, amount)
+            ).copy().append(message), false);
         }
 
         // 应用队伍优势效果

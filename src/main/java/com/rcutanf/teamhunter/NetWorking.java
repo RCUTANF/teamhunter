@@ -1,20 +1,21 @@
 package com.rcutanf.teamhunter;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetWorking {
 
     private static final Identifier SYNC_ID = Identifier.of(Teamhunter.MOD_ID, "sync");
     public static final Identifier CHECK_CLIENT_MOD = Identifier.of(Teamhunter.MOD_ID, "sync");
-
-
-
 
 
     public record CounterSyncPacket(long countDownMilliseconds) implements CustomPayload {
@@ -56,7 +57,8 @@ public class NetWorking {
         }
     }
 
-    public record TeamScorePacket(int huntersScore, int runnersScore, int huntersAddedScore, int runnersAddedScore) implements CustomPayload {
+    public record TeamScorePacket(int huntersScore, int runnersScore, int huntersAddedScore,
+                                  int runnersAddedScore) implements CustomPayload {
         public static final Identifier TEAM_SCORE_ID = Identifier.of(Teamhunter.MOD_ID, "team_score");
         public static final Id<TeamScorePacket> ID = new Id<>(TEAM_SCORE_ID);
         public static final PacketCodec<PacketByteBuf, TeamScorePacket> CODEC = CustomPayload.codecOf(TeamScorePacket::write, TeamScorePacket::new);
@@ -98,12 +100,27 @@ public class NetWorking {
         }
     }
 
-    public record ShopItemsRequestPacket() implements CustomPayload {
+    public static class ShopItemsRequestPacket implements CustomPayload {
+        private ShopItemsRequestPacket() {
+        }
+
+        public static final ShopItemsRequestPacket INSTANCE = new ShopItemsRequestPacket();
         public static final Identifier SHOP_ITEMS_REQUEST_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_request");
         public static final Id<ShopItemsRequestPacket> ID = new Id<>(SHOP_ITEMS_REQUEST_ID);
-        public static final PacketCodec<PacketByteBuf, ShopItemsRequestPacket> CODEC = CustomPayload.codecOf(
-                (packet, buf) -> {}, // 无需写入数据，但需要两个参数
-                buf -> new ShopItemsRequestPacket()
+        public static final PacketCodec<ByteBuf, ShopItemsRequestPacket> CODEC =
+                PacketCodecs.codec(Codec.unit(ShopItemsRequestPacket.INSTANCE));
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    public record ShopPurchasePacket(int id) implements CustomPayload {
+        public static final Identifier SHOP_PURCHASE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_purchase");
+        public static final Id<ShopPurchasePacket> ID = new Id<>(SHOP_PURCHASE_ID);
+        public static final PacketCodec<RegistryByteBuf, ShopPurchasePacket> CODEC = PacketCodec.tuple(
+                PacketCodecs.VAR_INT, ShopPurchasePacket::id, ShopPurchasePacket::new
         );
 
         @Override
@@ -112,29 +129,12 @@ public class NetWorking {
         }
     }
 
-    public record ShopItemData(String id, int price) {}
 
-    public record ShopItemsResponsePacket(List<ShopItemData> items) implements CustomPayload {
+    public record ShopItemsResponsePacket(List<ItemStack> items) implements CustomPayload {
         public static final Identifier SHOP_ITEMS_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_response");
         public static final Id<ShopItemsResponsePacket> ID = new Id<>(SHOP_ITEMS_RESPONSE_ID);
-        public static final PacketCodec<PacketByteBuf, ShopItemsResponsePacket> CODEC = CustomPayload.codecOf(
-                (packet, buf) -> {
-                    buf.writeInt(packet.items.size());
-                    for (ShopItemData item : packet.items) {
-                        buf.writeString(item.id());
-                        buf.writeInt(item.price());
-                    }
-                },
-                buf -> {
-                    int size = buf.readInt();
-                    List<ShopItemData> items = new ArrayList<>(size);
-                    for (int i = 0; i < size; i++) {
-                        String id = buf.readString();
-                        int price = buf.readInt();
-                        items.add(new ShopItemData(id, price));
-                    }
-                    return new ShopItemsResponsePacket(items);
-                }
+        public static final PacketCodec<RegistryByteBuf, ShopItemsResponsePacket> CODEC = PacketCodec.tuple(
+                ItemStack.OPTIONAL_LIST_PACKET_CODEC, ShopItemsResponsePacket::items, ShopItemsResponsePacket::new
         );
 
         @Override
