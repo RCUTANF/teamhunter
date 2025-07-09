@@ -4,6 +4,7 @@
   "package": "com.rcutanf.teamhunter.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AdvancementFrameMixin",
     "PlayerAdvancementTrackerMixin"
   ],
   "injectors": {

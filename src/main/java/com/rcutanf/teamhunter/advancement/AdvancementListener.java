@@ -60,13 +60,12 @@ public class AdvancementListener {
         // 调试信息（直接在控制台打印）
         String playerName = player.getName().getString();
         String achievement = title != null ? title.getString() : id.toString();
-        CommandExecutor.executeCommand(server,
-                String.format("say %s 为 %s 队获得成就 %s (+%d分)",
-                        playerName, teamName, achievement, score));
+        //CommandExecutor.executeCommand(server,
+          //      String.format("say %s 为 %s 队获得成就 %s (+%d分)",
+            //            playerName, teamName, achievement, score));
 
         // 更新分数
-        addTeamScore(teamName, score, player.getServerWorld(),
-                String.format("%s 获得成就 %s", playerName, achievement));
+        addTeamScore(teamName, score, player.getServerWorld(), null);
     }
 
     // 获取当前猎人队伍分数
