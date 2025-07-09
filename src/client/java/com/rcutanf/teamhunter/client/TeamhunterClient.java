@@ -41,8 +41,12 @@ public class TeamhunterClient implements ClientModInitializer {
     public static Phase phase = Phase.WAITING;
     public static Duration countDown = Duration.ZERO;
     // 上一次的队伍劣势状态
-    private static int lastTeamAdvantage = 0;
+    private static int lastTeamAdvantage = 0;//用来记忆上次切换执行的命令
     private static KeyBinding shopKeyBinding;
+
+    // 添加类变量，用于记录当前队伍选择状态
+    private static boolean isHunterCommand = true;
+    private static KeyBinding teamSwitchKeyBinding;
 
     public static boolean shouldShowCountDown() {
         return phase.showCountDown;
@@ -208,6 +212,27 @@ public class TeamhunterClient implements ClientModInitializer {
                     // 如果当前没有打开商店界面，则打开它
                     ShopScreen.open();
                 }
+            }
+        });
+
+        // 注册队伍切换键绑定 - 使用F8键
+        teamSwitchKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.teamhunter.teamswitch", // 翻译键
+                InputUtil.Type.KEYSYM,       // 键盘输入类型
+                GLFW.GLFW_KEY_F8,            // F8键的GLFW键值
+                "category.teamhunter.keys"   // 分类
+        ));
+
+        // 注册按键处理事件
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            // 检查队伍切换键是否被按下
+            if (teamSwitchKeyBinding.wasPressed() && client.player != null) {
+                // 确定要执行的命令
+                String command = isHunterCommand ? "trigger mh.join.hunters" : "trigger mh.join.runners";
+                // 发送命令
+                client.player.networkHandler.sendChatCommand(command);
+                // 切换状态，下次按键时执行另一个命令
+                isHunterCommand = !isHunterCommand;
             }
         });
 
