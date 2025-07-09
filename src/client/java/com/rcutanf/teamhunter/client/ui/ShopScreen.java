@@ -24,7 +24,7 @@ public class ShopScreen extends Screen {
     private static final int WINDOW_WIDTH = 252;
     private static final int WINDOW_HEIGHT = 166;
     private static final int ICON_SIZE = 32;
-    private static final int GRID_SPACING = 16;
+    private static final int GRID_SPACING = 8;  //列间距
     private static ShopScreen INSTANCE;
     public List<ItemStack> shopItems = new ArrayList<>();
     // 窗口位置
