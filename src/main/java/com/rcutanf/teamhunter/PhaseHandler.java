@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter;
 
+import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,6 +40,7 @@ public class PhaseHandler {
         for (String command : CommandConfig.getCommandsForPhase("warmup")) {
             CommandExecutor.executeCommand(server, command);
         }
+        AdvancementListener.resetScores(); // 重置领先状态
     }
 
     // PREPARE 阶段逻辑

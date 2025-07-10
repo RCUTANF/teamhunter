@@ -25,7 +25,7 @@ public class Teamhunter implements ModInitializer {
     public static PhaseCombiner phaseManager;
     private PlayerRespawnHandler playerRespawnHandler;
     private EnvironmentController environmentController;
-    private AdvancementListener advancementListener;
+    public static AdvancementListener advancementListener;
 
     public static void broadcastPacket(MinecraftServer server, CustomPayload payload) {
         server.getPlayerManager()
