@@ -9,8 +9,10 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
+import java.util.UUID;
 
 public class NetWorking {
 
@@ -140,6 +142,30 @@ public class NetWorking {
         @Override
         public Id<? extends CustomPayload> getId() {
             return ID;
+        }
+    }
+
+    public record PlayerPositionUpdatePacket(UUID playerId, String playerName, BlockPos position) implements CustomPayload {
+        public static final Identifier PLAYER_POSITION_ID = Identifier.of(Teamhunter.MOD_ID, "player_position");
+        public static final Id<PlayerPositionUpdatePacket> ID = new Id<>(PLAYER_POSITION_ID);
+        public static final PacketCodec<PacketByteBuf, PlayerPositionUpdatePacket> CODEC =
+            CustomPayload.codecOf(PlayerPositionUpdatePacket::write, PlayerPositionUpdatePacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public PlayerPositionUpdatePacket(PacketByteBuf buf) {
+            this(buf.readUuid(), buf.readString(), new BlockPos(buf.readInt(), buf.readInt(), buf.readInt()));
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeUuid(playerId);
+            buf.writeString(playerName);
+            buf.writeInt(position.getX());
+            buf.writeInt(position.getY());
+            buf.writeInt(position.getZ());
         }
     }
 }

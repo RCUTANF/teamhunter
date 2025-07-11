@@ -5,6 +5,7 @@ import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
+import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
 import com.rcutanf.teamhunter.client.ui.TeamScoreHud;
 import io.netty.buffer.Unpooled;
@@ -17,16 +18,23 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.scoreboard.Team;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -34,12 +42,12 @@ public class TeamhunterClient implements ClientModInitializer {
 
     private static final Identifier countDownLayer = Identifier.of(Teamhunter.MOD_ID, "count-down");
     private static final Identifier teamScoreLayer = Identifier.of(Teamhunter.MOD_ID, "team-score");
+    private static final Identifier radarLayer = Identifier.of(Teamhunter.MOD_ID, "player-radar");
 
-    // 移除优势层标识，因为现在使用buff系统
-    // private static final Identifier advantageLayer = Identifier.of(Teamhunter.MOD_ID, "team-advantage");
     public static int teamAdvantage = 0; // 0=无优势, 1=猎人, 2=逃亡者
     public static Phase phase = Phase.WAITING;
     public static Duration countDown = Duration.ZERO;
+
     // 上一次的队伍劣势状态
     private static int lastTeamAdvantage = 0;//用来记忆上次切换执行的命令
     private static KeyBinding shopKeyBinding;
@@ -48,21 +56,43 @@ public class TeamhunterClient implements ClientModInitializer {
     private static boolean isHunterCommand = true;
     private static KeyBinding teamSwitchKeyBinding;
 
-    public static boolean shouldShowCountDown() {
-        return phase.showCountDown;
+    // 添加一个Map存储其他玩家的位置信息
+    private static final Map<UUID, PlayerPositionInfo> playerPositions = new HashMap<>();
+
+    // 添加一个记录玩家位置的类
+    public static class PlayerPositionInfo {
+        private final String playerName;
+        private BlockPos position;
+        private final String teamName; // 新增队伍名称字段
+
+        public PlayerPositionInfo(String playerName, BlockPos position, String teamName) {
+            this.playerName = playerName;
+            this.position = position;
+            this.teamName = teamName;
+        }
+
+        public PlayerPositionInfo(String playerName, BlockPos position) {
+            this(playerName, position, getTeamNameForPlayer(playerName));
+        }
+
+        public void updatePosition(BlockPos newPosition) {
+            this.position = newPosition;
+        }
+
+        public String getPlayerName() { return playerName; }
+        public BlockPos getPosition() { return position; }
+        public String getTeamName() { return teamName; }
+
+        private static String getTeamNameForPlayer(String playerName) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.world != null) {
+                Team playerTeam = client.world.getScoreboard().getTeam(playerName);
+                return playerTeam != null ? playerTeam.getName() : null;
+            }
+            return null;
+        }
     }
 
-    private static void draw(DrawContext ctx, RenderTickCounter counter) {
-        if (!shouldShowCountDown()) return;
-        var textRenderer = MinecraftClient.getInstance().textRenderer;
-        var windowWidth = ctx.getScaledWindowWidth();
-        var textHeight = textRenderer.fontHeight;
-
-        var text = String.valueOf(countDown.toSeconds());
-
-        ctx.drawCenteredTextWithShadow(textRenderer, phase.name(), windowWidth / 2, 10, 0xFFFFFFFF);
-        ctx.drawCenteredTextWithShadow(textRenderer, text, windowWidth / 2, 10 + textHeight + 4, 0xFFFFFFFF);
-    }
 
     // 检测玩家维度并更新Buff
     private static void checkDimensionAndUpdateBuffs() {
@@ -160,9 +190,7 @@ public class TeamhunterClient implements ClientModInitializer {
             teamAdvantage = payload.advantageOrdinal();
 
             // 在游戏主线程中更新Buff状态
-            MinecraftClient.getInstance().execute(() -> {
-                updateNetherDisadvantageBuff();
-            });
+            MinecraftClient.getInstance().execute(TeamhunterClient::updateNetherDisadvantageBuff);
         });
 
         // 添加：注册团队分数 HUD 渲染
@@ -192,11 +220,11 @@ public class TeamhunterClient implements ClientModInitializer {
             });
         });
 
-        // 注册商店键绑定 - 使用T键
+        // 注册商店键绑定 - 使用O键
         shopKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.teamhunter.shop", // 翻译键
                 InputUtil.Type.KEYSYM,  // 键盘输入类型
-                GLFW.GLFW_KEY_O,        // T键的GLFW键值
+                GLFW.GLFW_KEY_O,        // O键的GLFW键值
                 "category.teamhunter.keys" // 分类
         ));
 
@@ -236,7 +264,47 @@ public class TeamhunterClient implements ClientModInitializer {
             }
         });
 
+        // 注册位置更新数据包接收器
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.PlayerPositionUpdatePacket.ID, (payload, context) -> {
+            UUID playerId = payload.playerId();
+            String playerName = payload.playerName();
+            BlockPos position = payload.position();
 
+            // 在游戏主线程中更新位置信息
+            MinecraftClient.getInstance().execute(() -> {
+                if (playerPositions.containsKey(playerId)) {
+                    playerPositions.get(playerId).updatePosition(position);
+                } else {
+                    playerPositions.put(playerId, new PlayerPositionInfo(playerName, position));
+                }
+
+                // 可以在这里添加额外逻辑，如显示在HUD或小地图上
+            });
+        });
+
+
+        HudLayerRegistrationCallback.EVENT.register(r ->
+                r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, radarLayer, PlayerRadarHud::render)
+        );
+
+
+        // 监听客户端断开连接事件
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            // 清空玩家位置缓存
+            playerPositions.clear();
+        });
+
+        // 监听客户端连接到服务器事件
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            // 在新连接建立时也清空玩家位置缓存，确保不会有旧数据
+            playerPositions.clear();
+        });
+
+
+    }
+
+    public static Map<UUID, PlayerPositionInfo> getPlayerPositions() {
+        return playerPositions;
     }
 
 

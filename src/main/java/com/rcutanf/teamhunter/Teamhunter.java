@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -26,6 +27,7 @@ public class Teamhunter implements ModInitializer {
     private PlayerRespawnHandler playerRespawnHandler;
     private EnvironmentController environmentController;
     public static AdvancementListener advancementListener;
+    private PlayerPositionTracker positionTracker;
 
     public static void broadcastPacket(MinecraftServer server, CustomPayload payload) {
         server.getPlayerManager()
@@ -44,6 +46,7 @@ public class Teamhunter implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(NetWorking.ShopItemsRequestPacket.ID, NetWorking.ShopItemsRequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.ShopItemsResponsePacket.ID, NetWorking.ShopItemsResponsePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(NetWorking.ShopPurchasePacket.ID, NetWorking.ShopPurchasePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.PlayerPositionUpdatePacket.ID, NetWorking.PlayerPositionUpdatePacket.CODEC);
 
 
         CommandRegistrationCallback.EVENT.register(Command::register);
@@ -103,6 +106,21 @@ public class Teamhunter implements ModInitializer {
         });
 
         new ShopComponentTypes();
+
+        ServerLifecycleEvents.SERVER_STARTED.register(s -> {
+            phaseManager = new PhaseCombiner(s, new PhaseHandler(s));
+            playerRespawnHandler = new PlayerRespawnHandler();
+            environmentController = new EnvironmentController(s);
+            advancementListener = new AdvancementListener(s);
+            positionTracker = new PlayerPositionTracker(s); // 初始化位置跟踪器
+        });
+
+        // 注册服务器tick事件
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            if (positionTracker != null) {
+                positionTracker.tick();
+            }
+        });
 
 
     }

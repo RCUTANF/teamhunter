@@ -138,7 +138,7 @@ public class ShopScreen extends Screen {
     private void renderWindowBackground(DrawContext context) {
         // 绘制固定大小的背景
         context.drawTexture(
-                identifier -> RenderLayer.getGuiTextured(identifier),
+                RenderLayer::getGuiTextured,
                 BACKGROUND,
                 guiLeft,
                 guiTop,
@@ -159,7 +159,7 @@ public class ShopScreen extends Screen {
 
         // 使用进度界面的石头背景纹理
         context.drawTexture(
-                identifier -> RenderLayer.getGuiTextured(identifier),  // 渲染层函数
+                RenderLayer::getGuiTextured,  // 渲染层函数
                 BACKGROUND,                                 // 纹理标识符
                 centerX - size / 2 + (int) scrollX,          // x坐标
                 centerY - size / 2 + (int) scrollY,          // y坐标
