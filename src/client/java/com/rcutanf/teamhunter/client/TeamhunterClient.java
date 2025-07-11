@@ -300,6 +300,8 @@ public class TeamhunterClient implements ClientModInitializer {
             playerPositions.clear();
         });
 
+        KeyBindings.register();
+
 
     }
 

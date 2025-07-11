@@ -1,0 +1,11 @@
+{
+  "teamhunter.config.title": "玩家雷达设置",
+  "teamhunter.config.size": "雷达大小: %d",
+  "teamhunter.config.x": "X坐标: %d",
+  "teamhunter.config.y": "Y坐标: %d",
+  "teamhunter.config.enabled": "雷达已启用",
+  "teamhunter.config.disabled": "雷达已禁用",
+  "teamhunter.config.save": "保存设置",
+  "key.teamhunter.config": "打开雷达设置",
+  "category.teamhunter.keys": "团队猎人"
+}

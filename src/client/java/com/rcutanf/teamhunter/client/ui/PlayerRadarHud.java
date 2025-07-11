@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.ui;
 
 import com.rcutanf.teamhunter.client.TeamhunterClient;
 import com.rcutanf.teamhunter.client.TeamhunterClient.PlayerPositionInfo;
+import com.rcutanf.teamhunter.client.config.RadarConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -23,11 +24,11 @@ import java.util.function.Supplier;
 
 public class PlayerRadarHud {
     // 雷达配置
-    private static final int RADAR_SIZE = 60;
-    private static final int RADAR_X = 5;
-    private static final int RADAR_Y = 5;
     private static final int RADAR_BG_COLOR = 0x80000000;
     private static final int RADAR_BORDER_COLOR = 0xFFFFFFFF;
+    private static int RADAR_SIZE = 60; // 默认雷达大小
+    private static int RADAR_X = 5; // 默认X位置
+    private static int RADAR_Y = 5; // 默认Y位置
 
     // 玩家标记配置
     private static final int PLAYER_DOT_SIZE = 4;
@@ -41,9 +42,25 @@ public class PlayerRadarHud {
 
     private static boolean shouldRender = false;
 
+    public static void setRadarSize(int size) {
+        RADAR_SIZE = Math.max(30, Math.min(200, size));
+    }
+
+    public static void setRadarPosition(int x, int y) {
+        RADAR_X = Math.max(0, x);
+        RADAR_Y = Math.max(0, y);
+    }
+
     public static void render(DrawContext context, RenderTickCounter tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
+        RadarConfig config = RadarConfig.getInstance();
+
+        if (player == null || !config.isEnabled()) return;
+
+        // 获取配置的雷达大小和位置
+        setRadarSize(config.getRadarSize());
+        setRadarPosition(config.getRadarX(), config.getRadarY());
 
         if (player == null) return;
 
