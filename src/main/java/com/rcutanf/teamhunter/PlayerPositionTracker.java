@@ -55,4 +55,25 @@ public class PlayerPositionTracker {
             ServerPlayNetworking.send(serverPlayer, packet);
         }
     }
+
+    /**
+     * 当玩家登录时调用此方法，将所有在线玩家的位置发送给新登录的玩家
+     *
+     * @param newPlayer 新登录的玩家
+     */
+    public void sendAllPlayerPositionsToNewPlayer(ServerPlayerEntity newPlayer) {
+        // 遍历所有在线玩家
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            UUID playerId = player.getUuid();
+            String playerName = player.getName().getString();
+            BlockPos position = player.getBlockPos();
+
+            // 创建位置更新数据包
+            NetWorking.PlayerPositionUpdatePacket packet = new NetWorking.PlayerPositionUpdatePacket(
+                playerId, playerName, position);
+
+            // 只发送给新登录的玩家
+            ServerPlayNetworking.send(newPlayer, packet);
+        }
+    }
 }
