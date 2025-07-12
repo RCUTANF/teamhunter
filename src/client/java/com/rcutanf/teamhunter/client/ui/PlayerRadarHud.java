@@ -1,7 +1,7 @@
 package com.rcutanf.teamhunter.client.ui;
 
+import com.rcutanf.teamhunter.client.PlayerPositionInfo;
 import com.rcutanf.teamhunter.client.TeamhunterClient;
-import com.rcutanf.teamhunter.client.TeamhunterClient.PlayerPositionInfo;
 import com.rcutanf.teamhunter.client.config.RadarConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -15,7 +15,6 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.HashMap;
 import java.util.Map;
