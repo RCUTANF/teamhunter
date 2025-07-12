@@ -39,9 +39,6 @@ public class PlayerRadarHud {
     private static final Map<String, Identifier> CIRCLE_TEXTURES = new HashMap<>();//纹理资源缓存
 
 
-
-    private static boolean shouldRender = false;
-
     public static void setRadarSize(int size) {
         RADAR_SIZE = Math.max(30, Math.min(200, size));
     }
@@ -61,8 +58,6 @@ public class PlayerRadarHud {
         // 获取配置的雷达大小和位置
         setRadarSize(config.getRadarSize());
         setRadarPosition(config.getRadarX(), config.getRadarY());
-
-        if (player == null) return;
 
         // 获取玩家渲染距离（方块单位）
         int renderDistance = client.options.getViewDistance().getValue() * 16;
@@ -148,6 +143,7 @@ public class PlayerRadarHud {
         // 计算相对位置，考虑玩家朝向
         double dx = otherPlayerPos.getX() - playerPos.getX();
         double dz = otherPlayerPos.getZ() - playerPos.getZ();
+        double dy = otherPlayerPos.getY() - playerPos.getY(); // 计算Y轴高度差
 
         // 计算实际距离
         double distance = Math.sqrt(dx * dx + dz * dz);
@@ -178,10 +174,14 @@ public class PlayerRadarHud {
 
 
 
-        // 绘制客户端玩家中心点
-        context.fill(dotX - PLAYER_DOT_SIZE/2, dotY - PLAYER_DOT_SIZE/2,
-                dotX + PLAYER_DOT_SIZE/2, dotY + PLAYER_DOT_SIZE/2,
-                dotColor);
+        // 绘制玩家圆点(不再使用矩形)
+        int dotRadius = PLAYER_DOT_SIZE / 2;
+        fillPlayerDot(context, dotX, dotY, dotRadius, dotColor);
+
+        // 如果高度差超过1格，绘制高度指示箭头
+        if (Math.abs(dy) > 1) {
+            drawHeightIndicator(context, dotX, dotY, dy, dotColor);
+        }
 
         // 如果超出范围则显示距离
         String displayText = playerName;
@@ -276,6 +276,9 @@ public class PlayerRadarHud {
         int green = (color >> 8) & 0xFF;
         int blue = color & 0xFF;
 
+        // 转换为ABGR格式（交换红蓝通道）
+        int abgrColor = (alpha << 24) | (blue << 16) | (green << 8) | red;
+
         // 边框粗细(像素)，增加边框厚度适应更高分辨率
         int borderThickness = filled ? radius * resolution : resolution;
 
@@ -293,26 +296,26 @@ public class PlayerRadarHud {
                 if (filled) {
                     // 填充圆
                     if (distance <= scaledRadius) {
-                        image.setColor(x, y, color);
+                        image.setColor(x, y, abgrColor);
                     } else if (distance < scaledRadius + resolution) {
                         // 边缘抗锯齿 - 更平滑的过渡
                         double factor = 1.0 - (distance - scaledRadius) / resolution;
                         factor = Math.max(0, Math.min(1, factor)); // 确保因子在0-1范围内
                         int newAlpha = (int)(alpha * factor);
-                        int newColor = (newAlpha << 24) | (red << 16) | (green << 8) | blue;
+                        int newColor = (newAlpha << 24) | (blue << 16) | (green << 8) | red;
                         image.setColor(x, y, newColor);
                     }
                 } else {
                     // 圆形边框
                     double innerRadius = scaledRadius - borderThickness;
                     if (distance >= innerRadius && distance <= scaledRadius) {
-                        image.setColor(x, y, color);
-                    } else if (distance < innerRadius + (double) resolution /2 && distance > innerRadius - resolution/2) {
+                        image.setColor(x, y, abgrColor);
+                    } else if (distance < innerRadius + (double) resolution /2 && distance > innerRadius - (double) resolution /2) {
                         // 内边缘抗锯齿
-                        image.setColor(x, y, calculateAntiAliasedColor(distance, innerRadius, (double) resolution/2, color));
-                    } else if (distance < scaledRadius + (double) resolution /2 && distance > scaledRadius - resolution/2) {
+                        image.setColor(x, y, calculateAntiAliasedColor(distance, innerRadius, (double) resolution/2, abgrColor));
+                    } else if (distance < scaledRadius + (double) resolution /2 && distance > scaledRadius - (double) resolution /2) {
                         // 外边缘抗锯齿
-                        image.setColor(x, y, calculateAntiAliasedColor(distance, scaledRadius, (double) resolution/2, color));
+                        image.setColor(x, y, calculateAntiAliasedColor(distance, scaledRadius, (double) resolution/2, abgrColor));
                     }
                 }
             }
@@ -348,6 +351,82 @@ public class PlayerRadarHud {
 
         int newAlpha = (int)(alpha * factor);
         return (newAlpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+
+    // 绘制玩家圆点
+    private static void fillPlayerDot(DrawContext context, int centerX, int centerY, int radius, int color) {
+        // 确保颜色完全格式化为8位十六进制（包含透明度）
+        String colorHex = String.format("%08X", color);
+        String cacheKey = "player_dot_" + radius + "_" + colorHex;
+
+        // 检查缓存中是否有这个颜色的纹理，如果没有则生成
+        Identifier textureId = CIRCLE_TEXTURES.computeIfAbsent(cacheKey,
+                k -> generateCircleTexture(radius, color, true));
+
+        int size = radius * 2;
+        context.drawTexture(
+                RenderLayer::getGuiTextured,
+                textureId,
+                centerX - radius, centerY - radius,
+                0, 0,
+                size, size,
+                size, size
+        );
+    }
+
+    // 绘制高度指示箭头 (使用^字符，下箭头通过旋转实现)
+    private static void drawHeightIndicator(DrawContext context, int x, int y, double dy, int color) {
+        int yOffset = 1;     // 箭头与圆点的距离
+        String arrowChar = "§l^";  // 统一使用^字符
+        float scale = 0.4f; // 缩放比例
+
+        // 保存当前变换状态
+        context.getMatrices().push();
+
+        // 获取文本尺寸
+        int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(arrowChar);
+        int textHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
+
+        if (dy > 0) {
+            // 向上箭头 - 直接绘制在圆点上方
+            float posY = y - yOffset;
+
+            // 移动到位置，应用缩放，然后绘制
+            context.getMatrices().translate(x, posY, 0);
+            context.getMatrices().scale(scale, scale, 1.0f);
+
+            // 调整偏移以保持居中
+            context.drawText(
+                    MinecraftClient.getInstance().textRenderer,
+                    arrowChar,
+                    -textWidth / 2,
+                    -textHeight / 2,
+                    color,
+                    false
+            );
+        } else {
+            // 向下箭头 - 旋转180度后绘制在圆点下方
+            float posY = y + yOffset;
+
+            // 移动到文本中心点
+            context.getMatrices().translate(x, posY, 0);
+            // 应用缩放
+            context.getMatrices().scale(scale, scale, 1.0f);
+            // 旋转180度
+            context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(180));
+            // 调整偏移以保持居中
+            context.drawText(
+                    MinecraftClient.getInstance().textRenderer,
+                    arrowChar,
+                    -textWidth / 2,
+                    -textHeight / 2,
+                    color,
+                    true
+            );
+        }
+
+        // 恢复变换状态
+        context.getMatrices().pop();
     }
 
     // 纹理清理方法

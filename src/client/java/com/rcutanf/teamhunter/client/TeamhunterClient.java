@@ -292,6 +292,7 @@ public class TeamhunterClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             // 清空玩家位置缓存
             playerPositions.clear();
+            PlayerRadarHud.dispose();
         });
 
         // 监听客户端连接到服务器事件
