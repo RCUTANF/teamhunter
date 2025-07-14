@@ -145,7 +145,8 @@ public class NetWorking {
         }
     }
 
-    public record PlayerPositionUpdatePacket(UUID playerId, String playerName, BlockPos position) implements CustomPayload {
+    public record PlayerPositionUpdatePacket(UUID playerId, String playerName, BlockPos position,
+                                             Identifier dimension) implements CustomPayload {
         public static final Identifier PLAYER_POSITION_ID = Identifier.of(Teamhunter.MOD_ID, "player_position");
         public static final Id<PlayerPositionUpdatePacket> ID = new Id<>(PLAYER_POSITION_ID);
         public static final PacketCodec<PacketByteBuf, PlayerPositionUpdatePacket> CODEC =
@@ -157,7 +158,8 @@ public class NetWorking {
         }
 
         public PlayerPositionUpdatePacket(PacketByteBuf buf) {
-            this(buf.readUuid(), buf.readString(), new BlockPos(buf.readInt(), buf.readInt(), buf.readInt()));
+            this(buf.readUuid(), buf.readString(), new BlockPos(buf.readInt(), buf.readInt(), buf.readInt()),
+                 buf.readIdentifier());
         }
 
         public void write(PacketByteBuf buf) {
@@ -166,6 +168,7 @@ public class NetWorking {
             buf.writeInt(position.getX());
             buf.writeInt(position.getY());
             buf.writeInt(position.getZ());
+            buf.writeIdentifier(dimension);
         }
     }
 }

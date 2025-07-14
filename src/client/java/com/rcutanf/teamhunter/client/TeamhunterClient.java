@@ -150,12 +150,15 @@ public class TeamhunterClient implements ClientModInitializer {
             UUID playerId = payload.playerId();
             String playerName = payload.playerName();
             BlockPos position = payload.position();
+            Identifier dimension = payload.dimension(); // 接收维度信息
 
             MinecraftClient.getInstance().execute(() -> {
                 if (playerPositions.containsKey(playerId)) {
-                    playerPositions.get(playerId).updatePosition(position);
+                    PlayerPositionInfo info = playerPositions.get(playerId);
+                    info.updatePosition(position);
+                    info.updateDimension(dimension);
                 } else {
-                    playerPositions.put(playerId, new PlayerPositionInfo(playerName, position));
+                    playerPositions.put(playerId, new PlayerPositionInfo(playerName, position, dimension));
                 }
             });
         });

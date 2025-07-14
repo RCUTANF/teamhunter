@@ -58,6 +58,9 @@ public class PlayerRadarHud {
         setRadarSize(config.getRadarSize());
         setRadarPosition(config.getRadarX(), config.getRadarY());
 
+        // 获取玩家当前维度
+        Identifier playerDimension = client.world.getRegistryKey().getValue();
+
         // 获取玩家渲染距离（方块单位）
         int renderDistance = client.options.getViewDistance().getValue() * 16;
 
@@ -79,8 +82,10 @@ public class PlayerRadarHud {
             // 跳过当前玩家自己
             if (otherPlayerId.equals(player.getUuid())) continue;
 
-            BlockPos otherPlayerPos = posInfo.getPosition();
+            // 跳过不在同一维度的玩家
+            if (posInfo.getDimension() != null && !playerDimension.equals(posInfo.getDimension())) continue;
 
+            BlockPos otherPlayerPos = posInfo.getPosition();
 
             // 队伍颜色
             String playerName = posInfo.getPlayerName();
@@ -107,7 +112,7 @@ public class PlayerRadarHud {
                     otherPlayerPos,
                     renderDistance,
                     dotColor,
-                    posInfo.getPlayerName()  // 添加玩家名称参数
+                    posInfo.getPlayerName()
             );
         }
     }
