@@ -458,8 +458,8 @@ public class PlayerRadarHud {
         // 计算射线起点和终点
         int startX = centerX;
         int startY = centerY;
-        int endX = centerX + Math.round((float)(Math.cos(angle) * radius))-1;
-        int endY = centerY + Math.round((float)(Math.sin(angle) * radius))-1;
+        int endX = centerX + Math.round((float)(Math.cos(angle) * (radius - 1)));
+        int endY = centerY + Math.round((float)(Math.sin(angle) * (radius -1)));
 
         // 绘制射线
         drawLine(context, centerX, centerY, endX, endY, color);
@@ -486,7 +486,7 @@ public class PlayerRadarHud {
     // 通过矩阵旋转绘制线段
     private static void drawLine(DrawContext context, int x1, int y1, int x2, int y2, int color) {
         // 计算线段长度和角度
-        double length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        int length = (int)Math.round(Math.hypot(x2 - x1, y2 - y1));
         double angle = Math.atan2(y2 - y1, x2 - x1);
 
         // 保存当前变换
@@ -498,7 +498,7 @@ public class PlayerRadarHud {
         context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float)angle));
 
         // 绘制水平线
-        context.fill(0, 0, (int)length, 1, color);
+        context.fill(0, 0, length, 1, color);
 
         // 恢复变换
         context.getMatrices().pop();
