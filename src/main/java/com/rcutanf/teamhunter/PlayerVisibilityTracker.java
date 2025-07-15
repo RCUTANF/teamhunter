@@ -179,4 +179,32 @@ public class PlayerVisibilityTracker {
             ServerPlayNetworking.send(player, packet);
         }
     }
+
+    /**
+     * 向新登录的玩家发送所有其他玩家的可见性信息
+     * @param newPlayer 新登录的玩家
+     */
+    public void sendAllVisibilityToPlayer(ServerPlayerEntity newPlayer) {
+        UUID newPlayerId = newPlayer.getUuid();
+
+        // 获取新玩家的可见性映射
+        Map<UUID, Boolean> visibilityMap = playerVisibility.computeIfAbsent(newPlayerId, k -> new HashMap<>());
+
+        // 遍历所有其他玩家
+        for (ServerPlayerEntity target : server.getPlayerManager().getPlayerList()) {
+            UUID targetId = target.getUuid();
+
+            boolean isVisible = false;
+
+            // 从可见性映射中获取状态，如果不存在则执行可见性检查
+            isVisible = visibilityMap.computeIfAbsent(targetId,
+                    k -> checkIfPlayerIsVisible(newPlayer, target));
+
+            // 创建数据包并发送给新玩家
+            NetWorking.PlayerVisibilityUpdatePacket packet = new NetWorking.PlayerVisibilityUpdatePacket(
+                targetId, target.getName().getString(), isVisible);
+
+            ServerPlayNetworking.send(newPlayer, packet);
+        }
+    }
 }

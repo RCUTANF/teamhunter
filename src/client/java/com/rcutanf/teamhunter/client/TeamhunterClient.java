@@ -107,14 +107,12 @@ public class TeamhunterClient implements ClientModInitializer {
 
         // 注册团队分数数据包处理
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamScorePacket.ID, (payload, context) -> {
-            MinecraftClient.getInstance().execute(() -> {
-                TeamScoreHud.updateScores(
+            TeamScoreHud.updateScores(
                     payload.huntersScore(),
                     payload.runnersScore(),
                     payload.huntersAddedScore(),
                     payload.runnersAddedScore()
-                );
-            });
+            );
         });
 
         // 注册优势Buff数据包处理
@@ -122,27 +120,22 @@ public class TeamhunterClient implements ClientModInitializer {
             boolean isHunterTeam = payload.isHunterTeam();
             boolean hasAdvantage = payload.hasAdvantage();
 
-            MinecraftClient.getInstance().execute(() -> {
-                if (hasAdvantage) {
-                    TeamScoreHud.addAdvantageBuff(isHunterTeam);
-                } else {
-                    TeamScoreHud.removeAdvantageBuff(isHunterTeam);
-                }
-            });
+            if (hasAdvantage) {
+                TeamScoreHud.addAdvantageBuff(isHunterTeam);
+            } else {
+                TeamScoreHud.removeAdvantageBuff(isHunterTeam);
+            }
         });
 
         // 注册团队优势信息数据包处理（地狱维度使用）
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.TeamAdvantagePacket.ID, (payload, context) -> {
             teamAdvantage = payload.advantageOrdinal();
-            MinecraftClient.getInstance().execute(TeamhunterClient::updateNetherDisadvantageBuff);
+            updateNetherDisadvantageBuff();
         });
 
         // 注册商店物品列表响应处理
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.ShopItemsResponsePacket.ID, (payload, context) -> {
-            var itemDataList = payload.items();
-            MinecraftClient.getInstance().execute(() -> {
-                ShopScreen.getInstance().shopItems = itemDataList;
-            });
+            ShopScreen.getInstance().shopItems = payload.items();
         });
 
         // 注册玩家位置更新数据包处理
@@ -152,15 +145,13 @@ public class TeamhunterClient implements ClientModInitializer {
             BlockPos position = payload.position();
             Identifier dimension = payload.dimension(); // 接收维度信息
 
-            MinecraftClient.getInstance().execute(() -> {
-                if (playerPositions.containsKey(playerId)) {
-                    PlayerPositionInfo info = playerPositions.get(playerId);
-                    info.updatePosition(position);
-                    info.updateDimension(dimension);
-                } else {
-                    playerPositions.put(playerId, new PlayerPositionInfo(playerName, position, dimension));
-                }
-            });
+            if (playerPositions.containsKey(playerId)) {
+                PlayerPositionInfo info = playerPositions.get(playerId);
+                info.updatePosition(position);
+                info.updateDimension(dimension);
+            } else {
+                playerPositions.put(playerId, new PlayerPositionInfo(playerName, position, dimension));
+            }
         });
 
         // 注册玩家可见性更新数据包处理
@@ -169,13 +160,11 @@ public class TeamhunterClient implements ClientModInitializer {
             String playerName = payload.playerName();
             boolean isVisible = payload.isVisible();
 
-            MinecraftClient.getInstance().execute(() -> {
-                if (playerPositions.containsKey(playerId)) {
-                    PlayerPositionInfo info = playerPositions.get(playerId);
-                    info.updateVisible(isVisible);
-                }
-                // TODO:如果玩家尚未在位置映射中，我们将等待位置更新数据包
-            });
+            if (playerPositions.containsKey(playerId)) {
+                PlayerPositionInfo info = playerPositions.get(playerId);
+                info.updateVisible(isVisible);
+            }
+            // TODO:如果玩家尚未在位置映射中，我们将等待位置更新数据包
         });
 
         // 注册登录阶段网络处理

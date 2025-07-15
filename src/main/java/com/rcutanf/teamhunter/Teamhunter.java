@@ -147,11 +147,13 @@ public class Teamhunter implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             // 发送当前游戏阶段给新玩家
             var phase = phaseManager.Phase();
-            ServerPlayNetworking.send(handler.player, phase);
+            ServerPlayerEntity player = handler.player;
+            ServerPlayNetworking.send(player, phase);
 
             // 发送所有玩家位置给新玩家
-            ServerPlayerEntity player = handler.getPlayer();
+
             positionTracker.sendAllPlayerPositionsToNewPlayer(player);
+            playerVisibilityTracker.sendAllVisibilityToPlayer(player);
         });
     }
 
