@@ -13,21 +13,18 @@ package com.rcutanf.teamhunter.client;
      private BlockPos position;
      private final String teamName;
      private Identifier dimension; // 添加维度字段
+     private boolean isVisible = false;
 
-     public PlayerPositionInfo(String playerName, BlockPos position, String teamName, Identifier dimension) {
+     public PlayerPositionInfo(String playerName, BlockPos position, String teamName, Identifier dimension, boolean isVisible) {
          this.playerName = playerName;
          this.position = position;
          this.teamName = teamName;
          this.dimension = dimension;
+         this.isVisible = isVisible;
      }
 
      public PlayerPositionInfo(String playerName, BlockPos position, Identifier dimension) {
-         this(playerName, position, getTeamNameForPlayer(playerName), dimension);
-     }
-
-     // 为了向后兼容，保留原有构造函数
-     public PlayerPositionInfo(String playerName, BlockPos position) {
-         this(playerName, position, getTeamNameForPlayer(playerName), null);
+         this(playerName, position, getTeamNameForPlayer(playerName), dimension,false);
      }
 
      public void updatePosition(BlockPos newPosition) {
@@ -37,6 +34,10 @@ package com.rcutanf.teamhunter.client;
      public void updateDimension(Identifier newDimension) {
          this.dimension = newDimension;
      }
+
+        public void updateVisible(boolean visible) {
+            this.isVisible = visible;
+        }
 
      public String getPlayerName() {
          return playerName;
@@ -53,6 +54,10 @@ package com.rcutanf.teamhunter.client;
      public Identifier getDimension() {
          return dimension;
      }
+
+        public boolean isVisible() {
+            return isVisible;
+        }
 
      private static String getTeamNameForPlayer(String playerName) {
          MinecraftClient client = MinecraftClient.getInstance();

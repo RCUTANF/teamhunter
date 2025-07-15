@@ -171,4 +171,26 @@ public class NetWorking {
             buf.writeIdentifier(dimension);
         }
     }
+
+    public record PlayerVisibilityUpdatePacket(UUID playerId, String playerName, boolean isVisible) implements CustomPayload {
+        public static final Identifier PLAYER_VISIBILITY_ID = Identifier.of(Teamhunter.MOD_ID, "player_visibility");
+        public static final Id<PlayerVisibilityUpdatePacket> ID = new Id<>(PLAYER_VISIBILITY_ID);
+        public static final PacketCodec<PacketByteBuf, PlayerVisibilityUpdatePacket> CODEC =
+            CustomPayload.codecOf(PlayerVisibilityUpdatePacket::write, PlayerVisibilityUpdatePacket::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+
+        public PlayerVisibilityUpdatePacket(PacketByteBuf buf) {
+            this(buf.readUuid(), buf.readString(), buf.readBoolean());
+        }
+
+        public void write(PacketByteBuf buf) {
+            buf.writeUuid(playerId);
+            buf.writeString(playerName);
+            buf.writeBoolean(isVisible);
+        }
+    }
 }

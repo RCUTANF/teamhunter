@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public class PlayerRadarHud {
     // 雷达配置
     private static final int RADAR_BG_COLOR = 0x80000000;
-    private static final int RADAR_BORDER_COLOR = 0xFFFFFFFF;
+    private static final int RADAR_BORDER_COLOR = 0xFFCCCCCC;
     private static int RADAR_SIZE = 60; // 默认雷达大小
     private static int RADAR_X = 5; // 默认X位置
     private static int RADAR_Y = 5; // 默认Y位置
@@ -112,7 +112,8 @@ public class PlayerRadarHud {
                     otherPlayerPos,
                     renderDistance,
                     dotColor,
-                    posInfo.getPlayerName()
+                    posInfo.getPlayerName(),
+                    posInfo.isVisible()
             );
         }
     }
@@ -130,19 +131,18 @@ public class PlayerRadarHud {
 
         // 绘制中心白点
         int centerDotSize = 3;
-        context.fill(centerX - centerDotSize/2, centerY - centerDotSize/2,
-                centerX + centerDotSize/2, centerY + centerDotSize/2,
-                0xFFFFFFFF); // 纯白色
+        fillPlayerDot(context, centerX, centerY, centerDotSize/2, 0xFFFFFFFF); // 纯白色圆点
 
 
     }
 
     private static void drawPlayerOnRadar(DrawContext context, BlockPos playerPos, float playerRotation,
                                           BlockPos otherPlayerPos, int renderDistance, int dotColor,
-                                          String playerName) {
+                                          String playerName, boolean isVisible) {
         int centerX = RADAR_X + RADAR_SIZE / 2;
         int centerY = RADAR_Y + RADAR_SIZE / 2;
         int radius = RADAR_SIZE / 2;
+        int dotRadius = PLAYER_DOT_SIZE / 2;
 
         // 计算相对位置，考虑玩家朝向
         double dx = otherPlayerPos.getX() - playerPos.getX();
@@ -157,29 +157,48 @@ public class PlayerRadarHud {
         double rotatedDx = dx * Math.cos(angle) - dz * Math.sin(angle);
         double rotatedDz = dx * Math.sin(angle) + dz * Math.cos(angle);
 
-        // 计算雷达上的位置
-        double scaleFactor = (double) radius / renderDistance;
+        // 计算方向角度（用于射线）
+        double directionAngle = Math.atan2(rotatedDz, rotatedDx);
 
-        boolean isOutOfRange = distance > renderDistance;
+        //点渲染的修正参数
+        int adjustedRadius = radius - dotRadius - 1; // 额外减1像素作为安全边距
+        // 计算雷达上的位置
+        double scaleFactor = (double) adjustedRadius / renderDistance;
+
+        boolean isOutOfRange = distance >= renderDistance;
         int dotX, dotY;
 
+        // 检查是否为队友（同一队伍的玩家）
+        boolean isTeammate = false;
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.world != null) {
+            Team playerTeam = client.world.getScoreboard().getScoreHolderTeam(client.player.getName().getString());
+            Team otherTeam = client.world.getScoreboard().getScoreHolderTeam(playerName);
+            isTeammate = (playerTeam != null && otherTeam != null && playerTeam == otherTeam);
+        }
+
+        if (!isVisible && !isTeammate) {
+            // 绘制指向不可见玩家方向的射线
+            drawDirectionLine(context, centerX, centerY, adjustedRadius, directionAngle, dotColor, playerName);
+            return; // 跳过下方的正常绘制逻辑
+        }
+
         if (isOutOfRange) {
-            // 计算方向角度
-            double directionAngle = Math.atan2(rotatedDz, rotatedDx);
+
 
             // 将点放在雷达边缘
-            dotX = centerX + (int)(Math.cos(directionAngle) * radius);
-            dotY = centerY + (int)(Math.sin(directionAngle) * radius);
+            dotX = centerX + Math.round((float)(Math.cos(directionAngle) * adjustedRadius))-1;
+            dotY = centerY + Math.round((float)(Math.sin(directionAngle) * adjustedRadius))-1;
         } else {
-            // 在雷达范围内，正常计算位置
-            dotX = centerX + (int)(rotatedDx * scaleFactor);
-            dotY = centerY + (int)(rotatedDz * scaleFactor);
+            // 正常计算位置
+            dotX = centerX + Math.round((float)(rotatedDx * scaleFactor))-1;
+            dotY = centerY + Math.round((float)(rotatedDz * scaleFactor))-1;
         }
 
 
 
         // 绘制玩家圆点(不再使用矩形)
-        int dotRadius = PLAYER_DOT_SIZE / 2;
+
         fillPlayerDot(context, dotX, dotY, dotRadius, dotColor);
 
         // 如果高度差超过1格，绘制高度指示箭头
@@ -213,7 +232,7 @@ public class PlayerRadarHud {
                 0,
                 0,
                 dotColor, // 使用与点相同的颜色
-                true  // 带阴影，提高可读性
+                false
         );
         // 恢复变换矩阵
         context.getMatrices().pop();
@@ -382,7 +401,7 @@ public class PlayerRadarHud {
     private static void drawHeightIndicator(DrawContext context, int x, int y, double dy, int color) {
         int yOffset = 1;     // 箭头与圆点的距离
         String arrowChar = "§l^";  // 统一使用^字符
-        float scale = 0.4f; // 缩放比例
+        float scale = 0.35f; // 缩放比例
 
         // 保存当前变换状态
         context.getMatrices().push();
@@ -430,6 +449,58 @@ public class PlayerRadarHud {
         }
 
         // 恢复变换状态
+        context.getMatrices().pop();
+    }
+
+    // 绘制指向不可见玩家方向的射线
+    private static void drawDirectionLine(DrawContext context, int centerX, int centerY, int radius,
+                                          double angle, int color, String playerName) {
+        // 计算射线起点和终点
+        int startX = centerX;
+        int startY = centerY;
+        int endX = centerX + Math.round((float)(Math.cos(angle) * radius))-1;
+        int endY = centerY + Math.round((float)(Math.sin(angle) * radius))-1;
+
+        // 绘制射线
+        drawLine(context, centerX, centerY, endX, endY, color);
+
+        // 在射线终点绘制玩家名称
+        float scale = 0.4f;
+        int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
+        int scaledWidth = (int)(textWidth * scale);
+
+        context.getMatrices().push();
+        context.getMatrices().translate(endX - (float) scaledWidth / 2, endY - 6, 0);
+        context.getMatrices().scale(scale, scale, 1.0f);
+        context.drawText(
+                MinecraftClient.getInstance().textRenderer,
+                playerName,
+                0,
+                0,
+                color,
+                true
+        );
+        context.getMatrices().pop();
+    }
+
+    // 通过矩阵旋转绘制线段
+    private static void drawLine(DrawContext context, int x1, int y1, int x2, int y2, int color) {
+        // 计算线段长度和角度
+        double length = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+
+        // 保存当前变换
+        context.getMatrices().push();
+
+        // 移动到起点位置
+        context.getMatrices().translate(x1, y1, 0);
+        // 旋转到线段角度
+        context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float)angle));
+
+        // 绘制水平线
+        context.fill(0, 0, (int)length, 1, color);
+
+        // 恢复变换
         context.getMatrices().pop();
     }
 

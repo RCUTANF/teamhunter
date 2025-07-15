@@ -163,6 +163,21 @@ public class TeamhunterClient implements ClientModInitializer {
             });
         });
 
+        // 注册玩家可见性更新数据包处理
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.PlayerVisibilityUpdatePacket.ID, (payload, context) -> {
+            UUID playerId = payload.playerId();
+            String playerName = payload.playerName();
+            boolean isVisible = payload.isVisible();
+
+            MinecraftClient.getInstance().execute(() -> {
+                if (playerPositions.containsKey(playerId)) {
+                    PlayerPositionInfo info = playerPositions.get(playerId);
+                    info.updateVisible(isVisible);
+                }
+                // TODO:如果玩家尚未在位置映射中，我们将等待位置更新数据包
+            });
+        });
+
         // 注册登录阶段网络处理
         ClientLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD,
             (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));

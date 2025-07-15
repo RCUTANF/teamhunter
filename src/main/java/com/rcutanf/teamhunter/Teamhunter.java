@@ -29,6 +29,7 @@ public class Teamhunter implements ModInitializer {
     private EnvironmentController environmentController;
     public static AdvancementListener advancementListener;
     private PlayerPositionTracker positionTracker;
+    private PlayerVisibilityTracker playerVisibilityTracker;
 
     /**
      * 向所有在线玩家广播数据包
@@ -86,6 +87,7 @@ public class Teamhunter implements ModInitializer {
 
         // 玩家位置更新数据包
         PayloadTypeRegistry.playS2C().register(NetWorking.PlayerPositionUpdatePacket.ID, NetWorking.PlayerPositionUpdatePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.PlayerVisibilityUpdatePacket.ID, NetWorking.PlayerVisibilityUpdatePacket.CODEC);
     }
 
     /**
@@ -116,6 +118,7 @@ public class Teamhunter implements ModInitializer {
             environmentController = new EnvironmentController(server);
             advancementListener = new AdvancementListener(server);
             positionTracker = new PlayerPositionTracker(server);
+            playerVisibilityTracker = new PlayerVisibilityTracker(server);
         });
 
         // 服务器关闭事件
@@ -134,6 +137,9 @@ public class Teamhunter implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if (positionTracker != null) {
                 positionTracker.tick();
+            }
+            if (playerVisibilityTracker != null) {
+                playerVisibilityTracker.tick();
             }
         });
 
