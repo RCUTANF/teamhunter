@@ -25,18 +25,15 @@ public class PlayerRadarHud {
     // 雷达配置
     private static final int RADAR_BG_COLOR = 0x80000000;
     private static final int RADAR_BORDER_COLOR = 0xFFCCCCCC;
-    private static int RADAR_SIZE = 60; // 默认雷达大小
-    private static int RADAR_X = 5; // 默认X位置
-    private static int RADAR_Y = 5; // 默认Y位置
-
     // 玩家标记配置
     private static final int PLAYER_DOT_SIZE = 4;
     private static final int HUNTER_COLOR = 0xFFFF0000; // 红色为猎人
     private static final int RUNNER_COLOR = 0xFF00FF00; // 绿色为逃亡者
     private static final int UNKNOWN_TEAM_COLOR = 0xFFFFFF00; // 黄色为未知队伍
-
     private static final Map<String, Identifier> CIRCLE_TEXTURES = new HashMap<>();//纹理资源缓存
-
+    private static int RADAR_SIZE = 60; // 默认雷达大小
+    private static int RADAR_X = 5; // 默认X位置
+    private static int RADAR_Y = 5; // 默认Y位置
 
     public static void setRadarSize(int size) {
         RADAR_SIZE = Math.max(30, Math.min(200, size));
@@ -131,7 +128,7 @@ public class PlayerRadarHud {
 
         // 绘制中心白点
         int centerDotSize = 3;
-        fillPlayerDot(context, centerX, centerY, centerDotSize/2, 0xFFFFFFFF); // 纯白色圆点
+        fillPlayerDot(context, centerX, centerY, centerDotSize / 2, 0xFFFFFFFF); // 纯白色圆点
 
 
     }
@@ -187,14 +184,13 @@ public class PlayerRadarHud {
 
 
             // 将点放在雷达边缘
-            dotX = centerX + Math.round((float)(Math.cos(directionAngle) * adjustedRadius))-1;
-            dotY = centerY + Math.round((float)(Math.sin(directionAngle) * adjustedRadius))-1;
+            dotX = centerX + Math.round((float) (Math.cos(directionAngle) * (adjustedRadius - 1)));
+            dotY = centerY + Math.round((float) (Math.sin(directionAngle) * (adjustedRadius - 1)));
         } else {
             // 正常计算位置
-            dotX = centerX + Math.round((float)(rotatedDx * scaleFactor))-1;
-            dotY = centerY + Math.round((float)(rotatedDz * scaleFactor))-1;
+            dotX = centerX + Math.round((float) (rotatedDx * scaleFactor)) - 1;
+            dotY = centerY + Math.round((float) (rotatedDz * scaleFactor)) - 1;
         }
-
 
 
         // 绘制玩家圆点(不再使用矩形)
@@ -209,20 +205,20 @@ public class PlayerRadarHud {
         // 如果超出范围则显示距离
         String displayText = playerName;
         if (isOutOfRange) {
-            int distanceInBlocks = (int)distance;
+            int distanceInBlocks = (int) distance;
             displayText = playerName + " (" + distanceInBlocks + "m)";
         }
 
         // 绘制玩家名称（缩小字体）
         float scale = 0.4f; // 调整为需要的缩放比例
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
-        int scaledWidth = (int)(textWidth * scale);
+        int scaledWidth = (int) (textWidth * scale);
 
         // 保存当前变换矩阵
         context.getMatrices().push();
         // 移动到文本绘制位置（减小垂直偏移，使文字更靠近点）
         //TODO：能不能动态调整啊
-        context.getMatrices().translate(dotX - (float) scaledWidth / 2, dotY - (float) PLAYER_DOT_SIZE /2 - 6, 0);
+        context.getMatrices().translate(dotX - (float) scaledWidth / 2, dotY - (float) PLAYER_DOT_SIZE / 2 - 6, 0);
         // 应用缩放
         context.getMatrices().scale(scale, scale, 1.0f);
         // 使用与点相同的颜色渲染文字
@@ -324,7 +320,7 @@ public class PlayerRadarHud {
                         // 边缘抗锯齿 - 更平滑的过渡
                         double factor = 1.0 - (distance - scaledRadius) / resolution;
                         factor = Math.max(0, Math.min(1, factor)); // 确保因子在0-1范围内
-                        int newAlpha = (int)(alpha * factor);
+                        int newAlpha = (int) (alpha * factor);
                         int newColor = (newAlpha << 24) | (blue << 16) | (green << 8) | red;
                         image.setColor(x, y, newColor);
                     }
@@ -333,12 +329,12 @@ public class PlayerRadarHud {
                     double innerRadius = scaledRadius - borderThickness;
                     if (distance >= innerRadius && distance <= scaledRadius) {
                         image.setColor(x, y, abgrColor);
-                    } else if (distance < innerRadius + (double) resolution /2 && distance > innerRadius - (double) resolution /2) {
+                    } else if (distance < innerRadius + (double) resolution / 2 && distance > innerRadius - (double) resolution / 2) {
                         // 内边缘抗锯齿
-                        image.setColor(x, y, calculateAntiAliasedColor(distance, innerRadius, (double) resolution/2, abgrColor));
-                    } else if (distance < scaledRadius + (double) resolution /2 && distance > scaledRadius - (double) resolution /2) {
+                        image.setColor(x, y, calculateAntiAliasedColor(distance, innerRadius, (double) resolution / 2, abgrColor));
+                    } else if (distance < scaledRadius + (double) resolution / 2 && distance > scaledRadius - (double) resolution / 2) {
                         // 外边缘抗锯齿
-                        image.setColor(x, y, calculateAntiAliasedColor(distance, scaledRadius, (double) resolution/2, abgrColor));
+                        image.setColor(x, y, calculateAntiAliasedColor(distance, scaledRadius, (double) resolution / 2, abgrColor));
                     }
                 }
             }
@@ -372,7 +368,7 @@ public class PlayerRadarHud {
         int green = (baseColor >> 8) & 0xFF;
         int blue = baseColor & 0xFF;
 
-        int newAlpha = (int)(alpha * factor);
+        int newAlpha = (int) (alpha * factor);
         return (newAlpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
@@ -458,8 +454,8 @@ public class PlayerRadarHud {
         // 计算射线起点和终点
         int startX = centerX;
         int startY = centerY;
-        int endX = centerX + Math.round((float)(Math.cos(angle) * (radius - 1)));
-        int endY = centerY + Math.round((float)(Math.sin(angle) * (radius -1)));
+        int endX = centerX + Math.round((float) (Math.cos(angle) * (radius - 1)));
+        int endY = centerY + Math.round((float) (Math.sin(angle) * (radius - 1)));
 
         // 绘制射线
         drawLine(context, centerX, centerY, endX, endY, color);
@@ -467,7 +463,7 @@ public class PlayerRadarHud {
         // 在射线终点绘制玩家名称
         float scale = 0.4f;
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
-        int scaledWidth = (int)(textWidth * scale);
+        int scaledWidth = (int) (textWidth * scale);
 
         context.getMatrices().push();
         context.getMatrices().translate(endX - (float) scaledWidth / 2, endY - 6, 0);
@@ -486,7 +482,7 @@ public class PlayerRadarHud {
     // 通过矩阵旋转绘制线段
     private static void drawLine(DrawContext context, int x1, int y1, int x2, int y2, int color) {
         // 计算线段长度和角度
-        int length = (int)Math.round(Math.hypot(x2 - x1, y2 - y1));
+        int length = (int) Math.round(Math.hypot(x2 - x1, y2 - y1));
         double angle = Math.atan2(y2 - y1, x2 - x1);
 
         // 保存当前变换
@@ -495,7 +491,7 @@ public class PlayerRadarHud {
         // 移动到起点位置
         context.getMatrices().translate(x1, y1, 0);
         // 旋转到线段角度
-        context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float)angle));
+        context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float) angle));
 
         // 绘制水平线
         context.fill(0, 0, length, 1, color);
@@ -513,7 +509,6 @@ public class PlayerRadarHud {
         }
         CIRCLE_TEXTURES.clear();
     }
-
 
 
 }
