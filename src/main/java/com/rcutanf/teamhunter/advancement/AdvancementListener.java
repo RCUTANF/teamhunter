@@ -24,7 +24,7 @@ public class AdvancementListener {
     private static boolean runnersHadAdvantage = false;
 
     // 定义领先状态枚举
-    private enum AdvantageState {
+    public enum AdvantageState {
         HUNTERS_ADVANTAGE,  // 猎人队领先
         RUNNERS_ADVANTAGE,  // 逃亡者队领先
         NO_ADVANTAGE        // 无领先优势
@@ -264,5 +264,10 @@ public class AdvancementListener {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
         }
+    }
+
+    public static AdvantageState getLastAdvantageState(){
+        // 返回当前的领先状态
+        return lastAdvantageState;
     }
 }
