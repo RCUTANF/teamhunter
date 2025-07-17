@@ -175,14 +175,17 @@ public class ShopScreen extends Screen {
     private void renderItemGrid(DrawContext context, int mouseX, int mouseY) {
         hoveredItemIndex = -1;
 
-        // 计算网格开始位置
-        int centerX = width / 2;
-        int centerY = height / 2;
-        int startX = centerX - (ICON_SIZE * 3) / 2;
-        int startY = centerY - (ICON_SIZE * 3) / 2;
+        // 设置网格与窗口边缘的边距
+        final int MARGIN_LEFT = 20;
+        final int MARGIN_TOP = 40;
+
+
+        // 直接从窗口左上角开始计算，而不是从中心点
+        int startX = guiLeft + MARGIN_LEFT;
+        int startY = guiTop + MARGIN_TOP;
 
         // 每行显示4个物品
-        int itemsPerRow = 4;
+        int itemsPerRow = 5;
 
 
         // 创建一个裁剪区域以防止物品渲染超出窗口

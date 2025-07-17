@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter;
 
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -78,12 +79,18 @@ public class PlayerVisibilityTracker {
     private boolean checkIfPlayerIsVisible(ServerPlayerEntity observer, ServerPlayerEntity target) {
         //检查buff，存在buff则始终可见
         //TODO：这是个临时解决方案，后续要改到buff系统
-        if (TeamUtils.getPlayerTeam(target).getName().equals("hunters")) {
+        Team targetTeam = TeamUtils.getPlayerTeam(target);
+        Team observerTeam = TeamUtils.getPlayerTeam(observer);
+
+        // 检查猎人团队优势条件
+        if (targetTeam != null && targetTeam.getName().equals("hunters")) {
             if (AdvancementListener.getLastAdvantageState() == AdvancementListener.AdvantageState.RUNNERS_ADVANTAGE) {
                 return true; // 如果逃者队有优势，则始终可见
             }
         }
-        if(TeamUtils.getPlayerTeam(observer).getName().equals("runners")){
+
+        // 检查逃者团队优势条件
+        if (observerTeam != null && observerTeam.getName().equals("runners")) {
             if (AdvancementListener.getLastAdvantageState() == AdvancementListener.AdvantageState.HUNTERS_ADVANTAGE) {
                 return true; // 如果猎人队有优势，则始终可见
             }

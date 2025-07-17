@@ -174,7 +174,7 @@ public class TeamhunterClient implements ClientModInitializer {
         // 注册客户端连接事件
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             playerPositions.clear();
-            PlayerRadarHud.dispose();
+            //PlayerRadarHud.dispose();
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {

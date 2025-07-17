@@ -184,12 +184,12 @@ public class PlayerRadarHud {
 
 
             // 将点放在雷达边缘
-            dotX = centerX + Math.round((float) (Math.cos(directionAngle) * (adjustedRadius - 1)));
-            dotY = centerY + Math.round((float) (Math.sin(directionAngle) * (adjustedRadius - 1)));
+            dotX = centerX + Math.round((float) (Math.cos(directionAngle) * (adjustedRadius - 2)));
+            dotY = centerY + Math.round((float) (Math.sin(directionAngle) * (adjustedRadius - 2)));
         } else {
             // 正常计算位置
-            dotX = centerX + Math.round((float) (rotatedDx * scaleFactor)) - 1;
-            dotY = centerY + Math.round((float) (rotatedDz * scaleFactor)) - 1;
+            dotX = centerX + Math.round((float) (rotatedDx * scaleFactor)) - 2;
+            dotY = centerY + Math.round((float) (rotatedDz * scaleFactor)) - 2;
         }
 
 
@@ -275,7 +275,7 @@ public class PlayerRadarHud {
     // 生成圆形纹理
     private static Identifier generateCircleTexture(int radius, int color, boolean filled) {
         // 增加纹理分辨率来提高精度 - 使用4倍分辨率
-        int resolution = 4;
+        int resolution = 2;
         int size = (radius * 2 + 8) * resolution;
         int centerOffset = size / 2;
 
@@ -454,8 +454,8 @@ public class PlayerRadarHud {
         // 计算射线起点和终点
         int startX = centerX;
         int startY = centerY;
-        int endX = centerX + Math.round((float) (Math.cos(angle) * (radius - 1)));
-        int endY = centerY + Math.round((float) (Math.sin(angle) * (radius - 1)));
+        int endX = centerX + Math.round((float) (Math.cos(angle) * (radius - 2)));
+        int endY = centerY + Math.round((float) (Math.sin(angle) * (radius - 2)));
 
         // 绘制射线
         drawLine(context, centerX, centerY, endX, endY, color);
