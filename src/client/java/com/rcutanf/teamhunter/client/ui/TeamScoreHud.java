@@ -58,6 +58,9 @@ public class TeamScoreHud {
     // 领先优势buff图标
     private static final Identifier ADVANTAGE_BUFF_ICON = Identifier.of("teamhunter", "textures/ui/advantage_buff.png");
 
+    public static int getBAR_HEIGHT() {return BAR_HEIGHT;}
+
+    public static int getBAR_Y() {return BAR_Y;}
 
     /**
      * 表示一个队伍效果（Buff/Debuff）

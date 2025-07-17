@@ -51,22 +51,10 @@ public class TeamhunterClient implements ClientModInitializer {
     /** 游戏当前阶段 */
     public static Phase phase = Phase.WAITING;
 
-    /** 当前阶段倒计时 */
-    public static Duration countDown = Duration.ZERO;
 
     /** 上一次的团队优势状态，用于状态变化检测 */
     private static int lastTeamAdvantage = 0;
 
-    // ========== 键位绑定 ==========
-
-    /** 商店键绑定 */
-    private static KeyBinding shopKeyBinding;
-
-    /** 团队切换键绑定 */
-    private static KeyBinding teamSwitchKeyBinding;
-
-    /** 团队切换状态标记，true 表示下次将选择猎人队伍 */
-    private static boolean isHunterCommand = true;
 
     // ========== 玩家位置追踪 ==========
 

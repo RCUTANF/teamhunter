@@ -31,6 +31,7 @@ public class PlayerRadarHud {
     private static final int RUNNER_COLOR = 0xFF00FF00; // 绿色为逃亡者
     private static final int UNKNOWN_TEAM_COLOR = 0xFFFFFF00; // 黄色为未知队伍
     private static final Map<String, Identifier> CIRCLE_TEXTURES = new HashMap<>();//纹理资源缓存
+    private static final Identifier exposureIcon = Identifier.of("teamhunter", "textures/ui/pos_exposure.png");
     private static int RADAR_SIZE = 60; // 默认雷达大小
     private static int RADAR_X = 5; // 默认X位置
     private static int RADAR_Y = 5; // 默认Y位置
@@ -77,7 +78,30 @@ public class PlayerRadarHud {
             PlayerPositionInfo posInfo = entry.getValue();
 
             // 跳过当前玩家自己
-            if (otherPlayerId.equals(player.getUuid())) continue;
+            //加入一个玩家自己可见时展示可见性图片的逻辑
+            if (otherPlayerId.equals(player.getUuid())){
+                if (posInfo.isVisible()){
+                    // 加载位置暴露指示器图片
+
+                    int iconSize = 64; // 图标大小
+
+                    // 计算图标位置
+                    int screenWidth = client.getWindow().getScaledWidth();
+                    int iconX = screenWidth / 2 - iconSize / 2; // 屏幕中心
+                    int iconY = TeamScoreHud.getBAR_HEIGHT() + TeamScoreHud.getBAR_Y() + 3; // 顶部往下偏移10像素
+
+                    // 使用与类中其他纹理绘制相同的方法
+                    context.drawTexture(
+                            RenderLayer::getGuiTextured, // 渲染层函数
+                            exposureIcon,                // 纹理标识符
+                            iconX, iconY,                // 位置
+                            0, 0,                        // 纹理UV起点
+                            iconSize, iconSize,          // 绘制宽高
+                            iconSize, iconSize           // 纹理总尺寸
+                    );
+                }
+                continue;
+            };
 
             // 跳过不在同一维度的玩家
             if (posInfo.getDimension() != null && !playerDimension.equals(posInfo.getDimension())) continue;

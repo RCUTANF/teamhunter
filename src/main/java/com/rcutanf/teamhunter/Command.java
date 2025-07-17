@@ -149,8 +149,6 @@ public class Command {
      * 开始比赛
      * 此处定义了阶段执行顺序及其倒计时
      *
-     * @param context
-     * @return
      */
     private static int start(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
@@ -158,7 +156,8 @@ public class Command {
         if(CommandConfig.getCurrentGamemode().equals("ct")) {
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
                     .then(Phase.PREPARE, Duration.ofSeconds(10))
-                    .then(Phase.MATCH);
+                    .then(Phase.MATCH, Duration.ofMinutes(CommandConfig.getCurrentMatchDuration()))
+                    .then(Phase.END);
         } else if(CommandConfig.getCurrentGamemode().equals("as")){
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
                     .then(Phase.PREPARE, Duration.ofSeconds(10))
@@ -176,8 +175,6 @@ public class Command {
     /**
      * 取消比赛
      *
-     * @param context
-     * @return
      */
     private static int cancel(CommandContext<ServerCommandSource> context) {
         //检查是否是热身阶段
@@ -199,8 +196,6 @@ public class Command {
     /**
      * 结束比赛
      *
-     * @param context
-     * @return
      */
     private static int end(CommandContext<ServerCommandSource> context) {
         if (Teamhunter.phaseManager.Phase() != Phase.MATCH) {
@@ -216,8 +211,6 @@ public class Command {
     /**
      * 暂停比赛
      *
-     * @param context
-     * @return
      */
     private static int parse(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
@@ -227,8 +220,6 @@ public class Command {
     /**
      * 恢复比赛
      *
-     * @param context
-     * @return
      */
     private static int resume(CommandContext<ServerCommandSource> context) {
         var server = context.getSource().getServer();
