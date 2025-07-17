@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter;
 
+import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -36,9 +37,27 @@ public class MatchEndListener {
                 MinecraftServer server = newPlayer.getServer();
                 if (server == null) return;
 
+
+
                 // 只有在"ct"玩法下才检查死亡次数
                 if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
                     checkDeathsAndEndMatch(server);
+
+                    // 获取死亡玩家的击杀者
+                    ServerPlayerEntity killer = null;
+                    if (oldPlayer.getAttacker() instanceof ServerPlayerEntity) {
+                        killer = (ServerPlayerEntity) oldPlayer.getAttacker();
+                    } else if (oldPlayer.getPrimeAdversary() instanceof ServerPlayerEntity) {
+                        killer = (ServerPlayerEntity) oldPlayer.getPrimeAdversary();
+                    }
+
+                    if (killer != null) {
+                        // 记录击杀信息
+                        String killerName = killer.getName().getString();
+                        String victimName = oldPlayer.getName().getString();
+                        String teamName = TeamUtils.getPlayerTeamName(killer);
+                        AdvancementListener.addTeamScore(teamName, 50, server, victimName + " 被 " + killerName + " 击杀");
+                    }
                 }
             }
         });

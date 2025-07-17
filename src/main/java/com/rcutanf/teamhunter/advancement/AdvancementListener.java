@@ -65,7 +65,7 @@ public class AdvancementListener {
             //            playerName, teamName, achievement, score));
 
         // 更新分数
-        addTeamScore(teamName, score, player.getServerWorld(), null);
+        addTeamScore(teamName, score, server, null);
     }
 
     // 获取当前猎人队伍分数
@@ -85,11 +85,11 @@ public class AdvancementListener {
         lastAdvantageState = AdvantageState.NO_ADVANTAGE;
     }
 
-    public static void sendTeamScoreUpdate(ServerWorld world, int huntersScore, int runnersScore,
+    public static void sendTeamScoreUpdate(MinecraftServer server, int huntersScore, int runnersScore,
                                            int huntersAddedScore, int runnersAddedScore) {
         NetWorking.TeamScorePacket packet = new NetWorking.TeamScorePacket(huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             player.networkHandler.sendPacket(new CustomPayloadS2CPacket(packet));
         }
     }
@@ -98,11 +98,12 @@ public class AdvancementListener {
      * 增加指定队伍的分数
      * @param teamName 队伍名称 ("hunters" 或 "runners")
      * @param amount 要增加的分数值
-     * @param world 服务器世界实例，用于发送分数更新包
+     * @param server 服务器实例，用于发送分数更新包
      * @param message 可选的消息，解释为什么增加分数
      * @return 增加后的新分数
      */
-    public static int addTeamScore(String teamName, int amount, ServerWorld world, String message) {
+    public static int addTeamScore(String teamName, int amount, MinecraftServer server, String message) {
+
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -123,10 +124,6 @@ public class AdvancementListener {
             return 0;
         }
 
-        // 更新计分板
-        MinecraftServer server = world.getServer();
-
-
         // 如果提供了消息，显示加分通知
         if (message != null && !message.isEmpty()) {
             CommandExecutor.executeCommand(server,
@@ -138,7 +135,7 @@ public class AdvancementListener {
         applyTeamAdvantageEffects(server, huntersScore, runnersScore);
 
         // 发送分数更新包
-        sendTeamScoreUpdate(world, huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
+        sendTeamScoreUpdate(server, huntersScore, runnersScore, huntersAddedScore, runnersAddedScore);
 
         // 返回当前队伍的新分数
         return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -148,11 +145,11 @@ public class AdvancementListener {
      * 减少指定队伍的分数
      * @param teamName 队伍名称 ("hunters" 或 "runners")
      * @param amount 要减少的分数值
-     * @param world 服务器世界实例，用于发送分数更新包
+     * @param server 服务器实例，用于发送分数更新包
      * @param message 可选的消息，解释为什么减少分数
      * @return 减少后的新分数
      */
-    public static int reduceTeamScore(String teamName, int amount, ServerWorld world, Text message) {
+    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -173,9 +170,6 @@ public class AdvancementListener {
             return 0;
         }
 
-        // 更新计分板
-        MinecraftServer server = world.getServer();
-
 
         // 如果提供了消息，显示减分通知
         if (message != null) {
@@ -189,7 +183,7 @@ public class AdvancementListener {
         applyTeamAdvantageEffects(server, huntersScore, runnersScore);
 
         // 发送分数更新包，使用负值表示减少的分数
-        sendTeamScoreUpdate(world, huntersScore, runnersScore, -huntersReducedScore, -runnersReducedScore);
+        sendTeamScoreUpdate(server, huntersScore, runnersScore, -huntersReducedScore, -runnersReducedScore);
 
         // 返回当前队伍的新分数
         return teamName.equals("hunters") ? huntersScore : runnersScore;

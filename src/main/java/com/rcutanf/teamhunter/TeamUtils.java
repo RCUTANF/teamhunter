@@ -64,6 +64,11 @@ public final class TeamUtils {
         return player.getScoreboardTeam();
     }
 
+    public static String getPlayerTeamName(ServerPlayerEntity player) {
+        Team team = getPlayerTeam(player);
+        return (team != null) ? team.getName() : null;
+    }
+
     /**
      * 检查玩家是否属于指定队伍
      * @param player 玩家实体

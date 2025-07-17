@@ -340,7 +340,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的增加分数方法
-        AdvancementListener.addTeamScore(teamName, amount, context.getSource().getWorld(), "管理员加分");
+        AdvancementListener.addTeamScore(teamName, amount, context.getSource().getServer(), "管理员加分");
 
         return SINGLE_SUCCESS;
     }
@@ -358,7 +358,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), Text.of("测试命令"));
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), Text.of("测试命令"));
 
         return SINGLE_SUCCESS;
     }
@@ -377,7 +377,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getWorld(), Text.of(reason));
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), Text.of(reason));
 
         return SINGLE_SUCCESS;
     }
