@@ -1,6 +1,5 @@
 package com.rcutanf.teamhunter.client.ui;
 
-import com.rcutanf.teamhunter.CommandConfig;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.client.config.RadarConfig;
 import net.minecraft.client.MinecraftClient;

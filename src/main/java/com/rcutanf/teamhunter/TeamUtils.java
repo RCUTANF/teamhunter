@@ -7,7 +7,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public final class TeamUtils {
     /**

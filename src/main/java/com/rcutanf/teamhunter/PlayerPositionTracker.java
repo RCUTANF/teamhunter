@@ -1,13 +1,12 @@
 package com.rcutanf.teamhunter;
 
+    import com.mojang.authlib.GameProfile;
     import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
     import net.minecraft.server.MinecraftServer;
     import net.minecraft.server.network.ServerPlayerEntity;
     import net.minecraft.server.world.ServerWorld;
     import net.minecraft.util.Identifier;
     import net.minecraft.util.math.BlockPos;
-    import net.minecraft.registry.RegistryKey;
-    import net.minecraft.world.World;
 
     import java.util.HashMap;
     import java.util.Map;
@@ -143,7 +142,7 @@ package com.rcutanf.teamhunter;
                     String playerName = otherPlayer != null ?
                             otherPlayer.getName().getString() :
                             server.getUserCache().getByUuid(otherPlayerId)
-                                    .map(gameProfile -> gameProfile.getName())
+                                    .map(GameProfile::getName)
                                     .orElse("Unknown");
 
                     // 创建并发送位置更新包

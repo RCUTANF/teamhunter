@@ -151,7 +151,6 @@ public class Command {
      *
      */
     private static int start(CommandContext<ServerCommandSource> context) {
-        var server = context.getSource().getServer();
         var seconds = IntegerArgumentType.getInteger(context, SECONDS);
         if(CommandConfig.getCurrentGamemode().equals("ct")) {
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
@@ -186,12 +185,11 @@ public class Command {
             CommandExecutor.executeCommand(context.getSource().getServer(), "/effect clear @a[team=hunters] minecraft:resistance");
             Teamhunter.phaseManager.clear();
             Teamhunter.phaseManager.then(Phase.WAITING);
-            return SINGLE_SUCCESS;
         }
         else {
             CommandExecutor.executeCommand(context.getSource().getServer(), "/say §4比赛已开始，无法取消");
-            return SINGLE_SUCCESS;
         }
+        return SINGLE_SUCCESS;
     }
     /**
      * 结束比赛

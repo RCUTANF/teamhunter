@@ -1,9 +1,6 @@
 package com.rcutanf.teamhunter.advancement;
 
-import com.rcutanf.teamhunter.CommandExecutor;
-import com.rcutanf.teamhunter.NetWorking;
-import com.rcutanf.teamhunter.Phase;
-import com.rcutanf.teamhunter.Teamhunter;
+import com.rcutanf.teamhunter.*;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -11,6 +8,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.List;
 
 public class AdvancementListener {
     private final MinecraftServer server;
@@ -210,11 +209,15 @@ public class AdvancementListener {
 
         switch (currentState) {
             case HUNTERS_ADVANTAGE:
+                //新版本启用了雷达，旧版的代码临时禁用
+                /*
                 // 猎人领先，启用猎人的指南针追踪，禁用逃亡者的
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 1");
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
+                */
+                setAllTeamplayerVisible(server, "runners", true);
 
                 // 发送网络包通知客户端更新UI
                 sendAdvantageBuffUpdate(server.getOverworld(), true, true);
@@ -222,24 +225,31 @@ public class AdvancementListener {
                 break;
 
             case RUNNERS_ADVANTAGE:
+                /*
                 // 逃亡者领先，启用逃亡者的指南针追踪，禁用猎人的
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 1");
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
 
+                */
+                setAllTeamplayerVisible(server, "hunters", true);
                 // 发送网络包通知客户端更新UI
                 sendAdvantageBuffUpdate(server.getOverworld(), false, true);
                 sendAdvantageBuffUpdate(server.getOverworld(), true, false);
                 break;
 
             case NO_ADVANTAGE:
+                /*
                 // 无领先优势，关闭所有人的指南针追踪
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
                 CommandExecutor.executeCommand(server,
                         "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
 
+                */
+                setAllTeamplayerVisible(server, "runners", false);
+                setAllTeamplayerVisible(server, "hunters", false);
                 // 发送网络包通知客户端更新UI
                 sendAdvantageBuffUpdate(server.getOverworld(), true, false);
                 sendAdvantageBuffUpdate(server.getOverworld(), false, false);
@@ -263,5 +273,24 @@ public class AdvancementListener {
     public static AdvantageState getLastAdvantageState(){
         // 返回当前的领先状态
         return lastAdvantageState;
+    }
+
+    /**
+     * 设置指定队伍的所有玩家为可见状态
+     * @param server Minecraft服务器实例
+     */
+    public static void setAllTeamplayerVisible(MinecraftServer server, String teamName, boolean isVisible) {
+        // 获取所有逃亡者队伍的玩家名称
+        List<String> teamPlayerNames = TeamUtils.getTeamPlayerNames(server, teamName);
+
+        // 遍历所有逃亡者玩家并设置为可见
+        for (String playerName : teamPlayerNames) {
+            // 通过名称获取玩家实体
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+            if (player != null) {
+                // 调用之前实现的方法设置玩家为可见
+                PlayerVisibilityTracker.setPlayerVisibility(player, isVisible);
+            }
+        }
     }
 }

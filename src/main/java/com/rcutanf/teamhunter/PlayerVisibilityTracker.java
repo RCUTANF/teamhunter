@@ -9,8 +9,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.RaycastContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +16,7 @@ import java.util.UUID;
 
 public class PlayerVisibilityTracker {
     private final MinecraftServer server;
-    private final Map<UUID, Map<UUID, Boolean>> playerVisibility = new HashMap<>();
+    private static final Map<UUID, Map<UUID, Boolean>> playerVisibility = new HashMap<>();
     private int tickCounter = 0;
     private static final int VISIBILITY_CHECK_INTERVAL = 2; // 每2tick检查一次
 
@@ -69,7 +67,7 @@ public class PlayerVisibilityTracker {
 
                 // 如果可见性状态发生变化，发送更新
                 if (isVisible != previousVisibility) {
-                    sendVisibilityUpdate(observer, target, isVisible);
+                    sendVisibilityUpdate(target, isVisible);
                 }
             }
         }
@@ -190,7 +188,9 @@ public class PlayerVisibilityTracker {
     }
 
     // 发送可见性更新到客户端
-    private void sendVisibilityUpdate(ServerPlayerEntity observer, ServerPlayerEntity target, boolean isVisible) {
+    private static void sendVisibilityUpdate(ServerPlayerEntity target, boolean isVisible) {
+        MinecraftServer server = target.getServer();
+        if (server != null) {return;}
         // 创建一个可见性更新数据包
         NetWorking.PlayerVisibilityUpdatePacket packet = new NetWorking.PlayerVisibilityUpdatePacket(
             target.getUuid(), target.getName().getString(), isVisible);
@@ -215,7 +215,7 @@ public class PlayerVisibilityTracker {
         for (ServerPlayerEntity target : server.getPlayerManager().getPlayerList()) {
             UUID targetId = target.getUuid();
 
-            boolean isVisible = false;
+            boolean isVisible;
 
             // 从可见性映射中获取状态，如果不存在则执行可见性检查
             isVisible = visibilityMap.computeIfAbsent(targetId,
@@ -227,5 +227,23 @@ public class PlayerVisibilityTracker {
 
             ServerPlayNetworking.send(newPlayer, packet);
         }
+    }
+
+    /**
+     * 提供外部修改玩家可见性的方法
+     * @param target 目标玩家
+     * @param isVisible 是否可见
+     */
+    public static void setPlayerVisibility(ServerPlayerEntity target, boolean isVisible) {
+        UUID targetId = target.getUuid();
+
+        // 为所有观察者更新此目标玩家的可见性状态
+        for (Map<UUID, Boolean> visibilityMap : playerVisibility.values()) {
+            // 更新每个观察者的可见性映射
+            visibilityMap.put(targetId, isVisible);
+        }
+
+        // 发送可见性更新到所有客户端
+        sendVisibilityUpdate(target, isVisible);
     }
 }

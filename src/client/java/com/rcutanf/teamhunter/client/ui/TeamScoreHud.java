@@ -1,7 +1,6 @@
 package com.rcutanf.teamhunter.client.ui;
 
 import com.rcutanf.teamhunter.Phase;
-import com.rcutanf.teamhunter.client.TeamhunterClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -328,9 +327,9 @@ public class TeamScoreHud {
         int textHeight = textRenderer.fontHeight;
 
         context.getMatrices().push();
-        context.getMatrices().translate(x + textWidth / 2, y + textHeight / 2, 0);
+        context.getMatrices().translate(x + (float) textWidth / 2, y + (float) textHeight / 2, 0);
         context.getMatrices().scale(scale, scale, 1.0f);
-        context.getMatrices().translate(-(x + textWidth / 2), -(y + textHeight / 2), 0);
+        context.getMatrices().translate(-(x + (float) textWidth / 2), -(y + (float) textHeight / 2), 0);
 
         context.drawText(textRenderer, text, x, y, color, false);
 

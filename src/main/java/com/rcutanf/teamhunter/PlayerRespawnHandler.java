@@ -1,7 +1,6 @@
 package com.rcutanf.teamhunter;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 public class PlayerRespawnHandler {
     public PlayerRespawnHandler() {
