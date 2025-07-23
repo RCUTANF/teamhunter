@@ -79,6 +79,25 @@ public class RadarConfigScreen extends Screen {
             }
         });
 
+        // 玩家名称缩放滑块 (0.2-1.0)
+        this.addDrawableChild(new SliderWidget(this.width / 2 - 100, 170, 200, 20,
+                Text.translatable("teamhunter.config.name_scale", String.format("%.2f", config.getNameScale())),
+                (config.getNameScale() - 0.2f) / 0.8f) {
+            @Override
+            protected void updateMessage() {
+                setMessage(Text.translatable("teamhunter.config.name_scale", String.format("%.2f", getValue())));
+            }
+
+            @Override
+            protected void applyValue() {
+                config.setNameScale(getValue());
+            }
+
+            private float getValue() {
+                return (float) (0.2 + value * 0.8);
+            }
+        });
+
         // 启用/禁用按钮
         this.addDrawableChild(ButtonWidget.builder(
                 Text.translatable(config.isEnabled() ? "teamhunter.config.enabled" : "teamhunter.config.disabled"),

@@ -138,7 +138,7 @@ public class PhaseHandler {
          */
     }
     public static void FreezeAllPlayers(MinecraftServer server) {
-        CommandExecutor.executeCommand(server, "/tick freeze");
+        //CommandExecutor.executeCommand(server, "/tick freeze");
         String[] teams = {"runners", "hunters"};
         for (String team : teams) {
             CommandExecutor.executeCommand(server, "/execute as @a[team=" + team + "] run attribute @s minecraft:block_interaction_range modifier add freeze -1 add_multiplied_total");

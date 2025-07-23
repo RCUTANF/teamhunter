@@ -18,6 +18,7 @@ public class RadarConfig {
     private int radarSize = 60;
     private int radarX = 5;
     private int radarY = 5;
+    private float nameScale = 0.4f;
     private boolean enabled = true;
 
     // 获取配置实例
@@ -92,4 +93,8 @@ public class RadarConfig {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public float getNameScale() {return nameScale;}
+
+    public void setNameScale(float nameScale) {this.nameScale = Math.max(0.2f, Math.min(1.0f, nameScale));}
 }

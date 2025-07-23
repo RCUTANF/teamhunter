@@ -69,6 +69,9 @@ public class EnvironmentController {
         // 处理末地龙抗性
         handleEnderDragonResistance();
 
+        if (CommandConfig.getCurrentGamemode()==null || !CommandConfig.getCurrentGamemode().equals("ct")) {
+            return; // 如果不是CT模式，直接返回
+        }
         // 更新玩家的烈焰棒掉落权限标签
         updateBlazeDroppingPermissions(server);
     }

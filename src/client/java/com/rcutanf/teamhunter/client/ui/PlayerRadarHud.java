@@ -234,7 +234,8 @@ public class PlayerRadarHud {
         }
 
         // 绘制玩家名称（缩小字体）
-        float scale = 0.4f; // 调整为需要的缩放比例
+        //TODO;为什么没有生效这个
+        float scale = RadarConfig.getInstance().getNameScale();; // 调整为需要的缩放比例
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
         int scaledWidth = (int) (textWidth * scale);
 
@@ -485,7 +486,7 @@ public class PlayerRadarHud {
         drawLine(context, centerX, centerY, endX, endY, color);
 
         // 在射线终点绘制玩家名称
-        float scale = 0.4f;
+        float scale = RadarConfig.getInstance().getNameScale();
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
         int scaledWidth = (int) (textWidth * scale);
 
