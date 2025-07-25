@@ -78,7 +78,7 @@ public class KeyBindings {
         // 队伍切换键处理
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (teamSwitchKeyBinding.wasPressed() && client.player != null) {
-                String command = isHunterCommand ? "trigger mh.join.hunters" : "trigger mh.join.runners";
+                String command = isHunterCommand ? "team join hunters" : "team join runners";
                 client.player.networkHandler.sendChatCommand(command);
                 isHunterCommand = !isHunterCommand;
             }

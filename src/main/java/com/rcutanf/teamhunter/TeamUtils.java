@@ -4,6 +4,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -124,6 +125,24 @@ public final class TeamUtils {
     public static Formatting getPlayerTeamColor(ServerPlayerEntity player) {
         Team team = getPlayerTeam(player);
         return getTeamColor(team);
+    }
+
+    public static void checkAndCreateTeams(MinecraftServer server) {
+        Scoreboard scoreboard = server.getScoreboard();
+
+        Team hunters = scoreboard.getTeam("hunters");
+        if (hunters == null) {
+            hunters = scoreboard.addTeam("hunters");
+            hunters.setColor(Formatting.RED); // 设置为红色
+            hunters.setPrefix(Text.literal("[猎手] ").formatted(Formatting.RED));
+        }
+
+        Team runners = scoreboard.getTeam("runners");
+        if (runners == null) {
+            runners = scoreboard.addTeam("runners");
+            runners.setColor(Formatting.GREEN); // 设置为绿色
+            runners.setPrefix(Text.literal("[捷风] ").formatted(Formatting.GREEN));
+        }
     }
 
 

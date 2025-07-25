@@ -233,8 +233,7 @@ public class PlayerRadarHud {
             displayText = playerName + " (" + distanceInBlocks + "m)";
         }
 
-        // 绘制玩家名称（缩小字体）
-        //TODO;为什么没有生效这个
+        // 绘制玩家名称
         float scale = RadarConfig.getInstance().getNameScale();; // 调整为需要的缩放比例
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
         int scaledWidth = (int) (textWidth * scale);
@@ -476,9 +475,7 @@ public class PlayerRadarHud {
     // 绘制指向不可见玩家方向的射线
     private static void drawDirectionLine(DrawContext context, int centerX, int centerY, int radius,
                                           double angle, int color, String playerName) {
-        // 计算射线起点和终点
-        int startX = centerX;
-        int startY = centerY;
+        // 计算射线终点
         int endX = centerX + Math.round((float) (Math.cos(angle) * (radius - 2)));
         int endY = centerY + Math.round((float) (Math.sin(angle) * (radius - 2)));
 

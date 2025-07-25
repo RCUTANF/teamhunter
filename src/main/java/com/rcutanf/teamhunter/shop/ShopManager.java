@@ -119,9 +119,8 @@ public class ShopManager {
             }
 
             // 扣除团队分数（非物品事务，但必须先成功）
-            ServerWorld world = player.getServerWorld();
             AdvancementListener.reduceTeamScore(teamName, (int) cost, player.getServer(),
-                    player.getName().copy().append(" 购买了 ").append( item.getName()).append(  " ×" + inserted));
+                    String.valueOf(player.getName().copy().append(" 购买了 ").append( item.getName()).append(  " ×" + inserted)));
 
             // 分数扣除成功后提交物品事务
             tx.commit();

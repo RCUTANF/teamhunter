@@ -347,7 +347,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), Text.of("测试命令"));
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), "测试命令");
 
         return SINGLE_SUCCESS;
     }
@@ -366,7 +366,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), Text.of(reason));
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), reason);
 
         return SINGLE_SUCCESS;
     }

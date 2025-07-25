@@ -119,6 +119,8 @@ public class Teamhunter implements ModInitializer {
             advancementListener = new AdvancementListener(server);
             positionTracker = new PlayerPositionTracker(server);
             playerVisibilityTracker = new PlayerVisibilityTracker(server);
+
+            TeamUtils.checkAndCreateTeams(server);
         });
 
         // 服务器关闭事件

@@ -55,14 +55,6 @@ public class AdvancementListener {
 
         if (!teamName.equals("hunters") && !teamName.equals("runners")) return;
 
-
-        // 调试信息（直接在控制台打印）
-        String playerName = player.getName().getString();
-        String achievement = title != null ? title.getString() : id.toString();
-        //CommandExecutor.executeCommand(server,
-          //      String.format("say %s 为 %s 队获得成就 %s (+%d分)",
-            //            playerName, teamName, achievement, score));
-
         // 更新分数
         addTeamScore(teamName, score, server, null);
     }
@@ -124,10 +116,11 @@ public class AdvancementListener {
         }
 
         // 如果提供了消息，显示加分通知
-        if (message != null && !message.isEmpty()) {
-            CommandExecutor.executeCommand(server,
-                    String.format("say %s 队增加 %d 分: %s",
-                            teamName, amount, message));
+        if (message != null) {
+            server.getPlayerManager().broadcast(Text.of(
+                    String.format("%s队伍%s§6§l（+%d分）",
+                            teamName, message, amount)
+            ), false);
         }
 
         // 应用队伍优势效果
@@ -148,7 +141,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么减少分数
      * @return 减少后的新分数
      */
-    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
+    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, String message) {
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -173,9 +166,9 @@ public class AdvancementListener {
         // 如果提供了消息，显示减分通知
         if (message != null) {
             server.getPlayerManager().broadcast(Text.of(
-                    String.format("%s 队扣除 %d 分: ",
-                            teamName, amount)
-            ).copy().append(message), false);
+                    String.format("%s队伍%s§6§l（-%d分）",
+                            teamName, message, amount)
+            ), false);
         }
 
         // 应用队伍优势效果
@@ -209,14 +202,6 @@ public class AdvancementListener {
 
         switch (currentState) {
             case HUNTERS_ADVANTAGE:
-                //新版本启用了雷达，旧版的代码临时禁用
-                /*
-                // 猎人领先，启用猎人的指南针追踪，禁用逃亡者的
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 1");
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
-                */
                 setAllTeamplayerVisible(server, "runners", true);
 
                 // 发送网络包通知客户端更新UI
@@ -225,14 +210,6 @@ public class AdvancementListener {
                 break;
 
             case RUNNERS_ADVANTAGE:
-                /*
-                // 逃亡者领先，启用逃亡者的指南针追踪，禁用猎人的
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 1");
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
-
-                */
                 setAllTeamplayerVisible(server, "hunters", true);
                 // 发送网络包通知客户端更新UI
                 sendAdvantageBuffUpdate(server.getOverworld(), false, true);
@@ -240,14 +217,6 @@ public class AdvancementListener {
                 break;
 
             case NO_ADVANTAGE:
-                /*
-                // 无领先优势，关闭所有人的指南针追踪
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=hunters] run scoreboard players set 猎人追踪器:显示距离 mh.settings 0");
-                CommandExecutor.executeCommand(server,
-                        "execute as @a[team=runners] run scoreboard players set 逃者追踪器:显示距离 mh.settings 0");
-
-                */
                 setAllTeamplayerVisible(server, "runners", false);
                 setAllTeamplayerVisible(server, "hunters", false);
                 // 发送网络包通知客户端更新UI
