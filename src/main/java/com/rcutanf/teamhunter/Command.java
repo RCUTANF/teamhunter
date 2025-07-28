@@ -8,6 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -121,9 +122,9 @@ public class Command {
                         })
                         .then(argument(AMOUNT, IntegerArgumentType.integer(1))
                             .executes(Command::reduceScore)
-                            .then(argument(REASON, StringArgumentType.greedyString())
-                                .executes(Command::reduceScoreWithReason)
-                            )
+                                .then(argument(REASON, TextArgumentType.text(registryAccess))
+                                        .executes(Command::reduceScoreWithReason)
+                                )
                         )
                     )
                 )
@@ -329,7 +330,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的增加分数方法
-        AdvancementListener.addTeamScore(teamName, amount, context.getSource().getServer(), "管理员加分");
+        AdvancementListener.addTeamScore(teamName, amount, context.getSource().getServer(), Text.of("管理员加分"));
 
         return SINGLE_SUCCESS;
     }
@@ -347,7 +348,7 @@ public class Command {
         }
 
         // 调用 AdvancementListener 的减分方法
-        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), "测试命令");
+        AdvancementListener.reduceTeamScore(teamName, amount, context.getSource().getServer(), Text.of("测试命令"));
 
         return SINGLE_SUCCESS;
     }
@@ -358,7 +359,7 @@ public class Command {
     private static int reduceScoreWithReason(CommandContext<ServerCommandSource> context) {
         String teamName = StringArgumentType.getString(context, TEAM);
         int amount = IntegerArgumentType.getInteger(context, AMOUNT);
-        String reason = StringArgumentType.getString(context, REASON);
+        Text reason = TextArgumentType.getTextArgument(context, REASON);
 
         if (!teamName.equals("hunters") && !teamName.equals("runners")) {
             context.getSource().sendError(Text.of("无效的队伍名称，必须是 hunters 或 runners"));

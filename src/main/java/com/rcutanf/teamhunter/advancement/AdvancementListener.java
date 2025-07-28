@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -93,7 +94,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么增加分数
      * @return 增加后的新分数
      */
-    public static int addTeamScore(String teamName, int amount, MinecraftServer server, String message) {
+    public static int addTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
 
         // 验证参数
         if (amount <= 0) {
@@ -117,10 +118,12 @@ public class AdvancementListener {
 
         // 如果提供了消息，显示加分通知
         if (message != null) {
-            server.getPlayerManager().broadcast(Text.of(
-                    String.format("%s队伍%s§6§l（+%d分）",
-                            teamName, message, amount)
-            ), false);
+            server.getPlayerManager().broadcast(
+                    Text.of(String.format("%s队伍", teamName))
+                            .copy().append(message)
+                            .append(Text.literal(" (+" + amount + "分)").formatted(Formatting.GOLD, Formatting.BOLD)),
+                    false
+            );
         }
 
         // 应用队伍优势效果
@@ -141,7 +144,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么减少分数
      * @return 减少后的新分数
      */
-    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, String message) {
+    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -165,10 +168,12 @@ public class AdvancementListener {
 
         // 如果提供了消息，显示减分通知
         if (message != null) {
-            server.getPlayerManager().broadcast(Text.of(
-                    String.format("%s队伍%s§6§l（-%d分）",
-                            teamName, message, amount)
-            ), false);
+            server.getPlayerManager().broadcast(
+                    Text.of(String.format("%s队伍", teamName))
+                            .copy().append(message)
+                            .append(Text.literal(" (-"+amount+"分)").formatted(Formatting.GOLD, Formatting.BOLD)),
+                    false
+            );
         }
 
         // 应用队伍优势效果

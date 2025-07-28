@@ -10,6 +10,7 @@ import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
 import static com.rcutanf.teamhunter.TeamUtils.getTeamPlayerNames;
 
@@ -53,10 +54,15 @@ public class MatchEndListener {
 
                     if (killer != null) {
                         // 记录击杀信息
-                        String killerName = killer.getName().getString();
-                        String victimName = oldPlayer.getName().getString();
+                        Text killerName = killer.getName();
+                        Text victimName = oldPlayer.getName();
                         String teamName = TeamUtils.getPlayerTeamName(killer);
-                        AdvancementListener.addTeamScore(teamName, 50, server, victimName + " 被 " + killerName + " 击杀");
+                        AdvancementListener.addTeamScore(teamName, 50, server,
+                                victimName.copy()
+                                        .append("被")
+                                        .append(killerName)
+                                        .append( " 击杀")
+                        );
                     }
                 }
             }

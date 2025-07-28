@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.context.ContextType;
 
@@ -120,7 +121,10 @@ public class ShopManager {
 
             // 扣除团队分数（非物品事务，但必须先成功）
             AdvancementListener.reduceTeamScore(teamName, (int) cost, player.getServer(),
-                    String.valueOf(player.getName().copy().append(" 购买了 ").append( item.getName()).append(  " ×" + inserted)));
+                    player.getDisplayName().copy()
+                            .append(Text.literal(" 购买了").formatted(Formatting.WHITE))
+                            .append(Text.literal(item.getName().getString()).formatted(Formatting.DARK_AQUA))
+                            .append(Text.literal(" ×" + inserted).formatted(Formatting.DARK_AQUA)));
 
             // 分数扣除成功后提交物品事务
             tx.commit();
