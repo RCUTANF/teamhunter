@@ -236,7 +236,8 @@ public class Command {
         var server = context.getSource().getServer();
 
         if (phaseName.equalsIgnoreCase("NONE")) {
-            Teamhunter.phaseManager.clear();
+            Teamhunter.phaseManager.clear().then(Phase.NONE);
+
             context.getSource().sendFeedback(() -> Text.of("已清除当前阶段"), true);
             return SINGLE_SUCCESS;
         }

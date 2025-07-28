@@ -11,7 +11,8 @@ public enum Phase implements CustomPayload {
     PREPARE(true),
     MATCH(true),
     PAUSED(false),
-    END(false);
+    END(false),
+    NONE(false);
     //TODO:计划干掉枚举改为动态的值控制，不然后面痛苦
 
     Phase(boolean showCountDown, boolean showPhaseName) {
