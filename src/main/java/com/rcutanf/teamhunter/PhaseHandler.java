@@ -56,8 +56,12 @@ public class PhaseHandler {
 
 
         // 初始化计分板显示
-        String title = "死亡次数 §c0§f:§a0";
-        CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
+        String title = "";
+        if ("ct".equals(CommandConfig.getCurrentGamemode())) {
+            title = "死亡次数 §c0§f:§a0";
+            CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
+        }
+
         //触发监听器调用freezeall
         shouldFreeze = true;
         delayTicks = 0;

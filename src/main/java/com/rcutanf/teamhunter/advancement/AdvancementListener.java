@@ -3,6 +3,7 @@ package com.rcutanf.teamhunter.advancement;
 import com.rcutanf.teamhunter.*;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+import net.minecraft.scoreboard.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -19,9 +20,6 @@ public class AdvancementListener {
     // 直接使用变量存储队伍分数
     private static int huntersScore = 0;
     private static int runnersScore = 0;
-
-    private static boolean huntersHadAdvantage = false;
-    private static boolean runnersHadAdvantage = false;
 
     // 定义领先状态枚举
     public enum AdvantageState {
@@ -57,7 +55,7 @@ public class AdvancementListener {
         if (!teamName.equals("hunters") && !teamName.equals("runners")) return;
 
         // 更新分数
-        addTeamScore(teamName, score, server, null);
+        addTeamScore(teamName, score, server, null, player);
     }
 
     // 获取当前猎人队伍分数
@@ -94,7 +92,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么增加分数
      * @return 增加后的新分数
      */
-    public static int addTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
+    public static int addTeamScore(String teamName, int amount, MinecraftServer server, Text message, ServerPlayerEntity sourcePlayer) {
 
         // 验证参数
         if (amount <= 0) {
@@ -114,6 +112,19 @@ public class AdvancementListener {
         } else {
             // 如果队伍名称无效，返回0
             return 0;
+        }
+
+        // 更新玩家积分计分板
+        String scoreObjectiveName = "adScore";
+        Scoreboard scoreboard = server.getScoreboard();
+        ScoreboardObjective objective = scoreboard.getNullableObjective(scoreObjectiveName);
+        if (objective == null) {
+            server.sendMessage(Text.of("计分板目标 '" + scoreObjectiveName + "' 不存在!"));
+        } else {
+            ScoreHolder holder = ScoreHolder.fromName(sourcePlayer.getName().getString());
+            ScoreAccess scoreEntry = scoreboard.getOrCreateScore(holder, objective);
+            int currentScore = scoreEntry.getScore();
+            scoreEntry.setScore(currentScore + amount);
         }
 
         // 如果提供了消息，显示加分通知
@@ -144,7 +155,7 @@ public class AdvancementListener {
      * @param message 可选的消息，解释为什么减少分数
      * @return 减少后的新分数
      */
-    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, Text message) {
+    public static int reduceTeamScore(String teamName, int amount, MinecraftServer server, Text message, ServerPlayerEntity sourcePlayer) {
         // 验证参数
         if (amount <= 0) {
             return teamName.equals("hunters") ? huntersScore : runnersScore;
@@ -163,6 +174,19 @@ public class AdvancementListener {
         } else {
             // 如果队伍名称无效，返回0
             return 0;
+        }
+
+        // 更新玩家积分计分板
+        String scoreObjectiveName = "adScore";
+        Scoreboard scoreboard = server.getScoreboard();
+        ScoreboardObjective objective = scoreboard.getNullableObjective(scoreObjectiveName);
+        if (objective == null) {
+            server.sendMessage(Text.of("计分板目标 '" + scoreObjectiveName + "' 不存在!"));
+        } else {
+            ScoreHolder holder = ScoreHolder.fromName(sourcePlayer.getName().getString());
+            ScoreAccess scoreEntry = scoreboard.getOrCreateScore(holder, objective);
+            int currentScore = scoreEntry.getScore();
+            scoreEntry.setScore(currentScore - amount);
         }
 
 

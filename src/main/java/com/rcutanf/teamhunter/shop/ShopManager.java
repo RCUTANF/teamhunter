@@ -124,7 +124,8 @@ public class ShopManager {
                     player.getDisplayName().copy()
                             .append(Text.literal(" 购买了").formatted(Formatting.WHITE))
                             .append(Text.literal(item.getName().getString()).formatted(Formatting.DARK_AQUA))
-                            .append(Text.literal(" ×" + inserted).formatted(Formatting.DARK_AQUA)));
+                            .append(Text.literal(" ×" + inserted).formatted(Formatting.DARK_AQUA))
+            , player);
 
             // 分数扣除成功后提交物品事务
             tx.commit();

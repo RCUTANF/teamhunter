@@ -62,7 +62,7 @@ public class MatchEndListener {
                                         .append("被")
                                         .append(killerName)
                                         .append( " 击杀")
-                        );
+                         ,killer);
                     }
                 }
             }
