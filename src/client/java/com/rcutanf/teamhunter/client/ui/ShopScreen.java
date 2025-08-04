@@ -17,8 +17,12 @@ import java.util.List;
 import static com.rcutanf.teamhunter.shop.ShopComponentTypes.PRICE;
 
 public class ShopScreen extends Screen {
-    // 背景纹理
-    private static final Identifier BACKGROUND = Identifier.of("textures/gui/advancements/backgrounds/stone.png");
+    // 界面纹理
+    private static final Identifier WINDOW_TEXTURE = Identifier.ofVanilla("textures/gui/advancements/window.png");
+    // 商品框纹理参数
+    private static final int ITEM_FRAME_U = 0;
+    private static final int ITEM_FRAME_V = 166;
+    private static final int ITEM_FRAME_SIZE = 26;
 
     // 设置固定窗口大小
     private static final int WINDOW_WIDTH = 252;
@@ -113,7 +117,7 @@ public class ShopScreen extends Screen {
                 this.textRenderer,
                 this.title,
                 guiLeft + WINDOW_WIDTH / 2,
-                guiTop + 10,
+                guiTop + 5,
                 0xFFFFFFFF);
 
         String teamText = (isHunterTeam ? "猎人队" : "逃亡者队") + " 分数: " + teamScore;
@@ -121,8 +125,8 @@ public class ShopScreen extends Screen {
                 this.textRenderer,
                 Text.literal(teamText),
                 guiLeft + WINDOW_WIDTH / 2,
-                guiTop + 25,
-                isHunterTeam ? 0xFFFF5555 : 0xFF55FFFF);
+                guiTop + 21,
+                isHunterTeam ? 0xFFFF3333 : 0xFF33FF33);
 
         // 渲染按钮
         super.render(context, mouseX, mouseY, delta);
@@ -136,39 +140,14 @@ public class ShopScreen extends Screen {
     }
 
     private void renderWindowBackground(DrawContext context) {
-        // 绘制固定大小的背景
+        // 绘制进度界面风格的窗口背景和边框
         context.drawTexture(
                 RenderLayer::getGuiTextured,
-                BACKGROUND,
-                guiLeft,
-                guiTop,
-                0,
-                0,
-                WINDOW_WIDTH,
-                WINDOW_HEIGHT,
-                16,
-                16
-        );
-    }
-
-    private void renderGridBackground(DrawContext context) {
-        // 绘制类似进度界面的背景纹理
-        int centerX = width / 2;
-        int centerY = height / 2;
-        int size = Math.max(width, height);
-
-        // 使用进度界面的石头背景纹理
-        context.drawTexture(
-                RenderLayer::getGuiTextured,  // 渲染层函数
-                BACKGROUND,                                 // 纹理标识符
-                centerX - size / 2 + (int) scrollX,          // x坐标
-                centerY - size / 2 + (int) scrollY,          // y坐标
-                0,                                          // u纹理坐标
-                0,                                          // v纹理坐标
-                size,                                       // 宽度
-                size,                                       // 高度
-                16,                                         // 纹理宽度
-                16                                          // 纹理高度
+                WINDOW_TEXTURE,
+                guiLeft, guiTop,
+                0, 0,
+                WINDOW_WIDTH, WINDOW_HEIGHT,
+                256, 256 // window.png 的原始尺寸
         );
     }
 
@@ -176,7 +155,7 @@ public class ShopScreen extends Screen {
         hoveredItemIndex = -1;
 
         // 设置网格与窗口边缘的边距
-        final int MARGIN_LEFT = 20;
+        final int MARGIN_LEFT = 30;
         final int MARGIN_TOP = 40;
 
 
@@ -184,7 +163,7 @@ public class ShopScreen extends Screen {
         int startX = guiLeft + MARGIN_LEFT;
         int startY = guiTop + MARGIN_TOP;
 
-        // 每行显示4个物品
+        // 每行显示5个物品
         int itemsPerRow = 5;
 
 
@@ -193,7 +172,7 @@ public class ShopScreen extends Screen {
                 guiLeft + 10,
                 guiTop + 40,
                 guiLeft + WINDOW_WIDTH - 10,
-                guiTop + WINDOW_HEIGHT - 30
+                guiTop + WINDOW_HEIGHT - 40
         );
 
         for (int i = 0; i < shopItems.size(); i++) {
@@ -212,12 +191,14 @@ public class ShopScreen extends Screen {
                 continue;
             }
 
+            // 绘制白色边框
+            context.fill(x - 2, y - 2, x + ICON_SIZE + 2, y + ICON_SIZE + 2, 0xFFFFFFFF);
             // 绘制背景框
             int bgColor = teamScore >= price ? 0x80FFFFFF : 0x80FF5555;
             context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, bgColor);
 
             // 绘制物品
-            context.drawItem(item, x + ICON_SIZE / 2 - 8, y + ICON_SIZE / 2 - 8);
+            context.drawItem(item, x + ICON_SIZE / 2 - 8, y + ICON_SIZE / 2 - 10);
 
             // 绘制价格
             context.drawText(textRenderer, String.valueOf(price),

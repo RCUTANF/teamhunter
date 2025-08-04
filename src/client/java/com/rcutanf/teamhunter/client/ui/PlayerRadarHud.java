@@ -285,7 +285,7 @@ public class PlayerRadarHud {
                 k -> generateCircleTexture(radius, color, true));
 
         // 使用纹理绘制填充圆形
-        int size = radius * 2;
+        int size = radius * 2-1;
         context.drawTexture(
                 RenderLayer::getGuiTextured,  // 渲染层函数
                 textureId,                               // 纹理标识符
