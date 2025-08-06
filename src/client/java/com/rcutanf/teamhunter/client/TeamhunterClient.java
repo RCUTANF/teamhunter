@@ -4,6 +4,9 @@ import com.rcutanf.teamhunter.NetWorking;
 import com.rcutanf.teamhunter.NetWorking.CounterSyncPacket;
 import com.rcutanf.teamhunter.Phase;
 import com.rcutanf.teamhunter.Teamhunter;
+import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
+import com.rcutanf.teamhunter.client.guide_sys.GuideSysTriggerManager;
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
@@ -60,11 +63,17 @@ public class TeamhunterClient implements ClientModInitializer {
     /** 存储其他玩家位置信息的映射表 */
     private static final Map<UUID, PlayerPositionInfo> playerPositions = new HashMap<>();
 
+    /** 成就指南检查器管理器 */
+    private static GuideSysCheckerManager guideCheckerManager;
+    private static GuideSysTriggerManager guideSysTriggerManager;
+    private static AdvancementEventManager advancementEventManager;
+
     @Override
     public void onInitializeClient() {
         registerNetworkHandlers();
         registerHudLayers();
         registerTickEvents();
+        registerAdvancementGuide();
 
         // 注册客户端命令
         ClientCommands.register();
@@ -200,6 +209,18 @@ public class TeamhunterClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             checkDimensionAndUpdateBuffs();
         });
+    }
+
+    /**
+     * 注册成就guide系统
+     */
+    private void registerAdvancementGuide() {
+        guideSysTriggerManager = GuideSysTriggerManager.getInstance();
+        guideCheckerManager = GuideSysCheckerManager.getInstance();
+        guideCheckerManager.initializeAllCheckers();
+        advancementEventManager = AdvancementEventManager.getInstance();
+
+
     }
 
     /**

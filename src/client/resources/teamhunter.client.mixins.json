@@ -1,11 +1,17 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.rcutanf.teamhunter.mixin.client",
+  "package": "com.rcutanf.teamhunter.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ClientAdvancementManagerAccessor",
+    "ClientAdvancementManagerCompletionMixin",
+    "PlayerInventoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "ClientAdvancementManagerRemoveMixin"
+  ]
 }
