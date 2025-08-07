@@ -1,7 +1,10 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.advancement.AdvancementManager;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
@@ -14,13 +17,15 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 
 public abstract class AbstractGuideSysChecker implements TriggerListener {
+    protected Identifier id;
     protected String checkerID;
     protected TriggerType triggerType;
     protected boolean isActive; // 是否进入活动状态，也就是是否有机会完成，决定是否在屏幕上显示
     protected int progress; // 进度，0-100
     protected boolean completed;
 
-    public AbstractGuideSysChecker(String checkerID, TriggerType triggerType) {
+    public AbstractGuideSysChecker(Identifier id, String checkerID, TriggerType triggerType) {
+        this.id = id;
         this.checkerID = checkerID;
         this.triggerType = triggerType;
         this.isActive = false;
@@ -53,10 +58,12 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
         if (active) {
             System.out.println("AbstractGuideSysChecker " + checkerID + " is now active.");
             this.isActive = true;
+            GuideSysGuiManager.addAdvancementGuide(id, progress);
         }
         else {
             System.out.println("AbstractGuideSysChecker " + checkerID + " is now inactive.");
             this.isActive = false;
+            GuideSysGuiManager.removeAdvancementGuide(id);
         }
     }
 
@@ -77,16 +84,16 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
             throw new IllegalArgumentException("Progress must be between 0 and 100.");
         }
         this.progress = progress;
-        // 如果进度达到100%，则标记为已完成
-        if (this.progress >= 100) {
-            markAsCompleted();
-        }
+        // 更新进度到GUI
+        GuideSysGuiManager.updateAdvancementGuide(id, progress);
     }
 
     /**
      * 将检查器标记为已完成
      */
     protected void markAsCompleted() {
+        setProgress(100);
+        GuideSysGuiManager.markAdvancementComplete(id);
         setActive(false);
         this.completed = true;
         unregister();
@@ -124,20 +131,13 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
     /**
      * 检查成就是否已经完成，避免子类建立的时候没有和游戏内的数据一致
      */
-    public boolean checkADinGameStatus(String namespace, String path){
-        MinecraftClient mc = MinecraftClient.getInstance();
-        ClientPlayerEntity player = mc.player;
-        if (player == null) {
-            return false; // 如果玩家不存在，直接返回false
-        }
+    public boolean checkADinGameStatus(){
 
-        ClientAdvancementManager advancementManager = mc.player.networkHandler.getAdvancementHandler();
-        Identifier advancementId = Identifier.of(namespace, path);
-        // 获取成就条目
-        PlacedAdvancement placedAdvancement = advancementManager.getManager().get(advancementId);
-        if (placedAdvancement == null) {
-            return false; // 成就不存在
+        PlacedAdvancement placedAdvancement = AdvancementEventManager.getInstance().fromId(id.getNamespace(), id.getPath());
+        if (MinecraftClient.getInstance().player == null) {
+            return false;
         }
+        ClientAdvancementManager advancementManager = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler();
 
         Map<AdvancementEntry, AdvancementProgress> advancementProgresses =
                 ((ClientAdvancementManagerAccessor) advancementManager).getAdvancementProgresses();

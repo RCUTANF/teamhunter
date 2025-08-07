@@ -8,6 +8,7 @@ import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEv
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 /**
  * 石器时代成就检查器
@@ -15,9 +16,12 @@ import net.minecraft.item.ItemStack;
  */
 public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements AdvancementCompletionListener {
 
+    private static final int REQUIRED_COBBLESTONE_COUNT = 3; // 需要的圆石数量
+
     public GettingAnUpgradeChecker() {
+
         // 设置成就ID和使用物品栏触发器
-        super("getting_an_upgrade", TriggerType.inventory);
+        super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade", TriggerType.inventory);
 
         // 注册到检查器管理器
         GuideSysCheckerManager.getInstance().registerChecker(this);
@@ -25,7 +29,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
         // 注册成就监听器
         AdvancementEventManager.getInstance().registerListener(this);
 
-        if(super.checkADinGameStatus("minecraft", "story/upgrade_tools")){
+        if(super.checkADinGameStatus()){
             markAsCompleted();
         }
 
@@ -43,13 +47,19 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
         String itemId = itemStack.getItem().toString();
         if (itemId.equals("minecraft:cobblestone")) {
             setActive(true);
+            if(itemStack.getCount() / REQUIRED_COBBLESTONE_COUNT >= 1){
+                setProgress(100);
+            }
+            else {
+                setProgress(itemStack.getCount() * 100 / REQUIRED_COBBLESTONE_COUNT);
+            }
         }
     }
 
     @Override
     public void onAdvancementCompleted(AdvancementEntry advancement, AdvancementProgress progress) {
         // 检查是否是石器时代成就
-        if (advancement.id().getNamespace().equals("minecraft") && advancement.id().getPath().equals("story/upgrade_tools")) {
+        if (advancement.id() == id) {
             markAsCompleted();
         }
     }
@@ -57,7 +67,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
     @Override
     public  void onAdvancementRemoved(AdvancementEntry advancement) {
         // 检查是否是石器时代成就
-        if (advancement.id().getNamespace().equals("minecraft") && advancement.id().getPath().equals("story/upgrade_tools")) {
+        if (advancement.id() == id) {
             setActive(false);
             completed = false; // 成就被移除，重置状态
             //重新侦听触发器
