@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client;
 
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.ui.RadarConfigScreen;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -15,6 +16,7 @@ public class KeyBindings {
     private static KeyBinding configKey;
     private static KeyBinding shopKeyBinding;
     private static KeyBinding teamSwitchKeyBinding;
+    private static KeyBinding adGuideDescriptionKey;
 
     /** 团队切换状态标记，true 表示下次将选择猎人队伍 */
     private static boolean isHunterCommand = true;
@@ -23,6 +25,7 @@ public class KeyBindings {
         registerConfigKey();
         registerShopKey();
         registerTeamSwitchKey();
+        registerADguideDescriptionKey();
         registerTickEvents();
     }
 
@@ -56,6 +59,15 @@ public class KeyBindings {
         ));
     }
 
+    private static void registerADguideDescriptionKey(){
+        adGuideDescriptionKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.teamhunter.adguide.description",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_TAB,
+            "category.teamhunter.keys"
+        ));
+    }
+
     private static void registerTickEvents() {
         // 配置键处理
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -82,6 +94,17 @@ public class KeyBindings {
                 client.player.networkHandler.sendChatCommand(command);
                 isHunterCommand = !isHunterCommand;
             }
+        });
+
+        // 成就指南成就描述展开键处理
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (adGuideDescriptionKey.wasPressed() && !GuideSysHud.isShowingAllDescriptions()) {
+                GuideSysHud.setShowAllDescriptions(true);
+            }
+            else  {
+                GuideSysHud.setShowAllDescriptions(false);
+            }
+
         });
     }
 }

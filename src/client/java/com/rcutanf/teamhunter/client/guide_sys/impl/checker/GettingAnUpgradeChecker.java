@@ -46,7 +46,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
         // 检查传入的物品是否为圆石
         String itemId = itemStack.getItem().toString();
         if (itemId.equals("minecraft:cobblestone")) {
-            setActive(true);
+            if(!isActive()){setActive(true);}
             if(itemStack.getCount() / REQUIRED_COBBLESTONE_COUNT >= 1){
                 setProgress(100);
             }
@@ -59,7 +59,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
     @Override
     public void onAdvancementCompleted(AdvancementEntry advancement, AdvancementProgress progress) {
         // 检查是否是石器时代成就
-        if (advancement.id() == id) {
+        if (advancement.id().equals(id)) {
             markAsCompleted();
         }
     }
@@ -67,7 +67,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
     @Override
     public  void onAdvancementRemoved(AdvancementEntry advancement) {
         // 检查是否是石器时代成就
-        if (advancement.id() == id) {
+        if (advancement.id().equals(id)) {
             setActive(false);
             completed = false; // 成就被移除，重置状态
             //重新侦听触发器

@@ -1,11 +1,14 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -20,6 +23,30 @@ public class GuideSysGuiManager {
         private Text description;
         private int progress;
         private boolean completed;
+
+        public Identifier getId() {
+            return id;
+        }
+
+        public ItemStack getIcon() {
+            return icon;
+        }
+
+        public Text getTitle() {
+            return title;
+        }
+
+        public Text getDescription() {
+            return description;
+        }
+
+        public int getProgress() {
+            return progress;
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
     }
 
     private static List<AdvancementGuideItem> advancementGuides = new ArrayList<>();
@@ -39,34 +66,51 @@ public class GuideSysGuiManager {
     }
     
     public static void addAdvancementGuide(Identifier advancementID, int progress) {
-        PlacedAdvancement advancement = AdvancementEventManager.getInstance().fromId(advancementID.getNamespace(), advancementID.getPath());
+        try {
+            MinecraftClient client = MinecraftClient.getInstance();
 
-        // 获取进度显示信息
-        AdvancementDisplay display = advancement.getAdvancement().display().orElse(null);
-        if (display == null) {
-            System.out.println("进度没有显示信息: " + advancement.getAdvancementEntry().id().toString());
-            return;
+            if (client.getNetworkHandler() == null) {
+                System.out.println("客户端网络处理器未初始化");
+                return;
+            }
+
+            // 直接通过Identifier获取PlacedAdvancement
+            var advancementManager = client.getNetworkHandler().getAdvancementHandler().getManager();
+            var placedAdvancement = advancementManager.get(advancementID);
+
+            if (placedAdvancement == null) {
+                System.out.println("找不到进度: " + advancementID.toString());
+                return;
+            }
+
+            // 从PlacedAdvancement获取AdvancementEntry和Advancement
+            AdvancementEntry advancementEntry = placedAdvancement.getAdvancementEntry();
+            var advancement = placedAdvancement.getAdvancement();
+
+            // 获取进度显示信息
+            var displayOpt = advancement.display();
+            if (displayOpt.isEmpty()) {
+                System.out.println("进度没有显示信息: " + advancementID.toString());
+                return;
+            }
+
+            var display = displayOpt.get();
+
+            // 创建并填充AdvancementGuideItem
+            AdvancementGuideItem item = new AdvancementGuideItem();
+            item.id = advancementID;
+            item.icon = display.getIcon();
+            item.title = display.getTitle();
+            item.description = display.getDescription();
+            item.completed = false;
+            item.progress = progress;
+
+            advancementGuides.add(item);
+
+        } catch (Exception e) {
+            System.out.println("添加进度到指南时出错: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        // 创建一个新的AdvancementGuideItem
-        AdvancementGuideItem item = new AdvancementGuideItem();
-
-        item.id = advancementID;
-
-        // 设置图标
-        item.icon = display.getIcon();
-
-        // 设置标题和描述
-        item.title = display.getTitle();
-        item.description = display.getDescription();
-
-        // 设置进度信息（这里需要根据实际情况计算进度）
-        item.completed = false;
-        item.progress = progress;
-
-
-        advancementGuides.add(item);
-        //动画预留
     }
 
     /**

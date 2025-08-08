@@ -6,12 +6,11 @@
   "client": [
     "ClientAdvancementManagerAccessor",
     "ClientAdvancementManagerCompletionMixin",
+    "ClientAdvancementManagerRevokeMixin",
     "PlayerInventoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
-    "ClientAdvancementManagerRemoveMixin"
-  ]
+  "mixins": []
 }

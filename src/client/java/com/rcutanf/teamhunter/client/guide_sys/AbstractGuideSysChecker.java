@@ -133,10 +133,11 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
      */
     public boolean checkADinGameStatus(){
 
-        PlacedAdvancement placedAdvancement = AdvancementEventManager.getInstance().fromId(id.getNamespace(), id.getPath());
+
         if (MinecraftClient.getInstance().player == null) {
             return false;
         }
+        PlacedAdvancement placedAdvancement = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler().getManager().get(id);
         ClientAdvancementManager advancementManager = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler();
 
         Map<AdvancementEntry, AdvancementProgress> advancementProgresses =

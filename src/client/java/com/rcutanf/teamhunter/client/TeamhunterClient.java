@@ -7,6 +7,7 @@ import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
 import com.rcutanf.teamhunter.client.guide_sys.GuideSysTriggerManager;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
@@ -44,6 +45,9 @@ public class TeamhunterClient implements ClientModInitializer {
 
     /** 玩家雷达 HUD 层标识符 */
     private static final Identifier RADAR_LAYER = Identifier.of(Teamhunter.MOD_ID, "player-radar");
+
+    /** 成就指南 HUD 层标识符 */
+    public static final Identifier GUIDE_SYS_LAYER = Identifier.of(Teamhunter.MOD_ID, "guide-sys");
 
     // ========== 游戏状态变量 ==========
 
@@ -197,6 +201,11 @@ public class TeamhunterClient implements ClientModInitializer {
         // 注册玩家雷达HUD
         HudLayerRegistrationCallback.EVENT.register(r ->
             r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, RADAR_LAYER, PlayerRadarHud::render)
+        );
+
+        //注册成就指南HUD
+        HudLayerRegistrationCallback.EVENT.register(r ->
+            r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, GUIDE_SYS_LAYER, GuideSysHud::render)
         );
     }
 
