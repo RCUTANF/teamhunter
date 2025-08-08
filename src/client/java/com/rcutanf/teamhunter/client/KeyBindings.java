@@ -98,13 +98,11 @@ public class KeyBindings {
 
         // 成就指南成就描述展开键处理
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (adGuideDescriptionKey.wasPressed() && !GuideSysHud.isShowingAllDescriptions()) {
+            if (adGuideDescriptionKey.isPressed()) {
                 GuideSysHud.setShowAllDescriptions(true);
-            }
-            else  {
+            } else {
                 GuideSysHud.setShowAllDescriptions(false);
             }
-
         });
     }
 }
