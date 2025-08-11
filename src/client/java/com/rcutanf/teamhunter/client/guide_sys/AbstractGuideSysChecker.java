@@ -15,6 +15,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractGuideSysChecker implements TriggerListener {
     protected Identifier id;
@@ -94,7 +96,11 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
     protected void markAsCompleted() {
         setProgress(100);
         GuideSysGuiManager.markAdvancementComplete(id);
-        setActive(false);
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+            MinecraftClient.getInstance().execute(() -> {
+                setActive(false); // 在游戏主线程执行
+            });
+        }, 1000, TimeUnit.MILLISECONDS); // 延迟1秒
         this.completed = true;
         unregister();
 

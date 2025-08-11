@@ -126,7 +126,7 @@ public class GuideSysHud {
             Identifier statusIcon;
             if (guide.isCompleted()) {
                 statusIcon = PROGRESS_COMPLETE;
-            } else if (guide.getProgress() >= 0) {
+            } else if (guide.getProgress() >= 0 && guide.getProgress() < 100) {
                 statusIcon = PROGRESS_IN_PROGRESS;
             } else if (guide.getProgress() == 100){
                 statusIcon = PROGRESS_FULL_PROGRESSED;
@@ -187,5 +187,12 @@ public class GuideSysHud {
      */
     public static boolean isShowingAllDescriptions() {
         return showAllDescriptions;
+    }
+
+    /**
+     * 动画操作：设置进度图标为progress_complete
+     */
+    public static void animateProgressComplete() {
+
     }
 }
