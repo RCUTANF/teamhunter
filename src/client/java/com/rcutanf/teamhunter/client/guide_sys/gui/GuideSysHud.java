@@ -4,8 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.Items;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -24,9 +22,9 @@ public class GuideSysHud {
     private static boolean showAllDescriptions = false;
 
     // 进度图标资源
-    private static final Identifier PROGRESS_PENDING = Identifier.of("teamhunter", "textures/gui/guide/progress_pending.png");
-    private static final Identifier PROGRESS_IN_PROGRESS = Identifier.of("teamhunter", "textures/gui/guide/progress_in_progress.png");
-    private static final Identifier PROGRESS_COMPLETE = Identifier.of("teamhunter", "textures/gui/guide/progress_complete.png");
+    private static final Identifier PROGRESS_FULL_PROGRESSED = Identifier.of("teamhunter", "textures/ui/guide/progress_full_progressed.png");
+    private static final Identifier PROGRESS_IN_PROGRESS = Identifier.of("teamhunter", "textures/ui/guide/progress_in_progress.png");
+    private static final Identifier PROGRESS_COMPLETE = Identifier.of("teamhunter", "textures/ui/guide/progress_complete.png");
 
     private GuideSysHud() {}
 
@@ -128,10 +126,12 @@ public class GuideSysHud {
             Identifier statusIcon;
             if (guide.isCompleted()) {
                 statusIcon = PROGRESS_COMPLETE;
-            } else if (guide.getProgress() > 0) {
+            } else if (guide.getProgress() >= 0) {
                 statusIcon = PROGRESS_IN_PROGRESS;
+            } else if (guide.getProgress() == 100){
+                statusIcon = PROGRESS_FULL_PROGRESSED;
             } else {
-                statusIcon = PROGRESS_PENDING;
+                statusIcon = PROGRESS_IN_PROGRESS;
             }
 
             context.drawTexture(RenderLayer::getGuiTextured, statusIcon, statusX, statusY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
