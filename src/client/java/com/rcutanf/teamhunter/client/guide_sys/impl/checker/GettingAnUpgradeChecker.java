@@ -10,6 +10,8 @@ import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import java.util.Map;
+
 /**
  * 石器时代成就检查器
  * 检查玩家是否获得了石头类物品
@@ -42,16 +44,22 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker implements 
         if (isCompleted()) {
             return;
         }
-        ItemStack itemStack = (ItemStack)eventData;
-        // 检查传入的物品是否为圆石
-        String itemId = itemStack.getItem().toString();
-        if (itemId.equals("minecraft:cobblestone")) {
-            if(!isActive()){setActive(true);}
-            if(itemStack.getCount() / REQUIRED_COBBLESTONE_COUNT >= 1){
-                setProgress(100);
-            }
-            else {
-                setProgress(itemStack.getCount() * 100 / REQUIRED_COBBLESTONE_COUNT);
+        // 将eventData转换为Map
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) eventData;
+        ItemStack itemStack = (ItemStack) data.get("itemStack");
+        boolean isAdded = (boolean) data.get("isAdded");
+        if (isAdded) {
+            // 检查传入的物品是否为圆石
+            String itemId = itemStack.getItem().toString();
+            if (itemId.equals("minecraft:cobblestone")) {
+                if(!isActive()){setActive(true);}
+                if(itemStack.getCount() / REQUIRED_COBBLESTONE_COUNT >= 1){
+                    setProgress(100);
+                }
+                else {
+                    setProgress(itemStack.getCount() * 100 / REQUIRED_COBBLESTONE_COUNT);
+                }
             }
         }
     }
