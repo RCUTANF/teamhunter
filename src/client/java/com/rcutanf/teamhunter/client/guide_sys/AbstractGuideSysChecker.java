@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractGuideSysChecker implements TriggerListener {
+public abstract class AbstractGuideSysChecker implements TriggerListener, AdvancementCompletionListener {
     protected Identifier id;
     protected String checkerID;
     protected TriggerType triggerType;
@@ -152,6 +153,22 @@ public abstract class AbstractGuideSysChecker implements TriggerListener {
         // 获取进度并检查是否完成
         AdvancementProgress progress = advancementProgresses.get(placedAdvancement.getAdvancementEntry());
         return progress != null && progress.isDone();
+    }
+
+    public void onAdvancementCompleted(AdvancementEntry advancement, AdvancementProgress progress) {
+        if (advancement.id().equals(id)) {
+            markAsCompleted();
+        }
+    }
+
+    public void onAdvancementRemoved(AdvancementEntry advancement) {
+        // 检查是否是对应成就成就
+        if (advancement.id().equals(id)) {
+            setActive(false);
+            completed = false; // 成就被移除，重置状态
+            //重新侦听触发器
+            register();
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.client.guide_sys.impl.checker.AcquireHardwareChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.GettingAnUpgradeChecker;
+import com.rcutanf.teamhunter.client.guide_sys.impl.checker.IsntItIronPickChecker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,6 +121,8 @@ public class GuideSysCheckerManager {
         // 实例化所有检查器
         // 注意：每个检查器的构造函数中会自动调用registerChecker
         new GettingAnUpgradeChecker();
+        new AcquireHardwareChecker();
+        new IsntItIronPickChecker();
 
         // 以下是其他可能的检查器，取消注释或添加更多检查器
         // new WoodAgeChecker();
