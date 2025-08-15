@@ -3,6 +3,7 @@ package com.rcutanf.teamhunter.client.guide_sys;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.BiomeTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.StructureTrigger;
+import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.SurroundingBlockTrigger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +44,8 @@ public class GuideSysTriggerManager {
                 return new BiomeTrigger();
             case structure:
                 return new StructureTrigger();
+            case surroundingBlock:
+                return new SurroundingBlockTrigger();
             // 可以添加其他类型的触发器
             default:
                 throw new IllegalArgumentException("Invalid trigger type");
