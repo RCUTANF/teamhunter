@@ -70,17 +70,6 @@ public class GuideSysCheckerManager {
     }
 
     /**
-     * 获取特定类型的检查器
-     * @param triggerType 触发器类型
-     * @return 对应类型的检查器列表
-     */
-    public List<AbstractGuideSysChecker> getCheckersByType(TriggerType triggerType) {
-        return checkers.values().stream()
-                .filter(checker -> checker.getTriggerType() == triggerType)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * 获取已完成的检查器
      * @return 已完成的检查器列表
      */

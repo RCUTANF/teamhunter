@@ -1,20 +1,16 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementManager;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,15 +18,15 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractGuideSysChecker implements TriggerListener, AdvancementCompletionListener {
     protected Identifier id;
     protected String checkerID;
-    protected TriggerType triggerType;
+    protected List<TriggerType> triggerTypes;
     protected boolean isActive; // 是否进入活动状态，也就是是否有机会完成，决定是否在屏幕上显示
     protected int progress; // 进度，0-100
     protected boolean completed;
 
-    public AbstractGuideSysChecker(Identifier id, String checkerID, TriggerType triggerType) {
+    public AbstractGuideSysChecker(Identifier id, String checkerID, List<TriggerType> triggerTypes) {
         this.id = id;
         this.checkerID = checkerID;
-        this.triggerType = triggerType;
+        this.triggerTypes = triggerTypes;
         this.isActive = false;
         this.progress = 0; // 初始进度为0
         this.completed = false;
@@ -38,8 +34,8 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         register();
     }
 
-    public TriggerType getTriggerType() {
-        return triggerType;
+    public List<TriggerType> getTriggerTypes() {
+        return triggerTypes;
     }
 
     public boolean isCompleted() {
@@ -112,9 +108,11 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
      */
     public void register() {
         // 根据触发器类型获取相应的触发器实例并注册
-        AbstractGuideSysTrigger trigger = GuideSysTriggerManager.getInstance().getTrigger(triggerType);
-        if (trigger != null) {
-            trigger.register(this);
+        for (TriggerType type : triggerTypes) {
+            AbstractGuideSysTrigger trigger = GuideSysTriggerManager.getInstance().getTrigger(type);
+            if (trigger != null) {
+                trigger.register(this);
+            }
         }
     }
 
@@ -122,9 +120,11 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
      * 取消注册
      */
     public void unregister() {
-        AbstractGuideSysTrigger trigger = GuideSysTriggerManager.getInstance().getTrigger(triggerType);
-        if (trigger != null) {
-            trigger.unregister(this);
+        for (TriggerType type : triggerTypes) {
+            AbstractGuideSysTrigger trigger = GuideSysTriggerManager.getInstance().getTrigger(type);
+            if (trigger != null) {
+                trigger.unregister(this);
+            }
         }
     }
 

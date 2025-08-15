@@ -7,6 +7,8 @@ import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEv
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +22,8 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
     public GettingAnUpgradeChecker() {
 
         // 设置成就ID和使用物品栏触发器
-        super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade", TriggerType.inventory);
+        super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade",
+                Arrays.asList(TriggerType.inventory));
 
         // 注册到检查器管理器
         GuideSysCheckerManager.getInstance().registerChecker(this);

@@ -10,6 +10,7 @@ import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -22,7 +23,7 @@ public class AcquireHardwareChecker extends AbstractGuideSysChecker {
 
     public AcquireHardwareChecker() {
         // 设置成就ID和使用物品栏触发器
-        super(Identifier.of("minecraft", "story/smelt_iron"), "acquire_hardware", TriggerType.inventory);
+        super(Identifier.of("minecraft", "story/smelt_iron"), "acquire_hardware", Arrays.asList(TriggerType.inventory));
 
         // 注册到检查器管理器
         GuideSysCheckerManager.getInstance().registerChecker(this);
