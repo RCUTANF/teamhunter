@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.AcquireHardwareChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.GettingAnUpgradeChecker;
+import com.rcutanf.teamhunter.client.guide_sys.impl.checker.HotStuffChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.IsntItIronPickChecker;
 
 import java.util.ArrayList;
@@ -112,14 +113,7 @@ public class GuideSysCheckerManager {
         new GettingAnUpgradeChecker();
         new AcquireHardwareChecker();
         new IsntItIronPickChecker();
-
-        // 以下是其他可能的检查器，取消注释或添加更多检查器
-        // new WoodAgeChecker();
-        // new IronAgeChecker();
-        // new CraftingTableChecker();
-        // new FirstMiningChecker();
-        // new MobKillerChecker();
-        // new ExplorerChecker();
+        new HotStuffChecker();
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
     }

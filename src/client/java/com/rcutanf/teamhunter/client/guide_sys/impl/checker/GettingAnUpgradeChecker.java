@@ -24,18 +24,6 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
         // 设置成就ID和使用物品栏触发器
         super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade",
                 Arrays.asList(TriggerType.inventory));
-
-        // 注册到检查器管理器
-        GuideSysCheckerManager.getInstance().registerChecker(this);
-
-        // 注册成就监听器
-        AdvancementEventManager.getInstance().registerListener(this);
-
-        if(super.checkADinGameStatus()){
-            markAsCompleted();
-        }
-
-
     }
 
     @Override

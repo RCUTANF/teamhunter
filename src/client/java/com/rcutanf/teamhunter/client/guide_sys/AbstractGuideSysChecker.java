@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
@@ -10,6 +11,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -22,6 +24,48 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
     protected boolean isActive; // 是否进入活动状态，也就是是否有机会完成，决定是否在屏幕上显示
     protected int progress; // 进度，0-100
     protected boolean completed;
+    protected List<Condition> conditions;
+
+    protected class Condition {
+        public String name;
+        public String description;
+        public boolean isCompleted;
+        public int maxProgress;
+        public int insideProgress;
+
+        public Condition(String name, String description, int maxProgress) {
+            this.name = name;
+            this.description = description;
+            this.isCompleted = false; // 初始状态为未完成
+            setMaxProgress(maxProgress);
+            this.insideProgress = 0; // 初始进度为0
+        }
+        public void setInsideProgress(int insideProgress) {
+            if (insideProgress < 0 || insideProgress > maxProgress) {
+                throw new IllegalArgumentException("Inside progress must be between 0 and " + maxProgress + ".");
+            }
+            this.insideProgress = insideProgress;
+        }
+        public void setMaxProgress(int maxProgress) {
+            if (maxProgress < 0) {
+                throw new IllegalArgumentException("Max progress must be non-negative.");
+            }
+            if (maxProgress > 100){
+                throw new IllegalArgumentException("Max progress cannot exceed 100.");
+            }
+            this.maxProgress = maxProgress;
+        }
+
+        public void finish() {
+            this.isCompleted = true;
+            this.insideProgress = maxProgress; // 完成时设置进度为最大值
+        }
+
+        public void setUnfinished() {
+            this.isCompleted = false;
+            this.insideProgress = 0; // 重置进度为0
+        }
+    }
 
     public AbstractGuideSysChecker(Identifier id, String checkerID, List<TriggerType> triggerTypes) {
         this.id = id;
@@ -30,8 +74,19 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         this.isActive = false;
         this.progress = 0; // 初始进度为0
         this.completed = false;
+        this.conditions = new ArrayList<>();
         // 在构造函数中注册到相应的触发器
         register();
+
+        // 注册到检查器管理器
+        GuideSysCheckerManager.getInstance().registerChecker(this);
+
+        // 注册成就监听器
+        AdvancementEventManager.getInstance().registerListener(this);
+
+        if(checkADinGameStatus()){
+            markAsCompleted();
+        }
     }
 
     public List<TriggerType> getTriggerTypes() {
@@ -169,6 +224,23 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
             //重新侦听触发器
             register();
         }
+    }
+
+    protected Condition getConditionByName(String name) {
+        for (Condition condition : conditions) {
+            if (name.equals(condition.name)) {
+                return condition;
+            }
+        }
+        return null;
+    }
+
+    public void updateTotalProgress() {
+        int totalProgress = 0;
+        for (Condition condition : conditions) {
+            totalProgress += condition.insideProgress;
+        }
+        setProgress(totalProgress);
     }
 
 }

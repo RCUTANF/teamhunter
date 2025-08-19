@@ -24,16 +24,6 @@ public class IsntItIronPickChecker extends AbstractGuideSysChecker {
     public IsntItIronPickChecker() {
         // 设置成就ID和使用物品栏触发器
         super(Identifier.of("minecraft", "story/iron_tools"), "isnt_it_iron_pick", Arrays.asList(TriggerType.inventory));
-
-        // 注册到检查器管理器
-        GuideSysCheckerManager.getInstance().registerChecker(this);
-
-        // 注册成就监听器
-        AdvancementEventManager.getInstance().registerListener(this);
-
-        if(super.checkADinGameStatus()){
-            markAsCompleted();
-        }
     }
 
     @Override
