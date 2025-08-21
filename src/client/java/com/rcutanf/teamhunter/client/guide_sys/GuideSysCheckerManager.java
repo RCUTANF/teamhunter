@@ -2,10 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
-import com.rcutanf.teamhunter.client.guide_sys.impl.checker.AcquireHardwareChecker;
-import com.rcutanf.teamhunter.client.guide_sys.impl.checker.GettingAnUpgradeChecker;
-import com.rcutanf.teamhunter.client.guide_sys.impl.checker.HotStuffChecker;
-import com.rcutanf.teamhunter.client.guide_sys.impl.checker.IsntItIronPickChecker;
+import com.rcutanf.teamhunter.client.guide_sys.impl.checker.*;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
@@ -125,6 +122,11 @@ public class GuideSysCheckerManager {
         new AcquireHardwareChecker();
         new IsntItIronPickChecker();
         new HotStuffChecker();
+        new CoverMewithDiamondsChecker();
+        new EnchanterChecker();
+        new IceBucketChallengeChecker();
+        new NotToday_ThankYouChecker();
+        new SuitUpChecker();
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
 

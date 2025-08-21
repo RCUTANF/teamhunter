@@ -2,11 +2,6 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.checker;
 
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysChecker;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
-import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 

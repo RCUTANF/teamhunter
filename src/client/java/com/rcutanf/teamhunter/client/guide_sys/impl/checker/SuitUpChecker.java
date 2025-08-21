@@ -5,22 +5,16 @@ import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 石器时代成就检查器
- * 检查玩家是否获得了石头类物品
- */
-public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
+public class SuitUpChecker  extends AbstractGuideSysChecker {
+    private static final int REQUIRED_IRON_INGOT_COUNT = 6; // 需要的铁锭数量
 
-    private static final int REQUIRED_COBBLESTONE_COUNT = 3; // 需要的圆石数量
-
-    public GettingAnUpgradeChecker() {
-
+    public SuitUpChecker() {
         // 设置成就ID和使用物品栏触发器
-        super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade",
-                List.of(TriggerType.inventory));
+        super(Identifier.of("minecraft", "story/obtain_armor"), "suit_up", List.of(TriggerType.inventory));
     }
 
     @Override
@@ -35,15 +29,15 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
         ItemStack itemStack = (ItemStack) data.get("itemStack");
         boolean isAdded = (boolean) data.get("isAdded");
         if (isAdded) {
-            // 检查传入的物品是否为圆石
+            // 检查传入的物品是否为铁锭
             String itemId = itemStack.getItem().toString();
-            if (itemId.equals("minecraft:cobblestone")) {
+            if (itemId.equals("minecraft:iron_ingot")) {
                 if(!isActive()){setActive(true);}
-                if(itemStack.getCount() / REQUIRED_COBBLESTONE_COUNT >= 1){
+                if(itemStack.getCount() / REQUIRED_IRON_INGOT_COUNT >= 1){
                     setProgress(100);
                 }
                 else {
-                    setProgress(itemStack.getCount() * 100 / REQUIRED_COBBLESTONE_COUNT);
+                    setProgress(itemStack.getCount() * 100 / REQUIRED_IRON_INGOT_COUNT);
                 }
             }
         }
