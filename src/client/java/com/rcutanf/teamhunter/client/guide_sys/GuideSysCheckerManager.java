@@ -1,9 +1,15 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.AcquireHardwareChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.GettingAnUpgradeChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.HotStuffChecker;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.IsntItIronPickChecker;
+import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,10 +100,15 @@ public class GuideSysCheckerManager {
      * 清除所有检查器
      */
     public void clearAllCheckers() {
-        // 先取消所有检查器的注册
-        checkers.values().forEach(AbstractGuideSysChecker::unregister);
-        // 然后清空集合
+        checkers.values().forEach(checker -> {
+            // 1. 取消触发器注册
+            checker.unregister();
+            // 2. 取消成就事件监听器注册
+            AdvancementEventManager.getInstance().unregisterListener(checker);
+        });
+        GuideSysGuiManager.clearAdvancementGuides();
         checkers.clear();
+        System.out.println("已清理所有成就检查器资源");
     }
 
     /**
@@ -116,6 +127,29 @@ public class GuideSysCheckerManager {
         new HotStuffChecker();
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
+
+        // 初始化完成后，遍历玩家物品栏中的所有物品并触发事件
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null) {
+            PlayerInventory inventory = client.player.getInventory();
+
+            // 获取InventoryTrigger
+            InventoryTrigger trigger = (InventoryTrigger) GuideSysTriggerManager.getInstance()
+                .getTrigger(TriggerType.inventory);
+
+            if (trigger != null) {
+                // 遍历物品
+                for (int i = 0; i < inventory.size(); i++) {
+                    ItemStack stack = inventory.getStack(i);
+                    if (!stack.isEmpty()) {
+                        Map<String, Object> eventData = new HashMap<>();
+                        eventData.put("itemStack", stack);
+                        eventData.put("isAdded", true);
+                        trigger.fire(eventData);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -2,8 +2,6 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.checker;
 
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysChecker;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
-import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -23,7 +21,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
 
         // 设置成就ID和使用物品栏触发器
         super( Identifier.of("minecraft", "story/upgrade_tools"),"getting_an_upgrade",
-                Arrays.asList(TriggerType.inventory));
+                List.of(TriggerType.inventory));
     }
 
     @Override

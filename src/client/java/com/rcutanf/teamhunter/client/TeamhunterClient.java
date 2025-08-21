@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -175,10 +176,36 @@ public class TeamhunterClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             playerPositions.clear();
             //PlayerRadarHud.dispose();
+            guideCheckerManager.clearAllCheckers();
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             playerPositions.clear();
+
+            // 异步等待成就数据加载完成
+            new Thread(() -> {
+                try {
+                    int attempts = 0;
+                    while (attempts < 500) { // 最多等待25秒
+                        Thread.sleep(50);
+
+                        // 检查是否是游戏画面（不是菜单、加载界面等）
+                        if (client.player != null &&
+                                client.world != null &&
+                                client.currentScreen == null &&
+                                client.getCameraEntity() != null) {
+
+                            client.execute(() -> {
+                                guideCheckerManager.initializeAllCheckers();
+                            });
+                            break;
+                        }
+                        attempts++;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }, "AdvancementInit").start();
         });
     }
 
@@ -226,7 +253,6 @@ public class TeamhunterClient implements ClientModInitializer {
     private void registerAdvancementGuide() {
         guideSysTriggerManager = GuideSysTriggerManager.getInstance();
         guideCheckerManager = GuideSysCheckerManager.getInstance();
-        guideCheckerManager.initializeAllCheckers();
         advancementEventManager = AdvancementEventManager.getInstance();
 
 

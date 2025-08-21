@@ -64,6 +64,8 @@ public class GuideSysGuiManager {
     public static List<AdvancementGuideItem> getAdvancementGuides() {
         return advancementGuides;
     }
+
+    public static void clearAdvancementGuides() {advancementGuides.clear();}
     
     public static void addAdvancementGuide(Identifier advancementID, int progress) {
         try {
@@ -79,7 +81,7 @@ public class GuideSysGuiManager {
             var placedAdvancement = advancementManager.get(advancementID);
 
             if (placedAdvancement == null) {
-                System.out.println("找不到进度: " + advancementID.toString());
+                System.out.println("GuideSysGuiManager 找不到进度: " + advancementID.toString());
                 return;
             }
 
