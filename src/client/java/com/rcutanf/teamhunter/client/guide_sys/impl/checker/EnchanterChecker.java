@@ -43,51 +43,10 @@ public class EnchanterChecker extends AbstractGuideSysChecker {
         }
     }
 
-    private void handleInventoryEvent(Map<String, Object> data) {
-        ItemStack itemStack = (ItemStack) data.get("itemStack");
-        boolean isAdded = (boolean) data.get("isAdded");
-        String itemId = itemStack.getItem().toString();
-
-        if (isAdded) {
-            // 激活检查器
-            if (!isActive()) {
-                setActive(true);
-            }
-
-            // 处理钻石物品（需要2个）
-            if (itemId.equals("minecraft:diamond")) {
-                Condition diamondCondition = getConditionByName("diamond");
-                if (diamondCondition != null) {
-                    int diamondCount = itemStack.getCount();
-                    if (diamondCount >= 2) {
-                        diamondCondition.finish();
-                    } else {
-                        diamondCondition.setInsideProgress(diamondCount * 34 / 2);
-                    }
-                }
-            }
-            // 处理黑曜石物品（需要4个）
-            else if (itemId.equals("minecraft:obsidian")) {
-                Condition obsidianCondition = getConditionByName("obsidian");
-                if (obsidianCondition != null) {
-                    int obsidianCount = itemStack.getCount();
-                    if (obsidianCount >= 4) {
-                        obsidianCondition.finish();
-                    } else {
-                        obsidianCondition.setInsideProgress(obsidianCount * 33 / 4);
-                    }
-                }
-            }
-            // 处理书本物品
-            else if (itemId.equals("minecraft:book")) {
-                Condition bookCondition = getConditionByName("book");
-                if (bookCondition != null) {
-                    bookCondition.finish();
-                }
-            }
-
-            // 更新总体进度
-            updateTotalProgress();
-        }
+    private boolean handleInventoryEvent(Map<String, Object> data) {
+        // 尝试处理各种物品条件，如果任何一个处理成功，就不需要继续检查了
+        return checkCondition4itemAdd(data, "minecraft:diamond", "diamond", 2) ||
+                checkCondition4itemAdd(data, "minecraft:obsidian", "obsidian", 4) ||
+                checkCondition4itemAdd(data, "minecraft:book", "book", 1);
     }
 }

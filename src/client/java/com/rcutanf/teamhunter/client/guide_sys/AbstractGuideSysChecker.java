@@ -9,11 +9,13 @@ import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -241,6 +243,77 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
             totalProgress += condition.insideProgress;
         }
         setProgress(totalProgress);
+    }
+
+    /**
+     * 检查物品添加事件并更新相关条件进度
+     * @param data 事件数据
+     * @param itemName 目标物品名称
+     * @param conditionName 条件名称
+     * @param itemRequiringCount 所需物品数量
+     * @return 是否成功处理该条件
+     */
+    protected boolean checkCondition4itemAdd(Map<String, Object> data, String itemName, String conditionName, int itemRequiringCount) {
+        if (!(boolean)data.get("isAdded")) {
+            return false;
+        }
+
+        ItemStack itemStack = (ItemStack) data.get("itemStack");
+        String itemId = itemStack.getItem().toString();
+
+        // 如果物品不匹配，直接返回
+        if (!itemId.equals(itemName)) {
+            return false;
+        }
+
+        // 激活检查器
+        if (!isActive()) {
+            setActive(true);
+        }
+
+        // 查找并更新条件
+        Condition condition = getConditionByName(conditionName);
+        if (condition == null) {
+            System.out.println("找不到条件: " + conditionName);
+            return false;
+        }
+
+        // 更新条件进度
+        int itemCount = itemStack.getCount();
+        if (itemCount >= itemRequiringCount) {
+            condition.finish();
+        } else {
+            condition.setInsideProgress(itemCount * condition.maxProgress / itemRequiringCount);
+        }
+
+        // 更新总体进度
+        updateTotalProgress();
+        return true;
+    }
+
+    protected boolean checkCondition4nearBlocks(Map<String, Object> data, String blockName, String conditionName) {
+        @SuppressWarnings("unchecked")
+        Set<String> blockTypes = (Set<String>) data.get("blockTypes");
+
+        // 检查附近是否有熔岩
+        boolean hasBlocksNearby = blockTypes.contains(blockName);
+        Condition condition = getConditionByName(conditionName);
+        if (hasBlocksNearby) {
+            if (condition != null) {
+                if(!isActive()){setActive(true);}
+                condition.finish();
+                updateTotalProgress();
+                return true;
+            }
+        }
+        else  {
+            if (condition != null) {
+                condition.setUnfinished();
+                updateTotalProgress();
+                return true;
+            }
+        }
+        return false;
     }
 
 }

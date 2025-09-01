@@ -2,15 +2,9 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.checker;
 
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysChecker;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
-import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementProgress;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,11 +13,11 @@ import java.util.Map;
  */
 public class AcquireHardwareChecker extends AbstractGuideSysChecker {
 
-    private static final int REQUIRED_IRON_ORE_COUNT = 1; // 需要的铁矿石数量
-
     public AcquireHardwareChecker() {
         // 设置成就ID和使用物品栏触发器
-        super(Identifier.of("minecraft", "story/smelt_iron"), "acquire_hardware", Arrays.asList(TriggerType.inventory));
+        super(Identifier.of("minecraft", "story/smelt_iron"), "acquire_hardware", List.of(TriggerType.inventory));
+        // 添加铁矿石条件，权重为100（唯一条件）
+        conditions.add(new Condition("iron_ore", "获取铁矿石", 100));
     }
 
     @Override
@@ -32,23 +26,22 @@ public class AcquireHardwareChecker extends AbstractGuideSysChecker {
         if (isCompleted()) {
             return;
         }
-        // 将eventData转换为Map
-        @SuppressWarnings("unchecked")
-        Map<String, Object> data = (Map<String, Object>) eventData;
-        ItemStack itemStack = (ItemStack) data.get("itemStack");
-        boolean isAdded = (boolean) data.get("isAdded");
-        if (isAdded) {
-            // 检查传入的物品是否为铁矿石
-            String itemId = itemStack.getItem().toString();
-            if (itemId.equals("minecraft:iron_ore") || itemId.equals("minecraft:deepslate_iron_ore")) {
-                if(!isActive()){setActive(true);}
-                if(itemStack.getCount() / REQUIRED_IRON_ORE_COUNT >= 1){
-                    setProgress(100);
-                }
-                else {
-                    setProgress(itemStack.getCount() * 100 / REQUIRED_IRON_ORE_COUNT);
-                }
+
+        // 只处理物品栏事件
+        if (eventData instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> data = (Map<String, Object>) eventData;
+
+            // 确认是物品栏事件
+            if (data.containsKey("itemStack") && data.containsKey("isAdded")) {
+                handleInventoryEvent(data);
             }
         }
+    }
+
+    private boolean handleInventoryEvent(Map<String, Object> data) {
+        // 检查铁矿石和深层铁矿石，任一条件满足即可
+        return checkCondition4itemAdd(data, "minecraft:iron_ore", "iron_ore", 1) ||
+               checkCondition4itemAdd(data, "minecraft:deepslate_iron_ore", "iron_ore", 1);
     }
 }

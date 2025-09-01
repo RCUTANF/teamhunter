@@ -7,20 +7,14 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 石器时代成就检查器
- * 检查玩家是否获得了石头类物品
- */
-public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
+public class CoverMeWithDiamondsChecker extends AbstractGuideSysChecker {
+    private static final int REQUIRED_DIAMOND_INGOT_COUNT = 6; // 需要的钻石数量
 
-    private static final int REQUIRED_COBBLESTONE_COUNT = 3; // 需要的圆石数量
-
-    public GettingAnUpgradeChecker() {
+    public CoverMeWithDiamondsChecker() {
         // 设置成就ID和使用物品栏触发器
-        super(Identifier.of("minecraft", "story/upgrade_tools"), "getting_an_upgrade",
-                List.of(TriggerType.inventory));
-        // 添加圆石条件，权重为100（唯一条件）
-        conditions.add(new Condition("cobblestone", "获取圆石", 100));
+        super(Identifier.of("minecraft", "story/shiny_gear"), "cover_me_with_diamonds", List.of(TriggerType.inventory));
+        // 添加钻石条件，权重为100（唯一条件）
+        conditions.add(new Condition("diamond", "获取钻石", 100));
     }
 
     @Override
@@ -43,7 +37,7 @@ public class GettingAnUpgradeChecker extends AbstractGuideSysChecker {
     }
 
     private boolean handleInventoryEvent(Map<String, Object> data) {
-        // 检查圆石添加事件
-        return checkCondition4itemAdd(data, "minecraft:cobblestone", "cobblestone", REQUIRED_COBBLESTONE_COUNT);
+        // 检查钻石添加事件
+        return checkCondition4itemAdd(data, "minecraft:diamond", "diamond", REQUIRED_DIAMOND_INGOT_COUNT);
     }
 }

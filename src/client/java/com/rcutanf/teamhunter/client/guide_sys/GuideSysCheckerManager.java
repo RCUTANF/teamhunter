@@ -122,7 +122,7 @@ public class GuideSysCheckerManager {
         new AcquireHardwareChecker();
         new IsntItIronPickChecker();
         new HotStuffChecker();
-        new CoverMewithDiamondsChecker();
+        new CoverMeWithDiamondsChecker();
         new EnchanterChecker();
         new IceBucketChallengeChecker();
         new NotToday_ThankYouChecker();

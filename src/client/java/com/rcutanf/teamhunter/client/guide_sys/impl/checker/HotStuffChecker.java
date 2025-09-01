@@ -2,7 +2,6 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.checker;
 
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysChecker;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -13,13 +12,10 @@ import java.util.*;
  */
 public class HotStuffChecker extends AbstractGuideSysChecker {
 
-
-    private int ironIngotCount = 0; // 当前铁锭数量
-    private boolean hasLavaNearby = false; // 附近是否有熔岩
-
     public HotStuffChecker() {
         // 设置成就ID和使用物品栏+方块检测触发器
-        super(Identifier.of("minecraft", "story/lava_bucket"), "hot_stuff", Arrays.asList(TriggerType.inventory, TriggerType.surroundingBlock));
+        super(Identifier.of("minecraft", "story/lava_bucket"), "hot_stuff",
+              Arrays.asList(TriggerType.inventory, TriggerType.surroundingBlock));
         conditions.add(new Condition("bucket", "具备铁桶", 50));
         conditions.add(new Condition("lava", "附近可获得岩浆", 50));
     }
@@ -42,68 +38,23 @@ public class HotStuffChecker extends AbstractGuideSysChecker {
                 handleInventoryEvent(data);
             } else if (data.containsKey("blockTypes")) {
                 // 方块检测事件
-                handleBlockEvent(data);
+                checkCondition4nearBlocks(data, "block.minecraft.lava", "lava");
             }
         }
     }
 
     private void handleInventoryEvent(Map<String, Object> data) {
-        ItemStack itemStack = (ItemStack) data.get("itemStack");
-        boolean isAdded = (boolean) data.get("isAdded");
-
-        String itemId = itemStack.getItem().toString();
-
-        if (isAdded) {
-            switch (itemId) {
-                case "minecraft:iron_ingot":
-                    if(!isActive()){setActive(true);}
-                    Condition bucketCondition = getConditionByName("bucket");
-                    if (bucketCondition != null) {
-                        ironIngotCount = itemStack.getCount();
-                        if (ironIngotCount >= 3) {
-                            bucketCondition.setInsideProgress(49);
-                        }
-                        else{
-                            bucketCondition.setInsideProgress(ironIngotCount * 50 / 3);//会舍去成差一点满，刚好能示意需要合成铁桶
-                        }
-                    }
-                    updateTotalProgress();
-                    break;
-
-                case "minecraft:bucket":
-                    if(!isActive()){setActive(true);}
-                    Condition bucketCondition2 = getConditionByName("bucket");
-                    if (bucketCondition2 != null) {
-                        bucketCondition2.finish();
-                    }
-                    updateTotalProgress();
-                    break;
-                default:
-                    // 其他物品不处理
-                    break;
-            }
+        // 检查铁锭和铁桶
+        if (checkCondition4itemAdd(data, "minecraft:bucket", "bucket", 1)) {
+            return; // 如果是铁桶，直接完成该条件
         }
 
-
-    }
-
-    private void handleBlockEvent(Map<String, Object> data) {
-        @SuppressWarnings("unchecked")
-        Set<String> blockTypes = (Set<String>) data.get("blockTypes");
-
-        // 检查附近是否有熔岩
-        hasLavaNearby = blockTypes.contains("block.minecraft.lava");
-        Condition lavaConditon = getConditionByName("lava");
-        if (hasLavaNearby) {
-            if (lavaConditon != null) {
-                if(!isActive()){setActive(true);}
-                lavaConditon.finish();
-                updateTotalProgress();
-            }
-        }
-        else  {
-            if (lavaConditon != null) {
-                lavaConditon.setUnfinished();
+        // 检查铁锭（需要3个铁锭合成一个铁桶）
+        if (checkCondition4itemAdd(data, "minecraft:iron_ingot", "bucket", 3)) {
+            // 更新铁锭进度后，保证进度最多为49（表示需要合成铁桶）
+            Condition bucketCondition = getConditionByName("bucket");
+            if (bucketCondition != null && bucketCondition.insideProgress >= 50) {
+                bucketCondition.setInsideProgress(49);
                 updateTotalProgress();
             }
         }
