@@ -22,32 +22,10 @@ public class DiamondsChecker extends AbstractGuideSysChecker {
     }
 
     @Override
-    public void onEvent(Object eventData) {
-        // 如果成就已完成，不再处理
-        if (isCompleted()) {
-            return;
-        }
-
-        // 只处理方块检测事件
-        if (eventData instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> data = (Map<String, Object>) eventData;
-
-            // 确认是方块检测事件
-            if (data.containsKey("blockTypes")) {
-                // 检查周围是否有钻石矿石或深层钻石矿石
-                checkDiamondOres(data);
-            }
-        }
-    }
-
-    private void checkDiamondOres(Map<String, Object> data) {
+    protected boolean handleSurroundingBlockEvent(Map<String, Object> data) {
         // 检查普通钻石矿石
-        boolean foundDiamondOre = checkCondition4nearBlocks(data, "block.minecraft.diamond_ore", "diamond_ore");
+        return checkCondition4nearBlocks(data, "block.minecraft.diamond_ore", "diamond_ore") ||
+               checkCondition4nearBlocks(data, "block.minecraft.deepslate_diamond_ore", "diamond_ore");
 
-        // 如果没找到普通钻石矿石，尝试检查深层钻石矿石
-        if (!foundDiamondOre) {
-            checkCondition4nearBlocks(data, "block.minecraft.deepslate_diamond_ore", "diamond_ore");
-        }
     }
 }

@@ -25,25 +25,7 @@ public class EnchanterChecker extends AbstractGuideSysChecker {
     }
 
     @Override
-    public void onEvent(Object eventData) {
-        // 如果成就已完成，不再处理
-        if (isCompleted()) {
-            return;
-        }
-
-        // 只处理物品栏事件
-        if (eventData instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> data = (Map<String, Object>) eventData;
-
-            // 确认是物品栏事件
-            if (data.containsKey("itemStack") && data.containsKey("isAdded")) {
-                handleInventoryEvent(data);
-            }
-        }
-    }
-
-    private boolean handleInventoryEvent(Map<String, Object> data) {
+    protected boolean handleInventoryEvent(Map<String, Object> data) {
         // 尝试处理各种物品条件，如果任何一个处理成功，就不需要继续检查了
         return checkCondition4itemAdd(data, "minecraft:diamond", "diamond", 2) ||
                 checkCondition4itemAdd(data, "minecraft:obsidian", "obsidian", 4) ||

@@ -187,10 +187,32 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
 
     /**
      * 当触发器触发事件时调用此方法
-     * 子类需要实现具体的事件处理逻辑
      */
-    @Override
-    public abstract void onEvent(Object eventData);
+    public void onEvent(Object eventData) {
+        // 如果成就已完成，不再处理
+        if (isCompleted()) {
+            return;
+        }
+
+        // 根据事件数据类型处理不同触发器
+        if (eventData instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> data = (Map<String, Object>) eventData;
+
+            // 通过数据内容判断是哪种触发器
+            if (data.containsKey("itemStack") && data.containsKey("isAdded")) {
+                // 物品栏事件
+                handleInventoryEvent(data);
+            } else if (data.containsKey("blockTypes")) {
+                // 方块检测事件
+                handleSurroundingBlockEvent(data);
+            }
+        }
+    }
+
+    protected boolean handleSurroundingBlockEvent(Map<String, Object> data){return true;}
+
+    protected boolean handleInventoryEvent(Map<String, Object> data){return true;}
 
     /**
      * 检查成就是否已经完成，避免子类建立的时候没有和游戏内的数据一致

@@ -21,32 +21,10 @@ public class HotStuffChecker extends AbstractGuideSysChecker {
     }
 
     @Override
-    public void onEvent(Object eventData) {
-        // 如果成就已完成，不再处理
-        if (isCompleted()) {
-            return;
-        }
-
-        // 根据事件数据类型处理不同触发器
-        if (eventData instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> data = (Map<String, Object>) eventData;
-
-            // 通过数据内容判断是哪种触发器
-            if (data.containsKey("itemStack") && data.containsKey("isAdded")) {
-                // 物品栏事件
-                handleInventoryEvent(data);
-            } else if (data.containsKey("blockTypes")) {
-                // 方块检测事件
-                checkCondition4nearBlocks(data, "block.minecraft.lava", "lava");
-            }
-        }
-    }
-
-    private void handleInventoryEvent(Map<String, Object> data) {
+    protected boolean handleInventoryEvent(Map<String, Object> data) {
         // 检查铁锭和铁桶
         if (checkCondition4itemAdd(data, "minecraft:bucket", "bucket", 1)) {
-            return; // 如果是铁桶，直接完成该条件
+            return true; // 如果是铁桶，直接完成该条件
         }
 
         // 检查铁锭（需要3个铁锭合成一个铁桶）
@@ -58,5 +36,13 @@ public class HotStuffChecker extends AbstractGuideSysChecker {
                 updateTotalProgress();
             }
         }
+
+        return true;
+    }
+
+    @Override
+    protected boolean handleSurroundingBlockEvent(Map<String, Object> data) {
+        // 处理附近方块事件
+        return checkCondition4nearBlocks(data, "block.minecraft.lava", "lava");
     }
 }
