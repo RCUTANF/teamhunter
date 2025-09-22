@@ -127,6 +127,8 @@ public class GuideSysCheckerManager {
         new IceBucketChallengeChecker();
         new NotToday_ThankYouChecker();
         new SuitUpChecker();
+        new DiamondsChecker();
+        new WeNeedToGoDeeperChecker();
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
 

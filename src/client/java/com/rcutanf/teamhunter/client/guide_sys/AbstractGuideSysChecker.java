@@ -206,6 +206,9 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
             } else if (data.containsKey("blockTypes")) {
                 // 方块检测事件
                 handleSurroundingBlockEvent(data);
+            } else if (data.containsKey("structureId")) {
+                // 结构检测事件
+                handleStructureEvent(data);
             }
         }
     }
@@ -213,6 +216,8 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
     protected boolean handleSurroundingBlockEvent(Map<String, Object> data){return true;}
 
     protected boolean handleInventoryEvent(Map<String, Object> data){return true;}
+
+    protected boolean handleStructureEvent(Map<String, Object> data) {return true;}
 
     /**
      * 检查成就是否已经完成，避免子类建立的时候没有和游戏内的数据一致
@@ -224,6 +229,9 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
             return false;
         }
         PlacedAdvancement placedAdvancement = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler().getManager().get(id);
+        if (placedAdvancement == null) {
+            return false;
+        }
         ClientAdvancementManager advancementManager = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler();
 
         Map<AdvancementEntry, AdvancementProgress> advancementProgresses =
@@ -317,25 +325,57 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         @SuppressWarnings("unchecked")
         Set<String> blockTypes = (Set<String>) data.get("blockTypes");
 
-        // 检查附近是否有熔岩
-        boolean hasBlocksNearby = blockTypes.contains(blockName);
         Condition condition = getConditionByName(conditionName);
-        if (hasBlocksNearby) {
-            if (condition != null) {
+        if (condition != null){
+            if (blockTypes.contains(blockName)) {
                 if(!isActive()){setActive(true);}
                 condition.finish();
                 updateTotalProgress();
                 return true;
             }
-        }
-        else  {
-            if (condition != null) {
+            else  {
                 condition.setUnfinished();
-                updateTotalProgress();
-                return true;
+                if(isActive()){
+                    updateTotalProgress();
+                    if (getProgress() == 0){
+                        setActive(false);
+                    }
+                }
+                return false;
             }
         }
         return false;
     }
 
+    /**
+     * 检查结构检测事件并更新相关条件进度
+     * @param data 事件数据
+     * @param structureId 目标结构标识符
+     * @param conditionName 条件名称
+     * @return 是否成功处理该条件
+     */
+    protected boolean checkCondition4structure(Map<String, Object> data, String structureId, String conditionName) {
+        String detectedStructure = (String) data.get("structureId");
+
+        Condition condition = getConditionByName(conditionName);
+        if (condition != null){
+            if (detectedStructure.equals(structureId)) {
+                if(!isActive()){setActive(true);}
+                condition.finish();
+                updateTotalProgress();
+                return true;
+            }
+            else  {
+                condition.setUnfinished();
+                if(isActive()){
+                    updateTotalProgress();
+                    if (getProgress() == 0){
+                        setActive(false);
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
+    }
 }

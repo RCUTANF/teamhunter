@@ -7,12 +7,17 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.*;
@@ -93,54 +98,90 @@ public class StructureTrigger extends AbstractGuideSysTrigger {
             return;
         }
 
-        World world = client.world;
+        // 获取玩家位置
         BlockPos playerPos = client.player.getBlockPos();
 
-        Chunk chunk = world.getChunk(playerPos.getX() >> 4, playerPos.getZ() >> 4);
+        // 单人游戏时，获取集成服务器的世界
+        if (client.isInSingleplayer() && client.getServer() != null) {
+            RegistryKey<World> worldKey = client.world.getRegistryKey();
+            ServerWorld serverWorld = client.getServer().getWorld(worldKey);
 
-        String structureName = null;
+            if (serverWorld != null) {
+                // 在服务器线程上执行
+                MinecraftServer server = client.getServer();
+                server.execute(() -> {
+                    // 获取玩家所在区块
+                    ChunkPos chunkPos = new ChunkPos(playerPos);
+                    WorldChunk chunk = serverWorld.getChunk(chunkPos.x, chunkPos.z);
 
-        if (chunk.getStructureReferences() != null && !chunk.getStructureReferences().isEmpty()) {
-            for (Map.Entry<Structure, LongSet> entry : chunk.getStructureReferences().entrySet()) {
-                Structure structure = entry.getKey();
-                LongSet references = entry.getValue();
+                    // 使用服务器端的结构数据
+                    String structureName = null;
 
-                LongIterator iterator = references.iterator();
-                while (iterator.hasNext()) {
-                    long packedPos = iterator.nextLong();
-                    ChunkPos chunkPos = new ChunkPos(packedPos);
+                    // 获取结构引用
+                    Map<Structure, LongSet> references = chunk.getStructureReferences();
+                    if (references != null && !references.isEmpty()) {
+                        for (Map.Entry<Structure, LongSet> entry : references.entrySet()) {
+                            Structure structure = entry.getKey();
+                            LongSet referenceSet = entry.getValue();
 
-                    StructureStart structureStart = world.getChunk(chunkPos.x, chunkPos.z).getStructureStart(structure);
+                            LongIterator iterator = referenceSet.iterator();
+                            while (iterator.hasNext()) {
+                                long packedPos = iterator.nextLong();
+                                ChunkPos refChunkPos = new ChunkPos(packedPos);
 
-                    if (structureStart != null && structureStart.hasChildren()) {
-                        BlockBox boundingBox = structureStart.getBoundingBox();
-                        if (boundingBox.contains(playerPos)) {
-                            structureName = structure.toString();
-                            break;
+                                StructureStart structureStart = serverWorld.getChunk(refChunkPos.x, refChunkPos.z)
+                                        .getStructureStart(structure);
+
+                                if (structureStart != null && structureStart.hasChildren()) {
+                                    BlockBox boundingBox = structureStart.getBoundingBox();
+                                    if (boundingBox.contains(playerPos)) {
+                                        structureName = serverWorld.getRegistryManager()
+                                                .getOptional(RegistryKeys.STRUCTURE)
+                                                .map(registry -> registry.getId(structure))
+                                                .map(Object::toString)
+                                                .orElse(null);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (structureName != null) {
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (structureName != null) {
-                    break;
-                }
+                    // 使用最终的结构名称更新状态并触发事件
+                    String finalStructureName = structureName;
+                    client.execute(() -> updateStructureStateAndFireEvent(finalStructureName, playerPos));
+                });
             }
+        } else {
+            // 多人游戏或无法获取服务器时的备用方案
+            fallbackStructureDetection(playerPos);
         }
+    }
 
+    // 更新结构状态并触发事件
+    private void updateStructureStateAndFireEvent(String structureName, BlockPos playerPos) {
+        System.out.println(structureName);
         if (!Objects.equals(currentStructureName, structureName)) {
-            boolean isEntering = structureName != null && currentStructureName == null;
-            boolean isLeaving = structureName == null && currentStructureName != null;
+            Map<String, Object> eventData = new HashMap<>();
+            eventData.put("structureId", structureName);
+            eventData.put("playerPos", playerPos);
+            fire(eventData);
+        }
+        currentStructureName = structureName;
+    }
 
-            if (isEntering || isLeaving) {
-                Map<String, Object> eventData = new HashMap<>();
-                eventData.put("structureName", structureName != null ? structureName : currentStructureName);
-                eventData.put("isEntering", isEntering);
-                eventData.put("playerPos", playerPos);
+    // 备用检测方法，使用客户端可用的API
+    private void fallbackStructureDetection(BlockPos playerPos) {
+        // 这里可以实现备用检测方法
+        // 在多人游戏中，可能需要通过数据包或其他方式获取结构信息
 
-                fire(eventData);
-            }
-
-            currentStructureName = structureName;
+        // 简单的清除当前结构状态
+        if (currentStructureName != null) {
+            updateStructureStateAndFireEvent(null, playerPos);
         }
     }
 
