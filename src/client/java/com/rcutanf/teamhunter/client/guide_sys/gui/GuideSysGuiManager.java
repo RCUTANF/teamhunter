@@ -1,14 +1,9 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
-import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementDisplay;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.PlacedAdvancement;
+import net.minecraft.advancement.*;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -77,7 +72,14 @@ public class GuideSysGuiManager {
             }
 
             // 直接通过Identifier获取PlacedAdvancement
-            var advancementManager = client.getNetworkHandler().getAdvancementHandler().getManager();
+            MinecraftServer server = client.getServer();
+            AdvancementManager advancementManager;
+            if(server == null) {
+                advancementManager = client.getNetworkHandler().getAdvancementHandler().getManager();
+            }
+            else{
+                advancementManager = server.getAdvancementLoader().getManager();
+            }
             var placedAdvancement = advancementManager.get(advancementID);
 
             if (placedAdvancement == null) {
