@@ -4,5 +4,6 @@ public enum TriggerType {
     inventory,
     biome,
     structure,
-    surroundingBlock
+    surroundingBlock,
+    entity
 }

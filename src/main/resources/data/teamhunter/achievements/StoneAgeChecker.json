@@ -1,0 +1,40 @@
+{
+  "id": "stone_age",
+  "advancementId": "minecraft:story/upgrade_tools",
+  "conditions": [
+    {
+      "name": "stone_age",
+      "description": "周围具有石类材料",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:cobblestone",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:blackstone",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:deepslate_cobblestone",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}
