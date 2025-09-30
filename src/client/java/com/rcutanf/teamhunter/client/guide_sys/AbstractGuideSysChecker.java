@@ -180,6 +180,8 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("structureId")) {
                 // 结构检测事件
                 handleStructureEvent(data);
+            } else if (data.containsKey("entityIds")) {
+                handleEntityEvent(data);
             }
         }
     }
@@ -209,6 +211,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         for (Requirement req : reqs) {
 
             checkCondition4structure(data, req, req.matchKey);
+        }
+    }
+
+    protected void handleEntityEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.entity);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Entity(data, req, req.matchKey);
         }
     }
 
@@ -306,6 +317,8 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         ItemStack itemStack = (ItemStack) data.get("itemStack");
         String itemId = itemStack.getItem().toString();
 
+        //TODO:支持组件匹配
+
         // 如果物品不匹配，直接返回
         if (!itemId.equals(itemName)) {
             return false;
@@ -360,7 +373,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
     protected boolean checkCondition4structure(Map<String, Object> data, Requirement requirement, String structureId) {
         String detectedStructure = (String) data.get("structureId");
 
-        if (detectedStructure.equals(structureId)) {
+        if (structureId != null && structureId.equals(detectedStructure)) {
             if(!isActive()){setActive(true);}
             requirement.setInsideProgress(requirement.weight);
             updateTotalProgress();
@@ -373,6 +386,27 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 if (getProgress() == 0){
                     setActive(false);
                 }
+            }
+            return false;
+        }
+    }
+
+    protected boolean checkCondition4Entity(Map<String, Object> data, Requirement requirement, String entityId) {
+        @SuppressWarnings("unchecked")
+        Set<String> detectedEntities = (Set<String>) data.get("entityIds");
+
+        if (detectedEntities != null && detectedEntities.contains(entityId)) {
+            if (!isActive()) {
+                setActive(true);
+            }
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
             }
             return false;
         }

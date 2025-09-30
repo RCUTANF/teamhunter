@@ -1,0 +1,22 @@
+{
+  "id": "eye_spy",
+  "advancementId": "minecraft:story/follow_ender_eye",
+  "conditions": [
+    {
+      "name": "eye_of_ender",
+      "description": "获得末影之眼",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:eye_of_ender",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "id": "oh_shiny",
+  "advancementId": "minecraft:story/obtain_armor",
+  "conditions": [
+    {
+      "name": "gold_item",
+      "description": "获得任意金质物品",
+      "weight": 70,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:gold_ingot",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:gold_block",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_apple",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_carrot",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_helmet",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_chestplate",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_leggings",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_boots",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_sword",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_axe",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_pickaxe",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_shovel",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "piglin",
+      "description": "附近有猪灵",
+      "weight": 30,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin",
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

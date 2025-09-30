@@ -1,0 +1,22 @@
+{
+  "id": "the_end?",
+  "advancementId": "minecraft:story/enter_the_end",
+  "conditions": [
+    {
+      "name": "end_city",
+      "description": "进入末地要塞结构",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:end_city",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

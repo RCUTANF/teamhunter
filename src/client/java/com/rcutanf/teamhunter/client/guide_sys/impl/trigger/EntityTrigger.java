@@ -10,7 +10,7 @@ import java.util.*;
 
 public class EntityTrigger extends ScanCore {
     private static EntityTrigger instance;
-    private Set<Integer> detectedEntityIds = new HashSet<>();
+    private Set<String> detectedEntityIds = new HashSet<>();
     private int scanRadius = 10;
 
     public EntityTrigger() {
@@ -41,11 +41,11 @@ public class EntityTrigger extends ScanCore {
                 playerPos.add(scanRadius, scanRadius, scanRadius).toCenterPos()
         );
 
-        Set<Integer> currentEntityIds = new HashSet<>();
+        Set<String> currentEntityIds = new HashSet<>();
         List<Entity> entities = client.world.getOtherEntities(client.player, scanBox);
 
         for (Entity entity : entities) {
-            currentEntityIds.add(entity.getId());
+            currentEntityIds.add(entity.getType().getRegistryEntry().getIdAsString());
         }
 
         if (!detectedEntityIds.equals(currentEntityIds)) {
@@ -60,14 +60,14 @@ public class EntityTrigger extends ScanCore {
         }
     }
 
-    private Set<Integer> getNewEntities(Set<Integer> currentIds) {
-        Set<Integer> newEntities = new HashSet<>(currentIds);
+    private Set<String> getNewEntities(Set<String> currentIds) {
+        Set<String> newEntities = new HashSet<>(currentIds);
         newEntities.removeAll(detectedEntityIds);
         return newEntities;
     }
 
-    private Set<Integer> getRemovedEntities(Set<Integer> currentIds) {
-        Set<Integer> removedEntities = new HashSet<>(detectedEntityIds);
+    private Set<String> getRemovedEntities(Set<String> currentIds) {
+        Set<String> removedEntities = new HashSet<>(detectedEntityIds);
         removedEntities.removeAll(currentIds);
         return removedEntities;
     }

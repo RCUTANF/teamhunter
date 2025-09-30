@@ -1,0 +1,70 @@
+{
+  "id": "zombie_doctor",
+  "advancementId": "minecraft:story/cure_zombie_villager",
+  "conditions": [
+    {
+      "name": "golden_apple",
+      "description": "获得金苹果",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_apple",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "weakness_potion",
+      "description": "获得虚弱药水",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "entity.zombie_villager",
+      "description": "周围有僵尸村民",
+      "weight": 34,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zombie_villager",
+          "matchCount": 1,
+          "weight": 34,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "snowy_town_hint",
+      "description": "（提示）曾进入雪屋结构",
+      "weight": 20,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:igloo",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}
