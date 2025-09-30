@@ -164,7 +164,7 @@ public class StructureTrigger extends AbstractGuideSysTrigger {
 
     // 更新结构状态并触发事件
     private void updateStructureStateAndFireEvent(String structureName, BlockPos playerPos) {
-        System.out.println(structureName);
+        //System.out.println(structureName);
         if (!Objects.equals(currentStructureName, structureName)) {
             Map<String, Object> eventData = new HashMap<>();
             eventData.put("structureId", structureName);

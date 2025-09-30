@@ -1,0 +1,22 @@
+{
+    "id": "suit_up",
+    "advancementId": "minecraft:story/obtain_armor",
+    "conditions": [
+        {
+            "name": "iron_ingot",
+            "description": "获取铁锭",
+            "weight": 100,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:iron_ingot",
+                    "matchCount": 6,
+                    "weight": 100,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

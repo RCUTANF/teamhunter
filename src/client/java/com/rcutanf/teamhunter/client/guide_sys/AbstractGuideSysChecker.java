@@ -2,6 +2,10 @@ package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
+import com.rcutanf.teamhunter.client.guide_sys.def.AchievementDefinition;
+import com.rcutanf.teamhunter.client.guide_sys.def.Condition;
+import com.rcutanf.teamhunter.client.guide_sys.def.Requirement;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
@@ -12,71 +16,38 @@ import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractGuideSysChecker implements TriggerListener, AdvancementCompletionListener {
-    protected Identifier id;
-    protected String checkerID;
+public class AbstractGuideSysChecker implements TriggerListener, AdvancementCompletionListener {
+    protected AchievementChecker achievementChecker;
     protected List<TriggerType> triggerTypes;
     protected boolean isActive; // 是否进入活动状态，也就是是否有机会完成，决定是否在屏幕上显示
     protected int progress; // 进度，0-100
     protected boolean completed;
-    protected List<Condition> conditions;
+    protected Map<TriggerType, List<Requirement>> requirementsByTrigger = new HashMap<>();
 
-    protected class Condition {
-        public String name;
-        public String description;
-        public boolean isCompleted;
-        public int maxProgress;
-        public int insideProgress;
+    public AbstractGuideSysChecker(AchievementDefinition definition) {
 
-        public Condition(String name, String description, int maxProgress) {
-            this.name = name;
-            this.description = description;
-            this.isCompleted = false; // 初始状态为未完成
-            setMaxProgress(maxProgress);
-            this.insideProgress = 0; // 初始进度为0
-        }
-        public void setInsideProgress(int insideProgress) {
-            if (insideProgress < 0 || insideProgress > maxProgress) {
-                throw new IllegalArgumentException("Inside progress must be between 0 and " + maxProgress + ".");
-            }
-            this.insideProgress = insideProgress;
-        }
-        public void setMaxProgress(int maxProgress) {
-            if (maxProgress < 0) {
-                throw new IllegalArgumentException("Max progress must be non-negative.");
-            }
-            if (maxProgress > 100){
-                throw new IllegalArgumentException("Max progress cannot exceed 100.");
-            }
-            this.maxProgress = maxProgress;
-        }
-
-        public void finish() {
-            this.isCompleted = true;
-            this.insideProgress = maxProgress; // 完成时设置进度为最大值
-        }
-
-        public void setUnfinished() {
-            this.isCompleted = false;
-            this.insideProgress = 0; // 重置进度为0
-        }
-    }
-
-    public AbstractGuideSysChecker(Identifier id, String checkerID, List<TriggerType> triggerTypes) {
-        this.id = id;
-        this.checkerID = checkerID;
-        this.triggerTypes = triggerTypes;
+        this.achievementChecker = new AchievementChecker(definition);
         this.isActive = false;
-        this.progress = 0; // 初始进度为0
+        this.progress = 0;
         this.completed = false;
-        this.conditions = new ArrayList<>();
+
+        // 按触发器分类存储需求
+        for (Condition cd: achievementChecker.conditions) {
+            for (Requirement req : cd.requirements) {
+                requirementsByTrigger
+                        .computeIfAbsent(req.triggerType, k -> new ArrayList<>())
+                        .add(req);
+            }
+        }
+
+        // 自动注册所有触发器（从 requirementsByTrigger 提取）
+        Set<TriggerType> triggerTypes = requirementsByTrigger.keySet();
+        this.triggerTypes = new ArrayList<>(triggerTypes);
         // 在构造函数中注册到相应的触发器
         register();
 
@@ -100,7 +71,7 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
     }
 
     public String getCheckerID() {
-        return checkerID;
+        return achievementChecker.id;
     }
 
     public boolean isActive() {
@@ -112,14 +83,14 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
      */
     public void setActive(boolean active) {
         if (active) {
-            System.out.println("AbstractGuideSysChecker " + checkerID + " is now active.");
+            System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now active.");
             this.isActive = true;
-            GuideSysGuiManager.addAdvancementGuide(id, progress);
+            GuideSysGuiManager.addAdvancementGuide(achievementChecker.advancementId, progress);
         }
         else {
-            System.out.println("AbstractGuideSysChecker " + checkerID + " is now inactive.");
+            System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now inactive.");
             this.isActive = false;
-            GuideSysGuiManager.removeAdvancementGuide(id);
+            GuideSysGuiManager.removeAdvancementGuide(achievementChecker.advancementId);
         }
     }
 
@@ -141,7 +112,7 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         }
         this.progress = progress;
         // 更新进度到GUI
-        GuideSysGuiManager.updateAdvancementGuide(id, progress);
+        GuideSysGuiManager.updateAdvancementGuide(achievementChecker.advancementId, progress);
     }
 
     /**
@@ -149,12 +120,12 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
      */
     protected void markAsCompleted() {
         setProgress(100);
-        GuideSysGuiManager.markAdvancementComplete(id);
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        GuideSysGuiManager.markAdvancementComplete(achievementChecker.advancementId);
+        ScheduledFuture<?> schedule = Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             MinecraftClient.getInstance().execute(() -> {
                 setActive(false); // 在游戏主线程执行
             });
-        }, 1000, TimeUnit.MILLISECONDS); // 延迟1秒
+        }, 1000, TimeUnit.MILLISECONDS);// 延迟1秒
         this.completed = true;
         unregister();
 
@@ -213,11 +184,33 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         }
     }
 
-    protected boolean handleSurroundingBlockEvent(Map<String, Object> data){return true;}
+    protected void handleSurroundingBlockEvent(Map<String, Object> data){
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.surroundingBlock);
+        if (reqs == null || reqs.isEmpty()) return;
 
-    protected boolean handleInventoryEvent(Map<String, Object> data){return true;}
+        for (Requirement req : reqs) {
+            checkCondition4nearBlocks(data, req, req.matchKey);
+        }
+    }
 
-    protected boolean handleStructureEvent(Map<String, Object> data) {return true;}
+    protected void handleInventoryEvent(Map<String, Object> data){
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.inventory);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4itemAdd(data, req, req.matchKey, req.matchCount);
+        }
+    }
+
+    protected void handleStructureEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.structure);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+
+            checkCondition4structure(data, req, req.matchKey);
+        }
+    }
 
     /**
      * 检查成就是否已经完成，避免子类建立的时候没有和游戏内的数据一致
@@ -228,7 +221,7 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         if (MinecraftClient.getInstance().player == null) {
             return false;
         }
-        PlacedAdvancement placedAdvancement = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler().getManager().get(id);
+        PlacedAdvancement placedAdvancement = MinecraftClient.getInstance().player.networkHandler.getAdvancementHandler().getManager().get(achievementChecker.advancementId);
         if (placedAdvancement == null) {
             return false;
         }
@@ -243,14 +236,14 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
     }
 
     public void onAdvancementCompleted(AdvancementEntry advancement, AdvancementProgress progress) {
-        if (advancement.id().equals(id)) {
+        if (advancement.id().equals(achievementChecker.advancementId)) {
             markAsCompleted();
         }
     }
 
     public void onAdvancementRemoved(AdvancementEntry advancement) {
         // 检查是否是对应成就成就
-        if (advancement.id().equals(id)) {
+        if (advancement.id().equals(achievementChecker.advancementId)) {
             setActive(false);
             completed = false; // 成就被移除，重置状态
             //重新侦听触发器
@@ -259,7 +252,7 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
     }
 
     protected Condition getConditionByName(String name) {
-        for (Condition condition : conditions) {
+        for (Condition condition : achievementChecker.conditions) {
             if (name.equals(condition.name)) {
                 return condition;
             }
@@ -269,8 +262,31 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
 
     public void updateTotalProgress() {
         int totalProgress = 0;
-        for (Condition condition : conditions) {
+        for (Condition condition : achievementChecker.conditions) {
+            condition.insideProgress = 0;
+            int currentGroupId = -1;
+            int groupMaxProgress = 0;
+
+            for (Requirement req : condition.requirements) {
+                if (!(req.OrGroupId ==currentGroupId)) {
+                    // 新的组，累加上一组的最大进度
+                    condition.insideProgress += groupMaxProgress;
+                    groupMaxProgress = 0;
+                    currentGroupId = req.OrGroupId;
+                }
+
+                // 更新当前组的最大进度
+                groupMaxProgress = Math.max(groupMaxProgress, req.insideProgress);
+            }
+
+            // 累加最后一组的最大进度
+            condition.insideProgress += groupMaxProgress;
             totalProgress += condition.insideProgress;
+            if (condition.insideProgress >= condition.maxProgress) {
+                condition.finish();
+            } else {
+                condition.setUnfinished();
+            }
         }
         setProgress(totalProgress);
     }
@@ -279,11 +295,10 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
      * 检查物品添加事件并更新相关条件进度
      * @param data 事件数据
      * @param itemName 目标物品名称
-     * @param conditionName 条件名称
      * @param itemRequiringCount 所需物品数量
      * @return 是否成功处理该条件
      */
-    protected boolean checkCondition4itemAdd(Map<String, Object> data, String itemName, String conditionName, int itemRequiringCount) {
+    protected boolean checkCondition4itemAdd(Map<String, Object> data, Requirement requirement, String itemName, int itemRequiringCount) {
         if (!(boolean)data.get("isAdded")) {
             return false;
         }
@@ -301,19 +316,12 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
             setActive(true);
         }
 
-        // 查找并更新条件
-        Condition condition = getConditionByName(conditionName);
-        if (condition == null) {
-            System.out.println("找不到条件: " + conditionName);
-            return false;
-        }
-
         // 更新条件进度
         int itemCount = itemStack.getCount();
         if (itemCount >= itemRequiringCount) {
-            condition.finish();
+            requirement.setInsideProgress(requirement.weight);
         } else {
-            condition.setInsideProgress(itemCount * condition.maxProgress / itemRequiringCount);
+            requirement.setInsideProgress(itemCount * requirement.weight / itemRequiringCount);
         }
 
         // 更新总体进度
@@ -321,61 +329,52 @@ public abstract class AbstractGuideSysChecker implements TriggerListener, Advanc
         return true;
     }
 
-    protected boolean checkCondition4nearBlocks(Map<String, Object> data, String blockName, String conditionName) {
+    protected boolean checkCondition4nearBlocks(Map<String, Object> data, Requirement requirement, String blockName) {
         @SuppressWarnings("unchecked")
         Set<String> blockTypes = (Set<String>) data.get("blockTypes");
 
-        Condition condition = getConditionByName(conditionName);
-        if (condition != null){
-            if (blockTypes.contains(blockName)) {
-                if(!isActive()){setActive(true);}
-                condition.finish();
-                updateTotalProgress();
-                return true;
-            }
-            else  {
-                condition.setUnfinished();
-                if(isActive()){
-                    updateTotalProgress();
-                    if (getProgress() == 0){
-                        setActive(false);
-                    }
-                }
-                return false;
-            }
+        if (blockTypes.contains(blockName)) {
+            if(!isActive()){setActive(true);}
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
         }
-        return false;
+        else  {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if(isActive()){
+                if (getProgress() == 0){
+                    setActive(false);
+                }
+            }
+            return false;
+        }
     }
 
     /**
      * 检查结构检测事件并更新相关条件进度
      * @param data 事件数据
      * @param structureId 目标结构标识符
-     * @param conditionName 条件名称
      * @return 是否成功处理该条件
      */
-    protected boolean checkCondition4structure(Map<String, Object> data, String structureId, String conditionName) {
+    protected boolean checkCondition4structure(Map<String, Object> data, Requirement requirement, String structureId) {
         String detectedStructure = (String) data.get("structureId");
 
-        Condition condition = getConditionByName(conditionName);
-        if (condition != null){
-            if (detectedStructure.equals(structureId)) {
-                if(!isActive()){setActive(true);}
-                condition.finish();
-                updateTotalProgress();
-                return true;
-            }
-            else  {
-                condition.setUnfinished();
-                if(isActive()){
-                    updateTotalProgress();
-                    if (getProgress() == 0){
-                        setActive(false);
-                    }
-                }
-                return false;
-            }
+        if (detectedStructure.equals(structureId)) {
+            if(!isActive()){setActive(true);}
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
         }
-        return false;
+        else  {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if(isActive()){
+                if (getProgress() == 0){
+                    setActive(false);
+                }
+            }
+            return false;
+        }
     }
 }

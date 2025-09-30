@@ -1,0 +1,31 @@
+{
+  "id": "acquire_hardware",
+  "advancementId": "minecraft:story/smelt_iron",
+  "conditions": [
+    {
+      "name": "iron_ore",
+      "description": "获取铁矿石",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_ore",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:deepslate_iron_ore",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

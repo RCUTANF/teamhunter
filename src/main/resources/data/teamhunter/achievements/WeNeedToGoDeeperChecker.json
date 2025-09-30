@@ -1,0 +1,38 @@
+{
+    "id": "we_need_to_go_deeper",
+    "advancementId": "minecraft:story/enter_the_nether",
+    "conditions": [
+        {
+            "name": "obsidian",
+            "description": "收集黑曜石10个",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:obsidian",
+                    "matchCount": 10,
+                    "weight": 50,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "name": "ruined_portal",
+            "description": "发现废弃传送门",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "structure",
+                    "matchKey": "minecraft:ruined_portal",
+                    "matchCount": 1,
+                    "weight": 50,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

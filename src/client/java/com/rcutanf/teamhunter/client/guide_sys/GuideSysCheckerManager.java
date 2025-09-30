@@ -2,7 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
-import com.rcutanf.teamhunter.client.guide_sys.impl.checker.*;
+import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
@@ -116,19 +116,7 @@ public class GuideSysCheckerManager {
         // 清除任何可能存在的旧检查器
         clearAllCheckers();
 
-        // 实例化所有检查器
-        // 注意：每个检查器的构造函数中会自动调用registerChecker
-        new GettingAnUpgradeChecker();
-        new AcquireHardwareChecker();
-        new IsntItIronPickChecker();
-        new HotStuffChecker();
-        new CoverMeWithDiamondsChecker();
-        new EnchanterChecker();
-        new IceBucketChallengeChecker();
-        new NotToday_ThankYouChecker();
-        new SuitUpChecker();
-        new DiamondsChecker();
-        new WeNeedToGoDeeperChecker();
+        AchievementLoader.convertDefinitionsToCheckers();
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
 

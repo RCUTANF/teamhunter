@@ -75,6 +75,7 @@ public class GuideSysGuiManager {
             MinecraftServer server = client.getServer();
             AdvancementManager advancementManager;
             if(server == null) {
+                //TODO:这里应该是联机状态，获取服务器的进度管理器，但是现在没空处理数据包构造和收发
                 advancementManager = client.getNetworkHandler().getAdvancementHandler().getManager();
             }
             else{
@@ -137,7 +138,7 @@ public class GuideSysGuiManager {
                 return;
             }
         }
-        addAdvancementGuide(advancementID, progress);
+        if (progress > 0) addAdvancementGuide(advancementID, progress);
     }
 
     /**

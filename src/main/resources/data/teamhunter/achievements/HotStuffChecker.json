@@ -1,0 +1,47 @@
+{
+    "id": "hot_stuff",
+    "advancementId": "minecraft:story/lava_bucket",
+    "conditions": [
+        {
+            "name": "bucket",
+            "description": "具备铁桶",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:bucket",
+                    "matchCount": 1,
+                    "weight": 50,
+                    "typeAnd": false,
+                    "OrGroupId": 0,
+                    "priority": 1
+                },
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:iron_ingot",
+                    "matchCount": 3,
+                    "weight": 49,
+                    "typeAnd": false,
+                    "OrGroupId": 0,
+                    "priority": 2
+                }
+            ]
+        },
+        {
+            "name": "lava",
+            "description": "附近可获得岩浆",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "surroundingBlock",
+                    "matchKey": "block.minecraft.lava",
+                    "matchCount": 1,
+                    "weight": 50,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

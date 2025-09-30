@@ -1,0 +1,54 @@
+{
+    "id": "enchanter",
+    "advancementId": "minecraft:story/enchant_item",
+    "conditions": [
+        {
+            "name": "diamond",
+            "description": "具备钻石",
+            "weight": 34,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:diamond",
+                    "matchCount": 2,
+                    "weight": 34,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "name": "obsidian",
+            "description": "具备黑曜石",
+            "weight": 33,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:obsidian",
+                    "matchCount": 4,
+                    "weight": 33,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "name": "book",
+            "description": "具备书本",
+            "weight": 33,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:book",
+                    "matchCount": 1,
+                    "weight": 33,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

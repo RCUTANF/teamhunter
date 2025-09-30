@@ -1,0 +1,38 @@
+{
+    "id": "ice_bucket_challenge",
+    "advancementId": "minecraft:story/form_obsidian",
+    "conditions": [
+        {
+            "name": "diamond_pickaxe",
+            "description": "具备钻石镐",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:diamond_pickaxe",
+                    "matchCount": 1,
+                    "weight": 50,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "name": "lava",
+            "description": "附近可获得岩浆",
+            "weight": 50,
+            "requirements": [
+                {
+                    "triggerType": "surroundingBlock",
+                    "matchKey": "block.minecraft.lava",
+                    "matchCount": 1,
+                    "weight": 50,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": "getting_an_upgrade",
+    "advancementId": "minecraft:story/upgrade_tools",
+    "conditions": [
+        {
+            "name": "cobblestone",
+            "description": "获取圆石",
+            "weight": 100,
+            "requirements": [
+                {
+                    "triggerType": "inventory",
+                    "matchKey": "minecraft:cobblestone",
+                    "matchCount": 3,
+                    "weight": 100,
+                    "typeAnd": true,
+                    "OrGroupId": 0,
+                    "priority": 1
+                }
+            ]
+        }
+    ]
+}

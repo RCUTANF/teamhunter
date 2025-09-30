@@ -1,0 +1,31 @@
+{
+  "id": "diamonds",
+  "advancementId": "minecraft:story/mine_diamond",
+  "conditions": [
+    {
+      "name": "diamond_ore",
+      "description": "发现钻石矿石",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "block.minecraft.diamond_ore",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "block.minecraft.deepslate_diamond_ore",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

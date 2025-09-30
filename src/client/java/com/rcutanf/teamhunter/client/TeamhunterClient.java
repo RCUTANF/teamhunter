@@ -8,6 +8,7 @@ import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
 import com.rcutanf.teamhunter.client.guide_sys.GuideSysTriggerManager;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
+import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
@@ -254,6 +255,7 @@ public class TeamhunterClient implements ClientModInitializer {
         guideSysTriggerManager = GuideSysTriggerManager.getInstance();
         guideCheckerManager = GuideSysCheckerManager.getInstance();
         advancementEventManager = AdvancementEventManager.getInstance();
+        AchievementLoader.loadAllAchievements();
 
 
     }
