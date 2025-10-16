@@ -85,7 +85,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         if (active) {
             System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now active.");
             this.isActive = true;
-            GuideSysGuiManager.addAdvancementGuide(achievementChecker.advancementId, progress);
+            GuideSysGuiManager.addAdvancementGuide(achievementChecker, progress);
         }
         else {
             System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now inactive.");
@@ -112,7 +112,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         }
         this.progress = progress;
         // 更新进度到GUI
-        GuideSysGuiManager.updateAdvancementGuide(achievementChecker.advancementId, progress);
+        GuideSysGuiManager.updateAdvancementGuide(achievementChecker, progress);
     }
 
     /**
@@ -306,8 +306,6 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             totalProgress += condition.insideProgress;
             if (condition.insideProgress >= condition.maxProgress) {
                 condition.finish();
-            } else {
-                condition.setUnfinished();
             }
         }
         setProgress(totalProgress);

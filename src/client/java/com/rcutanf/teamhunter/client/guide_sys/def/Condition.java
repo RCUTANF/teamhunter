@@ -64,4 +64,12 @@ public class Condition {
         this.insideProgress = 0; // 重置进度为0
     }
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public int getInsideProgress() {
+        return insideProgress;
+    }
+
 }

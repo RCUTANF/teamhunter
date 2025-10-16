@@ -1,0 +1,65 @@
+{
+  "id": "crafters_crafting_crafters",
+  "advancementId": "minecraft:adventure/crafters_crafting_crafters",
+  "conditions": [
+    {
+      "name": "has_complete_crafting_recipe",
+      "description": "拥有合成合成器的材料",
+      "weight": 60,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_ingot",
+          "matchCount": 4,
+          "weight": 15,
+          "typeAnd": true,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crafting_table",
+          "matchCount": 1,
+          "weight": 15,
+          "typeAnd": true,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:redstone",
+          "matchCount": 1,
+          "weight": 15,
+          "typeAnd": true,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dispenser",
+          "matchCount": 1,
+          "weight": 15,
+          "typeAnd": true,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "near_crafting_table",
+      "description": "附近有合成器",
+      "weight": 40,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:crafting_table",
+          "matchCount": 1,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

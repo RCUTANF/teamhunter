@@ -5,7 +5,7 @@
     {
       "name": "near_end_portal_frame",
       "description": "附近有末地祭坛",
-      "weight": 60,
+      "weight": 40,
       "requirements": [
         {
           "triggerType": "surroundingBlock",
@@ -28,6 +28,22 @@
           "matchKey": "minecraft:end_crystal",
           "matchCount": 4,
           "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "in_the_end",
+      "description": "在末地",
+      "weight": 20,
+      "requirements": [
+        {
+          "triggerType": "dimension",
+          "matchKey": "minecraft:the_end",
+          "matchCount": 1,
+          "weight": 60,
           "typeAnd": false,
           "OrGroupId": 0,
           "priority": 1

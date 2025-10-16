@@ -5,6 +5,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.client.render.RenderLayer;
@@ -167,6 +168,49 @@ public class GuideSysHud {
                 }
 
                 y += descriptionHeight; // 描述结束后继续
+
+                //条件描述
+                if (guide.getAchievementChecker() != null) {
+                    for (int i = 0; i < guide.getAchievementChecker().conditions.size(); i++) {
+                        var condition = guide.getAchievementChecker().conditions.get(i);
+                        String conditionDesc = condition.description;
+                        if (conditionDesc != null && !conditionDesc.isEmpty()) {
+                            List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), itemWidth - 6 - 12); // 预留空间给勾号
+                            int condHeight = condLines.size() * (textRenderer.fontHeight + 1) + 4;
+
+                            // 使用条件的内部进度来渲染整个背景
+                            float insideProgress = condition.getInsideProgress();
+                            int conditionFillWidth = (int) (itemWidth * (MathHelper.clamp(insideProgress, 0, 100) / 100.0f));
+
+                            // 背景颜色 - 完成时为亮绿色，未完成时为淡蓝色
+                            int bgColor = condition.isCompleted() ? 0xA0005500 : 0xA03366AA; // 亮绿色或淡蓝色
+
+                            // 绘制整个条件区域的背景
+                            context.fill(x, y, x + conditionFillWidth, y + condHeight, bgColor);
+                            // 未填充部分使用较暗的颜色
+                            if (conditionFillWidth < itemWidth) {
+                                context.fill(x + conditionFillWidth, y, screenWidth - MARGIN_RIGHT, y + condHeight, 0x60202020);
+                            }
+
+                            // 条件文本 - 根据完成状态设置颜色
+                            int condTextColor = condition.isCompleted() ? 0xFF55FF55 : 0xFFAAAAAA; // 完成时为亮绿色，未完成时为灰色
+                            int condTextY = y + 2;
+                            for (OrderedText line : condLines) {
+                                context.drawText(textRenderer, line, x + 3, condTextY, condTextColor, true);
+                                condTextY += textRenderer.fontHeight + 1;
+                            }
+
+                            // 绘制完成标记（勾号）
+                            if (condition.isCompleted()) {
+                                String checkMark = "√";
+                                int checkMarkX = (screenWidth - MARGIN_RIGHT) - textRenderer.getWidth(checkMark) - 3;
+                                context.drawText(textRenderer, checkMark, checkMarkX, y + 2, 0xFF55FF55, true);
+                            }
+
+                            y += condHeight; // 条件描述结束后继续
+                        }
+                    }
+                }
             } else {
                 y += ITEM_HEIGHT; // 直接累加，无间距
             }

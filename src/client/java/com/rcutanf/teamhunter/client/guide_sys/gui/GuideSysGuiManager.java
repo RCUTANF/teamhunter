@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
+import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
 import net.minecraft.advancement.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ public class GuideSysGuiManager {
         private Text description;
         private int progress;
         private boolean completed;
+        private AchievementChecker achievementChecker;
 
         public Identifier getId() {
             return id;
@@ -42,6 +44,10 @@ public class GuideSysGuiManager {
         public boolean isCompleted() {
             return completed;
         }
+
+        public AchievementChecker getAchievementChecker() {
+            return achievementChecker;
+        }
     }
 
     private static List<AdvancementGuideItem> advancementGuides = new ArrayList<>();
@@ -62,7 +68,7 @@ public class GuideSysGuiManager {
 
     public static void clearAdvancementGuides() {advancementGuides.clear();}
     
-    public static void addAdvancementGuide(Identifier advancementID, int progress) {
+    public static void addAdvancementGuide(AchievementChecker achievementChecker, int progress) {
         try {
             MinecraftClient client = MinecraftClient.getInstance();
 
@@ -81,10 +87,10 @@ public class GuideSysGuiManager {
             else{
                 advancementManager = server.getAdvancementLoader().getManager();
             }
-            var placedAdvancement = advancementManager.get(advancementID);
+            var placedAdvancement = advancementManager.get(achievementChecker.advancementId);
 
             if (placedAdvancement == null) {
-                System.out.println("GuideSysGuiManager 找不到进度: " + advancementID.toString());
+                System.out.println("GuideSysGuiManager 找不到进度: " + achievementChecker.advancementId.toString());
                 return;
             }
 
@@ -95,7 +101,7 @@ public class GuideSysGuiManager {
             // 获取进度显示信息
             var displayOpt = advancement.display();
             if (displayOpt.isEmpty()) {
-                System.out.println("进度没有显示信息: " + advancementID.toString());
+                System.out.println("进度没有显示信息: " + achievementChecker.advancementId.toString());
                 return;
             }
 
@@ -103,12 +109,13 @@ public class GuideSysGuiManager {
 
             // 创建并填充AdvancementGuideItem
             AdvancementGuideItem item = new AdvancementGuideItem();
-            item.id = advancementID;
+            item.id = achievementChecker.advancementId;
             item.icon = display.getIcon();
             item.title = display.getTitle();
             item.description = display.getDescription();
             item.completed = false;
             item.progress = progress;
+            item.achievementChecker = achievementChecker;
 
             advancementGuides.add(item);
 
@@ -127,9 +134,9 @@ public class GuideSysGuiManager {
         advancementGuides.removeIf(item -> item.id.equals(advancementID));
     }
 
-    public static void updateAdvancementGuide(Identifier advancementID, int progress) {
+    public static void updateAdvancementGuide(AchievementChecker achievementChecker, int progress) {
         for (AdvancementGuideItem item : advancementGuides) {
-            if (item.id.equals(advancementID)) {
+            if (item.id.equals(achievementChecker.advancementId)) {
                 item.progress = progress;
 
                 if (progress >= 100) {
@@ -138,7 +145,7 @@ public class GuideSysGuiManager {
                 return;
             }
         }
-        if (progress > 0) addAdvancementGuide(advancementID, progress);
+        if (progress > 0) addAdvancementGuide(achievementChecker, progress);
     }
 
     /**
