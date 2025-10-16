@@ -182,6 +182,8 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 handleStructureEvent(data);
             } else if (data.containsKey("entityIds")) {
                 handleEntityEvent(data);
+            } else if (data.containsKey("from")) {
+                handleDimensionEvent(data);
             }
         }
     }
@@ -220,6 +222,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
         for (Requirement req : reqs) {
             checkCondition4Entity(data, req, req.matchKey);
+        }
+    }
+
+    protected  void handleDimensionEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.dimension);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Dimension(data, req, req.matchKey);
         }
     }
 
@@ -396,6 +407,27 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         Set<String> detectedEntities = (Set<String>) data.get("entityIds");
 
         if (detectedEntities != null && detectedEntities.contains(entityId)) {
+            if (!isActive()) {
+                setActive(true);
+            }
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+    }
+
+    protected boolean checkCondition4Dimension(Map<String, Object> data, Requirement requirement, String dimensionId) {
+        Identifier from = (Identifier) data.get("from");
+        Identifier to = (Identifier) data.get("to");
+
+        if (dimensionId != null && dimensionId.equals(to.toString())) {
             if (!isActive()) {
                 setActive(true);
             }

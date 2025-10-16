@@ -1,0 +1,22 @@
+{
+  "id": "kill_dragon",
+  "advancementId": "minecraft:end/kill_dragon",
+  "conditions": [
+    {
+      "name": "killed_ender_dragon",
+      "description": "杀死末影龙",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ender_dragon",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

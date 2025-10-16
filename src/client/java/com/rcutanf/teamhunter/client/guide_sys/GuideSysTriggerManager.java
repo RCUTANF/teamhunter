@@ -45,6 +45,8 @@ public class GuideSysTriggerManager {
                 return new SurroundingBlockTrigger();
             case entity:
                 return new EntityTrigger();
+            case dimension:
+                return new dimensionTrigger();
             // 可以添加其他类型的触发器
             default:
                 throw new IllegalArgumentException("Invalid trigger type");

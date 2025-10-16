@@ -1,0 +1,22 @@
+{
+  "id": "war_pigs",
+  "advancementId": "minecraft:nether/find_bastion",
+  "conditions": [
+    {
+      "name": "entered_bastion",
+      "description": "进入猪灵堡垒",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:bastion_remnant",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

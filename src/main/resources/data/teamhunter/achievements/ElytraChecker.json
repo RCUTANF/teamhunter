@@ -1,0 +1,22 @@
+{
+  "id": "elytra",
+  "advancementId": "minecraft:end/elytra",
+  "conditions": [
+    {
+      "name": "has_elytra",
+      "description": "进入末地城（因为船无法判定）",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:end_city",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

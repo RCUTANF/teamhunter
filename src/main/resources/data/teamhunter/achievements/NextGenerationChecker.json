@@ -1,0 +1,22 @@
+{
+  "id": "next_generation",
+  "advancementId": "minecraft:end/dragon_egg",
+  "conditions": [
+    {
+      "name": "near_dragon_egg",
+      "description": "附近有龙蛋",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:dragon_egg",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "the_end_again",
+  "advancementId": "minecraft:end/respawn_dragon",
+  "conditions": [
+    {
+      "name": "near_end_portal_frame",
+      "description": "附近有末地祭坛",
+      "weight": 60,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:end_portal",
+          "matchCount": 1,
+          "weight": 60,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_4_end_crystals",
+      "description": "身上有末影水晶（4个）",
+      "weight": 40,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:end_crystal",
+          "matchCount": 4,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

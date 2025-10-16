@@ -1,0 +1,22 @@
+{
+  "id": "return_to_sender",
+  "advancementId": "minecraft:nether/return_to_sender",
+  "conditions": [
+    {
+      "name": "near_ghast",
+      "description": "附近存在恶魂",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ghast",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

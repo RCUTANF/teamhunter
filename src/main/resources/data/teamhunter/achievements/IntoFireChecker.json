@@ -1,0 +1,22 @@
+{
+  "id": "into_fire",
+  "advancementId": "minecraft:nether/obtain_blaze_rod",
+  "conditions": [
+    {
+      "name": "entered_nether_fortress",
+      "description": "进入下界要塞",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:nether_fortress",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

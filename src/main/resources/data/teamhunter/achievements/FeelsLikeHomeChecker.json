@@ -1,0 +1,38 @@
+{
+  "id": "feels_like_home",
+  "advancementId": "minecraft:nether/ride_strider_in_overworld_lava",
+  "conditions": [
+    {
+      "name": "near_piglin_brute",
+      "description": "附近有吃足兽",
+      "weight": 70,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin_brute",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_warped_fungus",
+      "description": "获得诡异菌",
+      "weight": 30,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:warped_fungus",
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

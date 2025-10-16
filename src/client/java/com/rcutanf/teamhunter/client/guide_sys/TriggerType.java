@@ -5,5 +5,6 @@ public enum TriggerType {
     biome,
     structure,
     surroundingBlock,
-    entity
+    entity,
+    dimension
 }

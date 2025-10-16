@@ -1,0 +1,38 @@
+{
+  "id": "spooky_scary_skeleton",
+  "advancementId": "minecraft:nether/get_wither_skull",
+  "conditions": [
+    {
+      "name": "entered_nether_fortress",
+      "description": "进入下界要塞",
+      "weight": 70,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:nether_fortress",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_golden_sword",
+      "description": "拥有金剑",
+      "weight": 30,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_sword",
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "bring_home_the_beacon",
+  "advancementId": "minecraft:nether/create_beacon",
+  "conditions": [
+    {
+      "name": "has_nether_star",
+      "description": "获得下界之星",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nether_star",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

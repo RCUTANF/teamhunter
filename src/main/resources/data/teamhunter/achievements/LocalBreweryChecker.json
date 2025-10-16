@@ -1,0 +1,56 @@
+{
+  "id": "local_brewery",
+  "advancementId": "minecraft:nether/brew_potion",
+  "conditions": [
+    {
+      "name": "has_bottle",
+      "description": "获得玻璃瓶或水瓶",
+      "weight": 40,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glass_bottle",
+          "matchCount": 1,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:water_bottle",
+          "matchCount": 1,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "has_or_near_brewing_stand",
+      "description": "获得酿造台或附近有酿造台",
+      "weight": 60,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:brewing_stand",
+          "matchCount": 1,
+          "weight": 60,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:brewing_stand",
+          "matchCount": 1,
+          "weight": 60,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}

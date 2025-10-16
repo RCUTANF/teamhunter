@@ -1,0 +1,22 @@
+{
+  "id": "remote_getaway",
+  "advancementId": "minecraft:end/enter_end_gateway",
+  "conditions": [
+    {
+      "name": "near_end_gateway",
+      "description": "附近有末地折跃门结构",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:end_gateway",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

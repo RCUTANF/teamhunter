@@ -1,0 +1,38 @@
+{
+  "id": "not_quite_nine_lives",
+  "advancementId": "minecraft:nether/charge_respawn_anchor",
+  "conditions": [
+    {
+      "name": "has_6_crying_obsidian",
+      "description": "获得哭泣的黑曜石（6个）",
+      "weight": 60,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crying_obsidian",
+          "matchCount": 6,
+          "weight": 60,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_7_glowstone",
+      "description": "获得萤石（7个）",
+      "weight": 40,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glowstone",
+          "matchCount": 7,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

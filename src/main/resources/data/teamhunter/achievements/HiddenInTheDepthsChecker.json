@@ -1,0 +1,38 @@
+{
+  "id": "hidden_in_the_depths",
+  "advancementId": "minecraft:nether/obtain_ancient_debris",
+  "conditions": [
+    {
+      "name": "piglin_bastion",
+      "description": "进入猪灵堡垒",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:bastion_remnant",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "ancient_debris",
+      "description": "周围有远古残骸",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:ancient_debris",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

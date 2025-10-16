@@ -1,0 +1,38 @@
+{
+  "id": "a_furious_cocktail",
+  "advancementId": "minecraft:nether/all_potions",
+  "conditions": [
+    {
+      "name": "has_enchanted_golden_apple",
+      "description": "获得附魔金苹果",
+      "weight": 30,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:enchanted_golden_apple",
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_potion",
+      "description": "获得药水",
+      "weight": 70,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "matchCount": 1,
+          "weight": 70,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

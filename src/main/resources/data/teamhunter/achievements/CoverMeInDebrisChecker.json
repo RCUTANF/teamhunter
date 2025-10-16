@@ -1,0 +1,22 @@
+{
+  "id": "cover_me_in_debris",
+  "advancementId": "minecraft:nether/netherite_armor",
+  "conditions": [
+    {
+      "name": "has_24_netherite_ingots",
+      "description": "获得下界合金锭，总进度24个",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_ingot",
+          "matchCount": 24,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "who_is_cutting_onions",
+  "advancementId": "minecraft:nether/obtain_crying_obsidian",
+  "conditions": [
+    {
+      "name": "nether_structure_or_piglin",
+      "description": "周围有废弃传送门 / 进入猪灵堡垒 / 周围有猪灵",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:ruined_portal",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:bastion_remnant",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

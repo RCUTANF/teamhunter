@@ -1,0 +1,22 @@
+{
+  "id": "withering_heights",
+  "advancementId": "minecraft:nether/summon_wither",
+  "conditions": [
+    {
+      "name": "has_wither_skull",
+      "description": "获得凋零头",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wither_skeleton_skull",
+          "matchCount": 3,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}
