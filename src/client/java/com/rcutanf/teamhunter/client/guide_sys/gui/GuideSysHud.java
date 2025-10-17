@@ -175,36 +175,47 @@ public class GuideSysHud {
                         var condition = guide.getAchievementChecker().conditions.get(i);
                         String conditionDesc = condition.description;
                         if (conditionDesc != null && !conditionDesc.isEmpty()) {
-                            List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), itemWidth - 6 - 12); // 预留空间给勾号
+                            List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), itemWidth - 6 - 20); // 预留空间给复选框
                             int condHeight = condLines.size() * (textRenderer.fontHeight + 1) + 4;
 
                             // 使用条件的内部进度来渲染整个背景
                             float insideProgress = condition.getInsideProgress();
-                            int conditionFillWidth = (int) (itemWidth * (MathHelper.clamp(insideProgress, 0, 100) / 100.0f));
+                            int condFillWidth = (int) (itemWidth * (MathHelper.clamp(insideProgress, 0, 100) / 100.0f));
 
                             // 背景颜色 - 完成时为亮绿色，未完成时为淡蓝色
                             int bgColor = condition.isCompleted() ? 0xA0005500 : 0xA03366AA; // 亮绿色或淡蓝色
 
                             // 绘制整个条件区域的背景
-                            context.fill(x, y, x + conditionFillWidth, y + condHeight, bgColor);
+                            context.fill(x, y, x + condFillWidth, y + condHeight, bgColor);
                             // 未填充部分使用较暗的颜色
-                            if (conditionFillWidth < itemWidth) {
-                                context.fill(x + conditionFillWidth, y, screenWidth - MARGIN_RIGHT, y + condHeight, 0x60202020);
+                            if (condFillWidth < itemWidth) {
+                                context.fill(x + condFillWidth, y, screenWidth - MARGIN_RIGHT, y + condHeight, 0x60202020);
                             }
 
-                            // 条件文本 - 根据完成状态设置颜色
+                            // 绘制复选框边框
+                            int checkboxSize = 10;
+                            int checkboxX = x + 3;
+                            int checkboxY = y + 2;
+                            context.fill(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize, 0xFF808080); // 边框
+                            context.fill(checkboxX + 1, checkboxY + 1, checkboxX + checkboxSize - 1, checkboxY + checkboxSize - 1, condition.isCompleted() ? 0xFF005500 : 0xFF202020); // 内部
+
+                            // 如果完成，绘制勾号
+                            if (condition.isCompleted()) {
+                                String checkMark = "✔";
+                                int checkMarkX = checkboxX + 1;
+                                int checkMarkY = checkboxY + 1;
+                                // 使用较小的字体渲染勾号
+                                context.drawText(textRenderer, checkMark, checkMarkX, checkMarkY, 0xFF55FF55, true);
+                            }
+
+                            // 条件文本 - 使用较小的字体，并根据完成状态设置颜色
                             int condTextColor = condition.isCompleted() ? 0xFF55FF55 : 0xFFAAAAAA; // 完成时为亮绿色，未完成时为灰色
                             int condTextY = y + 2;
                             for (OrderedText line : condLines) {
-                                context.drawText(textRenderer, line, x + 3, condTextY, condTextColor, true);
+                                // 为了视觉上的"缩小"效果，我们可以稍微调整Y坐标或使用不同的渲染方式
+                                // 这里直接使用原字体，但你可以考虑使用其他方法实现真正的字体大小调整
+                                context.drawText(textRenderer, line, x + 3 + checkboxSize + 2, condTextY, condTextColor, true);
                                 condTextY += textRenderer.fontHeight + 1;
-                            }
-
-                            // 绘制完成标记（勾号）
-                            if (condition.isCompleted()) {
-                                String checkMark = "√";
-                                int checkMarkX = (screenWidth - MARGIN_RIGHT) - textRenderer.getWidth(checkMark) - 3;
-                                context.drawText(textRenderer, checkMark, checkMarkX, y + 2, 0xFF55FF55, true);
                             }
 
                             y += condHeight; // 条件描述结束后继续

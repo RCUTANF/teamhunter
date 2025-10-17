@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.trigger;
 
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -16,6 +17,15 @@ public class dimensionTrigger extends AbstractGuideSysTrigger {
     public dimensionTrigger() {
         super(TriggerType.dimension); // 假如你有这个类型枚举
         registerTickListener();
+        registerConnectionListener();
+    }
+
+    // 注册客户端连接事件监听器
+    private void registerConnectionListener() {
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            // 客户端断开连接时，将lastDimension置为null
+            this.lastDimension = null;
+        });
     }
 
     // 注册客户端tick事件监听
@@ -35,7 +45,7 @@ public class dimensionTrigger extends AbstractGuideSysTrigger {
     }
 
     /** 构造和SurroundingBlockTrigger风格一致的事件数据 */
-    private Map<String, Object> createDimensionChangeEventData(Identifier from, Identifier to) {
+    public Map<String, Object> createDimensionChangeEventData(Identifier from, Identifier to) {
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("from", from); // Identifier，可以直接 cast 为字符串用
         eventData.put("to", to);

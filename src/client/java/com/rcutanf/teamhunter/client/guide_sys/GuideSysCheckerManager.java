@@ -4,9 +4,12 @@ import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEv
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
+import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.dimensionTrigger;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +144,16 @@ public class GuideSysCheckerManager {
                     }
                 }
             }
+        }
+
+        //发送当前维度更新包触发维度触发器
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        //维度触发器
+        dimensionTrigger dimensionTrigger = (dimensionTrigger) GuideSysTriggerManager.getInstance()
+                .getTrigger(TriggerType.dimension);
+        if (dimensionTrigger != null && player != null) {
+            Identifier currentDimension = player.getWorld().getRegistryKey().getValue();
+            dimensionTrigger.fire(dimensionTrigger.createDimensionChangeEventData(null, currentDimension));
         }
     }
 
