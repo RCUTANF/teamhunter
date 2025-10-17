@@ -72,4 +72,6 @@ public class Condition {
         return insideProgress;
     }
 
+    public int getMaxProgress() {return maxProgress;}
+
 }

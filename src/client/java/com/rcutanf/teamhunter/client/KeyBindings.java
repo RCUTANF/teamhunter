@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter.client;
 
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysScreen;
 import com.rcutanf.teamhunter.client.ui.RadarConfigScreen;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -100,6 +101,17 @@ public class KeyBindings {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (adGuideDescriptionKey.isPressed()) {
                 GuideSysHud.setShowAllDescriptions(true);
+                // 检查是否同时按下了Ctrl键
+                long windowHandle = client.getWindow().getHandle();
+                boolean isCtrlPressed = InputUtil.isKeyPressed(windowHandle, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                        InputUtil.isKeyPressed(windowHandle, GLFW.GLFW_KEY_RIGHT_CONTROL);
+
+                if (isCtrlPressed) {
+                    // 打开指南屏幕
+                    if (client.player != null && client.currentScreen == null) {
+                        client.setScreen(new GuideSysScreen(client.currentScreen));
+                    }
+                }
             } else {
                 GuideSysHud.setShowAllDescriptions(false);
             }
