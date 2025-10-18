@@ -156,7 +156,7 @@ public class GuideSysGuiManager {
         for (AdvancementGuideItem item : advancementGuides) {
             if (item.id.equals(advancementID)) {
                 item.completed = true;
-                // 这里可以添加动画触发逻辑
+
                 return;
             }
         }

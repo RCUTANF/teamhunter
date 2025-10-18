@@ -125,7 +125,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             MinecraftClient.getInstance().execute(() -> {
                 setActive(false); // 在游戏主线程执行
             });
-        }, 1000, TimeUnit.MILLISECONDS);// 延迟1秒
+        }, 1000, TimeUnit.MILLISECONDS);// 延迟1秒，这样就看上去有动画了
         this.completed = true;
         unregister();
 

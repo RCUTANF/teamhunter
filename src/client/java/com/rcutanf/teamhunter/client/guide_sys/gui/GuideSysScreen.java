@@ -1,5 +1,9 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementRecord;
+import net.minecraft.advancement.PlacedAdvancement;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -10,6 +14,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,7 @@ public class GuideSysScreen extends Screen {
 
     private final Screen parent;
     private GuideListWidget leftList;  // 未完成列表
-    private GuideListWidget rightList; // 已完成列表
+    private ScrollableWidget rightList; // 已完成列表
 
     public GuideSysScreen(Screen parent) {
         super(Text.of("指南系统"));
@@ -34,20 +39,32 @@ public class GuideSysScreen extends Screen {
         super.init();
 
         int listWidth = (this.width - PADDING * 3) / 2;
-        int listHeight = this.height - 40 - PADDING * 2; // 留出按钮空间
+        int listHeight = this.height - 40 - PADDING * 2;
 
-        // 分离指南项
+        // 获取未完成的指南项（保持原来的方式）
         List<GuideSysGuiManager.AdvancementGuideItem> allGuides = GuideSysGuiManager.getAdvancementGuides();
         List<GuideSysGuiManager.AdvancementGuideItem> incompleteGuides = new ArrayList<>();
-        List<GuideSysGuiManager.AdvancementGuideItem> completeGuides = new ArrayList<>();
 
         for (GuideSysGuiManager.AdvancementGuideItem guide : allGuides) {
-            if (guide.isCompleted()) {
-                completeGuides.add(guide);
-            } else {
+            if (!guide.isCompleted()) {
                 incompleteGuides.add(guide);
             }
         }
+
+        // 获取已完成的成就记录（新的数据源）
+        List<AdvancementRecord> completedRecords = AdvancementEventManager.getInstance().getAdvancementRecords();
+        List<CompletedGuideItem> completeGuides = new ArrayList<>();
+
+        for (AdvancementRecord record : completedRecords) {
+            // 直接从游戏成就管理器获取成就信息
+            PlacedAdvancement placedAdvancement = getPlacedAdvancement(record.getAdvancementId().toString());
+            if (placedAdvancement != null) {
+                completeGuides.add(new CompletedGuideItem(placedAdvancement.getAdvancementEntry(), record));
+            }
+        }
+
+        // 按完成时间排序（游戏内时间）
+        completeGuides.sort((a, b) -> Long.compare(a.record.getGameTime(), b.record.getGameTime()));
 
         // 创建左右列表
         this.leftList = new GuideListWidget(
@@ -58,19 +75,18 @@ public class GuideSysScreen extends Screen {
                 PADDING + 30,
                 ITEM_HEIGHT,
                 incompleteGuides,
-                false // 未完成列表
+                false
         );
         this.addDrawableChild(this.leftList);
 
-        this.rightList = new GuideListWidget(
+        this.rightList = new CompletedGuideListWidget(
                 this.client,
                 listWidth,
                 listHeight,
                 this.width - listWidth - PADDING,
                 PADDING + 30,
                 ITEM_HEIGHT,
-                completeGuides,
-                true // 已完成列表
+                completeGuides
         );
         this.addDrawableChild(this.rightList);
 
@@ -104,7 +120,6 @@ public class GuideSysScreen extends Screen {
         private final List<GuideEntry> entries = new ArrayList<>();
         private final boolean isCompletedList;
         private final List<GuideSysGuiManager.AdvancementGuideItem> guides;
-        //private double scrollAmount = 0;
 
         public GuideListWidget(MinecraftClient client, int width, int height, int x, int y, int itemHeight,
                                List<GuideSysGuiManager.AdvancementGuideItem> guides, boolean isCompletedList) {
@@ -117,7 +132,7 @@ public class GuideSysScreen extends Screen {
         private void updateEntries() {
             this.entries.clear();
             for (GuideSysGuiManager.AdvancementGuideItem guide : this.guides) {
-                this.entries.add(new GuideEntry(guide, !this.isCompletedList)); // 只有未完成列表的项目需要展开功能
+                this.entries.add(new GuideEntry(guide, !this.isCompletedList));
             }
         }
 
@@ -141,12 +156,10 @@ public class GuideSysScreen extends Screen {
 
         @Override
         public void appendClickableNarrations(NarrationMessageBuilder builder) {
-            // 为无障碍功能提供叙述信息
             builder.put(NarrationPart.TITLE, this.isCompletedList ? "已完成指南列表" : "未完成指南列表");
         }
 
         protected void renderBackground(DrawContext context) {
-            // 绘制背景
             context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0x80000000);
         }
 
@@ -155,7 +168,6 @@ public class GuideSysScreen extends Screen {
             this.renderBackground(context);
             int currentY = (int) (this.getY() - this.getScrollY());
 
-            // 启用裁剪以防止内容绘制到边界外
             context.enableScissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight());
 
             for (GuideEntry entry : this.entries) {
@@ -215,8 +227,8 @@ public class GuideSysScreen extends Screen {
             private int getWrappedLinesHeight(String text) {
                 if (text == null || text.isEmpty()) return 0;
                 TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-                List<String> lines = wrapText(text, ITEM_WIDTH - 20); // 预留边距
-                return lines.size() * (textRenderer.fontHeight + 2) + 4; // 加上内边距
+                List<String> lines = wrapText(text, ITEM_WIDTH - 20);
+                return lines.size() * (textRenderer.fontHeight + 2) + 4;
             }
 
             private List<String> wrapText(String text, int maxWidth) {
@@ -234,7 +246,6 @@ public class GuideSysScreen extends Screen {
                             lines.add(currentLine.toString());
                             currentLine = new StringBuilder(word);
                         } else {
-                            // Word too long, force split
                             lines.add(word);
                         }
                     }
@@ -261,17 +272,14 @@ public class GuideSysScreen extends Screen {
             public void render(DrawContext context, int x, int y, int width, int mouseX, int mouseY, float delta) {
                 TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-                // 绘制背景
                 int bgColor = this.guide.isCompleted() ? 0x60005500 : 0x60202020;
                 context.fill(x, y, x + width, y + ITEM_HEIGHT, bgColor);
 
-                // 绘制展开/收起按钮（仅对未完成项）
                 if (this.needsExpandToggle) {
                     String toggleSymbol = this.expanded ? "-" : "+";
                     context.drawText(textRenderer, toggleSymbol, x + 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xFFFFFFFF, true);
                 }
 
-                // 绘制标题
                 int titleColor = this.guide.isCompleted() ? 0x55FF55 : 0xFFFFFF;
                 String title = this.guide.getTitle().getString();
                 if (textRenderer.getWidth(title) > width - 40) {
@@ -279,16 +287,13 @@ public class GuideSysScreen extends Screen {
                 }
                 context.drawText(textRenderer, title, x + (this.needsExpandToggle ? 20 : 10), y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, titleColor, true);
 
-                // 绘制进度
                 String progressText = (int) this.guide.getProgress() + "%";
                 int progressTextWidth = textRenderer.getWidth(progressText);
                 context.drawText(textRenderer, progressText, x + width - progressTextWidth - 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, titleColor, true);
 
-                // 如果展开且是未完成项，则绘制描述和条件
                 if (this.expanded && this.needsExpandToggle) {
                     int currentY = y + ITEM_HEIGHT;
 
-                    // 绘制描述
                     if (this.guide.getDescription() != null) {
                         List<String> descLines = wrapText(this.guide.getDescription().getString(), width - 20);
                         int descBgY = currentY;
@@ -304,7 +309,6 @@ public class GuideSysScreen extends Screen {
                         currentY += descHeight;
                     }
 
-                    // 绘制条件描述
                     if (this.guide.getAchievementChecker() != null) {
                         for (var condition : this.guide.getAchievementChecker().conditions) {
                             String conditionDesc = condition.description;
@@ -313,27 +317,22 @@ public class GuideSysScreen extends Screen {
                                 int condBgY = currentY;
                                 int condHeight = condLines.size() * (textRenderer.fontHeight + 2) + 4;
 
-                                // 条件背景 - 根据完成状态
                                 int condBgColor = condition.isCompleted() ? 0x80005500 : 0x80333333;
                                 context.fill(x, condBgY, x + width, condBgY + condHeight, condBgColor);
 
-                                // 绘制复选框
                                 int checkboxSize = 10;
                                 int checkboxX = x + 5;
                                 int checkboxY = condBgY + 2;
                                 context.fill(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize, 0xFF808080);
                                 context.fill(checkboxX + 1, checkboxY + 1, checkboxX + checkboxSize - 1, checkboxY + checkboxSize - 1, condition.isCompleted() ? 0xFF005500 : 0xFF202020);
 
-                                // 绘制勾号
                                 if (condition.isCompleted()) {
                                     String checkMark = "✔";
                                     context.drawText(textRenderer, checkMark, checkboxX + 1, checkboxY + 1, 0xFF55FF55, true);
                                 }
 
-                                // 条件文本
                                 int condTextColor = condition.isCompleted() ? 0xFF55FF55 : 0xFFAAAAAA;
                                 int textY = condBgY + 2;
-                                // 在描述末尾添加进度信息
                                 String conditionTextWithProgress = conditionDesc + " (" + condition.getInsideProgress() + "% of " + condition.getMaxProgress() + "%)";
                                 List<String> condLinesWithProgress = wrapText(conditionTextWithProgress, width - 20);
 
@@ -349,5 +348,152 @@ public class GuideSysScreen extends Screen {
                 }
             }
         }
+    }
+
+    private static class CompletedGuideItem {
+        final AdvancementEntry advancement;
+        final AdvancementRecord record;
+
+        CompletedGuideItem(AdvancementEntry advancement, AdvancementRecord record) {
+            this.advancement = advancement;
+            this.record = record;
+        }
+    }
+
+    private static class CompletedGuideListWidget extends ScrollableWidget {
+        private final List<CompletedGuideEntry> entries = new ArrayList<>();
+        private final List<CompletedGuideItem> guides;
+
+        public CompletedGuideListWidget(MinecraftClient client, int width, int height, int x, int y, int itemHeight,
+                                       List<CompletedGuideItem> guides) {
+            super(x, y, width, height, Text.empty());
+            this.guides = guides;
+            this.updateEntries();
+        }
+
+        private void updateEntries() {
+            this.entries.clear();
+            for (CompletedGuideItem guide : this.guides) {
+                this.entries.add(new CompletedGuideEntry(guide));
+            }
+        }
+
+        protected int getContentsHeight() {
+            return this.entries.size() * ITEM_HEIGHT;
+        }
+
+        @Override
+        protected int getContentsHeightWithPadding() {
+            return getContentsHeight() + 20;
+        }
+
+        @Override
+        protected double getDeltaYPerScroll() {
+            return SCROLL_SPEED;
+        }
+
+        @Override
+        public void appendClickableNarrations(NarrationMessageBuilder builder) {
+            builder.put(NarrationPart.TITLE, "已完成指南列表");
+        }
+
+        protected void renderBackground(DrawContext context) {
+            context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0x80000000);
+        }
+
+        @Override
+        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+            this.renderBackground(context);
+            int currentY = (int) (this.getY() - this.getScrollY());
+
+            context.enableScissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight());
+
+            for (CompletedGuideEntry entry : this.entries) {
+                if (currentY + ITEM_HEIGHT >= this.getY() && currentY <= this.getY() + this.getHeight()) {
+                    entry.render(context, this.getX(), currentY, this.getWidth(), mouseX, mouseY, delta);
+                }
+                currentY += ITEM_HEIGHT;
+            }
+
+            context.disableScissor();
+        }
+
+        private class CompletedGuideEntry {
+            private final CompletedGuideItem completedGuide;
+
+            public CompletedGuideEntry(CompletedGuideItem completedGuide) {
+                this.completedGuide = completedGuide;
+            }
+
+            public void render(DrawContext context, int x, int y, int width, int mouseX, int mouseY, float delta) {
+                TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+
+                context.fill(x, y, x + width, y + ITEM_HEIGHT, 0x60005500);
+
+                String title = this.completedGuide.advancement.value().display()
+                        .map(display -> display.getTitle().getString())
+                        .orElse("未知成就");
+
+                String timeText = "";
+                int timeTextWidth = 0;
+                if (this.completedGuide.record != null) {
+                    timeText = formatCompletionTime(this.completedGuide.record);
+                    timeTextWidth = textRenderer.getWidth(timeText);
+                }
+
+                String progressText = "100%";
+                int progressTextWidth = textRenderer.getWidth(progressText);
+
+                // 计算标题可用宽度（减去时间文本、进度文本和间距）
+                int availableWidth = width - timeTextWidth - progressTextWidth - 30;
+
+                if (textRenderer.getWidth(title) > availableWidth) {
+                    title = textRenderer.trimToWidth(title, availableWidth - textRenderer.getWidth("...")) + "...";
+                }
+
+                // 渲染标题
+                context.drawText(textRenderer, title, x + 10, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0x55FF55, true);
+
+                // 渲染时间（在标题右侧）
+                if (!timeText.isEmpty()) {
+                    int timeX = x + 10 + textRenderer.getWidth(title) + 10;
+                    context.drawText(textRenderer, timeText, timeX, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xAAFFAA, false);
+                }
+
+                // 渲染进度（在最右侧）
+                context.drawText(textRenderer, progressText, x + width - progressTextWidth - 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0x55FF55, true);
+            }
+
+            private String formatCompletionTime(AdvancementRecord record) {
+                long gameTime = record.getGameTime();
+                // 将游戏刻转换为现实毫秒 (1秒 = 20游戏刻)
+                long realTimeMillis = gameTime * 50; // 50毫秒 = 1000ms / 20ticks
+
+                long totalSeconds = realTimeMillis / 1000;
+                long hours = totalSeconds / 3600;
+                long minutes = (totalSeconds % 3600) / 60;
+                long seconds = totalSeconds % 60;
+                long milliseconds = realTimeMillis % 1000;
+
+                return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
+            }
+
+
+
+        }
+    }
+
+    private PlacedAdvancement getPlacedAdvancement(String advancementId) {
+        if (MinecraftClient.getInstance().player == null) {
+            return null;
+        }
+
+        Identifier id = Identifier.tryParse(advancementId);
+        if (id == null) {
+            return null;
+        }
+
+        return MinecraftClient.getInstance().player.networkHandler
+                .getAdvancementHandler().getManager().get(id);
     }
 }
