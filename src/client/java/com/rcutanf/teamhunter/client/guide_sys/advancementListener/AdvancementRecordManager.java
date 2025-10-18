@@ -54,10 +54,9 @@ public class AdvancementRecordManager {
         if (currentWorldName == null) return;
 
         try {
-            Path recordsDir = Paths.get(MinecraftClient.getInstance().runDirectory.getAbsolutePath(), RECORDS_FOLDER, currentWorldName);
-            Files.createDirectories(recordsDir);
+            Path recordsPath = getRecordsPath();
+            Files.createDirectories(recordsPath.getParent());
 
-            Path recordsPath = recordsDir.resolve(RECORDS_FILE);
             String json = GSON.toJson(records);
             Files.writeString(recordsPath, json);
         } catch (Exception e) {
@@ -66,6 +65,10 @@ public class AdvancementRecordManager {
     }
 
     public void addRecord(AdvancementRecord record) {
+        // 拒绝 minecraft:recipes 开头的成就
+        if (record.getAdvancementId().toString().startsWith("minecraft:recipes")) {
+            return;
+        }
         records.removeIf(r -> r.getAdvancementId().equals(record.getAdvancementId()));
         records.add(record);
         records.sort((a, b) -> Long.compare(a.getGameTime(), b.getGameTime()));
@@ -90,7 +93,18 @@ public class AdvancementRecordManager {
     }
 
     private Path getRecordsPath() {
-        return Paths.get(MinecraftClient.getInstance().runDirectory.getAbsolutePath(),
-                         RECORDS_FOLDER, currentWorldName, RECORDS_FILE);
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.getServer() != null) {
+            // 本地单人世界
+            return client.getServer().getSavePath(net.minecraft.util.WorldSavePath.ROOT)
+                    .resolve("teamhunter_advancement_records.json");
+        } else if (client.getCurrentServerEntry() != null) {
+            // 多人服务器，存储在服务器特定目录
+            String serverName = client.getCurrentServerEntry().name.replaceAll("[^a-zA-Z0-9._-]", "_");
+            return Paths.get(client.runDirectory.getAbsolutePath(), "servers", serverName, "teamhunter_advancement_records.json");
+        } else {
+            // 回退到原来的方式
+            return Paths.get(client.runDirectory.getAbsolutePath(), RECORDS_FOLDER, "default", RECORDS_FILE);
+        }
     }
 }

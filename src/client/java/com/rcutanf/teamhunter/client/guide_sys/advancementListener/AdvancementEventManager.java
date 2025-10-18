@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.advancementListener;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.client.MinecraftClient;
@@ -16,6 +17,15 @@ public class AdvancementEventManager {
     private AdvancementEventManager() {
         listeners = new ArrayList<>();
         recordManager = new AdvancementRecordManager();
+
+        // 注册世界事件监听器
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            this.onWorldLoad();
+        });
+
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            this.onWorldUnload();
+        });
     }
 
     public static AdvancementEventManager getInstance() {

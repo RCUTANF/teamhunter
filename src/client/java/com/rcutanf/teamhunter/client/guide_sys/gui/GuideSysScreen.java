@@ -437,7 +437,7 @@ public class GuideSysScreen extends Screen {
                 String timeText = "";
                 int timeTextWidth = 0;
                 if (this.completedGuide.record != null) {
-                    timeText = formatCompletionTime(this.completedGuide.record);
+                    timeText = formatGameTime(this.completedGuide.record);
                     timeTextWidth = textRenderer.getWidth(timeText);
                 }
 
@@ -464,7 +464,7 @@ public class GuideSysScreen extends Screen {
                 context.drawText(textRenderer, progressText, x + width - progressTextWidth - 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0x55FF55, true);
             }
 
-            private String formatCompletionTime(AdvancementRecord record) {
+            private String formatGameTime(AdvancementRecord record) {
                 long gameTime = record.getGameTime();
                 // 将游戏刻转换为现实毫秒 (1秒 = 20游戏刻)
                 long realTimeMillis = gameTime * 50; // 50毫秒 = 1000ms / 20ticks
