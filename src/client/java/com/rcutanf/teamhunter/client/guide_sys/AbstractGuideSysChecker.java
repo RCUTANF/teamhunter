@@ -286,23 +286,36 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         int totalProgress = 0;
         for (Condition condition : achievementChecker.conditions) {
             condition.insideProgress = 0;
-            int currentGroupId = -1;
-            int groupMaxProgress = 0;
 
+            // 保留出现顺序的分组：key = OrGroupId, value = list of requirements in that group
+            Map<Integer, List<Requirement>> orGroups = new LinkedHashMap<>();
+
+            // 先把 typeAnd == true 的直接计入；typeAnd == false 的收集到分组
             for (Requirement req : condition.requirements) {
-                if (!(req.OrGroupId ==currentGroupId)) {
-                    // 新的组，累加上一组的最大进度
-                    condition.insideProgress += groupMaxProgress;
-                    groupMaxProgress = 0;
-                    currentGroupId = req.OrGroupId;
+                if (req == null) continue;
+                if (req.typeAnd) {
+                    // 与逻辑，始终计入
+                    condition.insideProgress += req.insideProgress;
+                } else {
+                    int gid = req.OrGroupId;
+                    orGroups.computeIfAbsent(gid, k -> new ArrayList<>()).add(req);
                 }
-
-                // 更新当前组的最大进度
-                groupMaxProgress = Math.max(groupMaxProgress, req.insideProgress);
             }
 
-            // 累加最后一组的最大进度
-            condition.insideProgress += groupMaxProgress;
+            // 处理每个 OR 组：按 priority 升序排序，取第一个 insideProgress > 0 的值
+            for (List<Requirement> groupReqs : orGroups.values()) {
+                if (groupReqs == null || groupReqs.isEmpty()) continue;
+                groupReqs.sort(Comparator.comparingInt(r -> r.priority));
+                int groupProgress = 0;
+                for (Requirement r : groupReqs) {
+                    if (r != null && r.insideProgress > 0) {
+                        groupProgress = r.insideProgress;
+                        break; // 取优先级最高的首个非0项
+                    }
+                }
+                condition.insideProgress += groupProgress;
+            }
+
             totalProgress += condition.insideProgress;
             if (condition.insideProgress >= condition.maxProgress) {
                 condition.finish();
