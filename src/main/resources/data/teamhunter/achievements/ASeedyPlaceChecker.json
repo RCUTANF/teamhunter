@@ -1,0 +1,76 @@
+{
+  "id": "a_seedy_place",
+  "advancementId": "minecraft:husbandry/plant_seed",
+  "conditions": [
+    {
+      "name": "plant_crops",
+      "description": "种植作物",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:beetroots",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:carrots",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:potatoes",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:wheat",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:pumpkin_stem",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:melon_stem",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:nether_wart",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "stay_hydrated",
+  "advancementId": "minecraft:husbandry/place_dried_ghast_in_water",
+  "conditions": [
+    {
+      "name": "near_dried_ghast_block",
+      "description": "靠近失水恶魂方块",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:dried_kelp_block",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_water",
+      "description": "靠近水源",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:water",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

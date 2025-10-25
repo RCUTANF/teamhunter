@@ -1,0 +1,70 @@
+{
+  "id": "birthday_song",
+  "advancementId": "minecraft:husbandry/allay_deliver_cake_to_note_block",
+  "conditions": [
+    {
+      "name": "near_allay",
+      "description": "靠近悦灵",
+      "weight": 25,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:allay",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "hold_cake",
+      "description": "持有蛋糕",
+      "weight": 25,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cake",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_note_block",
+      "description": "靠近音符盒",
+      "weight": 25,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:note_block",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_cake",
+      "description": "附近有蛋糕",
+      "weight": 25,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:cake",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "with_our_powers_combined",
+  "advancementId": "minecraft:husbandry/froglights",
+  "conditions": [
+    {
+      "name": "collect_all_froglights",
+      "description": "集齐所有蛙明灯",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ochre_froglights",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:verdant_froglights",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pearlescent_froglights",
+          "matchCount": 1,
+          "weight": 34,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

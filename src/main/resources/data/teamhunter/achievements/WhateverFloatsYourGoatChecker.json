@@ -1,0 +1,128 @@
+{
+  "id": "whatever_floats_your_goat",
+  "advancementId": "minecraft:husbandry/ride_a_boat_with_a_goat",
+  "conditions": [
+    {
+      "name": "near_boat",
+      "description": "靠近船",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:oak_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:spruce_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:birch_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:jungle_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:acacia_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:dark_oak_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:mangrove_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:cherry_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:bamboo_raft",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:crimson_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:warped_boat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 11
+        }
+      ]
+    },
+    {
+      "name": "near_goat",
+      "description": "靠近山羊",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:goat",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "little_sniffs",
+  "advancementId": "minecraft:husbandry/feed_snifflet",
+  "conditions": [
+    {
+      "name": "hold_food",
+      "description": "持有食物",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wheat",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:carrot",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potato",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:apple",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        }
+      ]
+    },
+    {
+      "name": "near_sniffer",
+      "description": "靠近嗅探兽",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:sniffer",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "the_parrots_and_the_bats",
+  "advancementId": "minecraft:husbandry/breed_an_animal",
+  "conditions": [
+    {
+      "name": "breed_animals",
+      "description": "繁殖动物",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:armadillo",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:axolotl",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:bee",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

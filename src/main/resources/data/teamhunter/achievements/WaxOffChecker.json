@@ -1,0 +1,164 @@
+{
+  "id": "wax_off",
+  "advancementId": "minecraft:husbandry/wax_off",
+  "conditions": [
+    {
+      "name": "hold_axe",
+      "description": "持有斧",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wooden_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_axe",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        }
+      ]
+    },
+    {
+      "name": "near_waxed_copper",
+      "description": "靠近涂蜡铜块",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_block",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_exposed_copper",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_weathered_copper",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 3
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_oxidized_copper",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 4
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_grate",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 5
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_bulb",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 6
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_door",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 7
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_trapdoor",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 8
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_stairs",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 9
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:waxed_copper_slab",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "two_by_two",
+  "advancementId": "minecraft:husbandry/bred_all_animals",
+  "conditions": [
+    {
+      "name": "breed_all_animals",
+      "description": "繁殖全部动物",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:armadillo",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:axolotl",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:bee",
+          "matchCount": 2,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "best_friends_forever",
+  "advancementId": "minecraft:husbandry/tame_an_animal",
+  "conditions": [
+    {
+      "name": "tame_animal",
+      "description": "驯服动物",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:horse",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:donkey",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:mule",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:llama",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:parrot",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:fox",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:panda",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:trader_llama",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "smells_interesting",
+  "advancementId": "minecraft:husbandry/obtain_sniffer_egg",
+  "conditions": [
+    {
+      "name": "obtain_sniffer_egg",
+      "description": "获得嗅探兽蛋",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sniffer_egg",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

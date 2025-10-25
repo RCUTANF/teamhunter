@@ -1,0 +1,38 @@
+{
+  "id": "when_the_squad_hops_into_town",
+  "advancementId": "minecraft:husbandry/leash_all_frog_variants",
+  "conditions": [
+    {
+      "name": "hold_leash",
+      "description": "持有拴绳",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:lead",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "leash_frogs",
+      "description": "拴住青蛙",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:frog",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        }
+      ]
+    }
+  ]
+}

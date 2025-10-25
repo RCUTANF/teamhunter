@@ -1,0 +1,22 @@
+{
+  "id": "the_healing_power_of_friendship",
+  "advancementId": "minecraft:husbandry/kill_axolotl_target",
+  "conditions": [
+    {
+      "name": "near_axolotl_in_combat",
+      "description": "与美西螈并肩作战",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:axolotl",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "serious_dedication",
+  "advancementId": "minecraft:husbandry/obtain_netherite_hoe",
+  "conditions": [
+    {
+      "name": "obtain_netherite_hoe",
+      "description": "获得下界合金锄",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_hoe",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "total_beelocation",
+  "advancementId": "minecraft:husbandry/silk_touch_nest",
+  "conditions": [
+    {
+      "name": "hold_silk_touch_tool",
+      "description": "持有精准采集工具",
+      "weight": 34,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:shears",
+          "matchCount": 1,
+          "weight": 34,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_beehive_with_3_bees",
+      "description": "靠近住着3只蜜蜂的蜂巢",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:beehive",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "collect_beehive",
+      "description": "收集蜂巢",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beehive",
+          "matchCount": 1,
+          "weight": 33,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

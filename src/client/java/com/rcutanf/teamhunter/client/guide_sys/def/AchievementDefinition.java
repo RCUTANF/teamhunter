@@ -27,7 +27,7 @@ public class AchievementDefinition {
             public int matchCount; // 需要的数量，通常为1。检查物品时可能需要大于1
             public int weight; // 该需求的权重。注意，所有需求总和为条件的权重。例如，如果本需求所属的条件权重为50，本需求只能占比低于50的权重，且所有应该计算的需求权重之和应等于该条件权重
             public boolean typeAnd; //定义条件的类型 true=与逻辑，false=或逻辑。详见下方定义逻辑补充
-            public int OrGroupId; // 用于或逻辑分组，从1开始编号，0表示不分组
+            public int OrGroupId; // 用于或逻辑分组，从0开始编号，相同编号的需求属于同一组
             public int priority; // 数值越小优先级越高，用于决定组合策略
         }
     }

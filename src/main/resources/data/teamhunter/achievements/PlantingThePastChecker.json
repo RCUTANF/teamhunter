@@ -1,0 +1,47 @@
+{
+  "id": "planting_the_past",
+  "advancementId": "minecraft:husbandry/plant_any_sniffer_seed",
+  "conditions": [
+    {
+      "name": "hold_sniffer_seed",
+      "description": "持有嗅探兽种子",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:torchflower_seeds",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pitcher_pod",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "near_farmland",
+      "description": "靠近耕地",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:farmland",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

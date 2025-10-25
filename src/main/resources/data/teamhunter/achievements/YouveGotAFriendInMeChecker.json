@@ -1,0 +1,38 @@
+{
+  "id": "youve_got_a_friend_in_me",
+  "advancementId": "minecraft:husbandry/allay_deliver_item_to_player",
+  "conditions": [
+    {
+      "name": "near_allay",
+      "description": "靠近悦灵",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:allay",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "hold_item",
+      "description": "持有物品",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:air",
+          "matchCount": 0,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

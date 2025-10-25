@@ -1,0 +1,38 @@
+{
+  "id": "shear_brilliance",
+  "advancementId": "minecraft:husbandry/remove_wolf_armor",
+  "conditions": [
+    {
+      "name": "hold_shears",
+      "description": "持有剪刀",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:shears",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_wolf_with_armor",
+      "description": "靠近穿铠甲的狼",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}
