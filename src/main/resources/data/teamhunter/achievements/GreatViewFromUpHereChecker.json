@@ -5,13 +5,13 @@
     {
       "name": "near_shulker",
       "description": "附近有潜影贝",
-      "weight": 10,
+      "weight": 100,
       "requirements": [
         {
           "triggerType": "entity",
           "matchKey": "minecraft:shulker",
           "matchCount": 1,
-          "weight": 10,
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 0,
           "priority": 1

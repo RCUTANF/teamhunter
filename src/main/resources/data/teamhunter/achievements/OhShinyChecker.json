@@ -1,6 +1,6 @@
 {
   "id": "oh_shiny",
-  "advancementId": "minecraft:story/obtain_armor",
+  "advancementId": "minecraft:nether/distract_piglin",
   "conditions": [
     {
       "name": "gold_item",

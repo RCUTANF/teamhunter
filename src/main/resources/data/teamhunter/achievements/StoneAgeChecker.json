@@ -1,6 +1,6 @@
 {
   "id": "stone_age",
-  "advancementId": "minecraft:story/upgrade_tools",
+  "advancementId": "minecraft:story/mine_stone",
   "conditions": [
     {
       "name": "stone_age",
