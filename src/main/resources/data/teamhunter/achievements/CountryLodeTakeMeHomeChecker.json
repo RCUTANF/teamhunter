@@ -1,0 +1,38 @@
+{
+  "id": "country_lode_take_me_home",
+  "advancementId": "minecraft:adventure/use_lodestone",
+  "conditions": [
+    {
+      "name": "hold_compass",
+      "description": "持有指南针",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:compass",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_lodestone",
+      "description": "靠近磁石",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:lodestone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

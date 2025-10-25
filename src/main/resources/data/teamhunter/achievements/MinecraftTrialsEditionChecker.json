@@ -1,0 +1,22 @@
+{
+  "id": "minecraft_trials_edition",
+  "advancementId": "minecraft:adventure/minecraft_trials_edition",
+  "conditions": [
+    {
+      "name": "enter_trials_chamber",
+      "description": "踏入试炼密室",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:trial_chambers",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

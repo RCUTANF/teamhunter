@@ -1,0 +1,38 @@
+{
+  "id": "sound_of_music",
+  "advancementId": "minecraft:adventure/play_jukebox_in_meadows",
+  "conditions": [
+    {
+      "name": "in_meadow_biome",
+      "description": "位于草甸生物群系",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:meadow",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_jukebox",
+      "description": "靠近唱片机",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:jukebox",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

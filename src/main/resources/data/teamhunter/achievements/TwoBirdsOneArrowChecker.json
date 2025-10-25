@@ -1,0 +1,38 @@
+{
+  "id": "two_birds_one_arrow",
+  "advancementId": "minecraft:adventure/two_birds_one_arrow",
+  "conditions": [
+    {
+      "name": "hold_piercing_crossbow",
+      "description": "持有穿透附魔的弩",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crossbow",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_phantoms",
+      "description": "靠近幻翼",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:phantom",
+          "matchCount": 2,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

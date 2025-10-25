@@ -1,0 +1,31 @@
+{
+  "id": "the_power_of_books",
+  "advancementId": "minecraft:adventure/read_power_of_chiseled_bookshelf",
+  "conditions": [
+    {
+      "name": "comparator_adjacent_to_chiseled_bookshelf",
+      "description": "用红石比较器获取雕纹书架信号",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:comparator",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:chiseled_bookshelf",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

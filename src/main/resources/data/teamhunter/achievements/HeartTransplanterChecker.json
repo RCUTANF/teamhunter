@@ -1,0 +1,31 @@
+{
+  "id": "heart_transplanter",
+  "advancementId": "minecraft:adventure/heart_transplanter",
+  "conditions": [
+    {
+      "name": "place_cherry_heart_near_pale_oak",
+      "description": "将嘎枝之心放在苍白橡木原木中间",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cherry_chest_boat", // 假设嘎枝之心是这个物品
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:pale_oak_log",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

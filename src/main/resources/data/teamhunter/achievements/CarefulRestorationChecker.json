@@ -1,0 +1,49 @@
+{
+  "id": "careful_restoration",
+  "advancementId": "minecraft:adventure/craft_decorated_pot_using_only_sherds",
+  "conditions": [
+    {
+      "name": "collect_4_sherds",
+      "description": "收集4个陶片",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:shaper_armor_trim_smithing_template",
+          "matchCount": 4,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:silence_armor_trim_smithing_template", 
+          "matchCount": 4,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:raiser_armor_trim_smithing_template", 
+          "matchCount": 4,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:host_armor_trim_smithing_template", 
+          "matchCount": 4,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        }
+      ]
+    }
+  ]
+}

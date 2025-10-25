@@ -1,0 +1,22 @@
+{
+  "id": "ol_betsy",
+  "advancementId": "minecraft:adventure/ol_betsy",
+  "conditions": [
+    {
+      "name": "hold_crossbow",
+      "description": "用弩进行一次射击",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crossbow",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

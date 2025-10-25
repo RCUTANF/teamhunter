@@ -1,0 +1,56 @@
+{
+  "id": "take_aim",
+  "advancementId": "minecraft:adventure/shoot_arrow",
+  "conditions": [
+    {
+      "name": "hold_bow",
+      "description": "持有弓",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bow",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "target_mob",
+      "description": "瞄准生物",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zombie",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:pig",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "blowback",
+  "advancementId": "minecraft:adventure/blowback",
+  "conditions": [
+    {
+      "name": "hold_breeze_rod",
+      "description": "持有风弹（风弹花）",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:breeze_rod",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_breeze",
+      "description": "靠近旋风人",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:breeze",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

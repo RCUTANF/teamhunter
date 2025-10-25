@@ -1,0 +1,22 @@
+{
+  "id": "sticky_situation",
+  "advancementId": "minecraft:adventure/honey_block_slide",
+  "conditions": [
+    {
+      "name": "slide_on_honey_block_side",
+      "description": "跳入蜂蜜块缓冲摔落",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:honey_block",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

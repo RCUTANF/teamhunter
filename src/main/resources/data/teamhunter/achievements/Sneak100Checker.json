@@ -1,26 +1,26 @@
 {
-  "id": "avoid_vibration",
+  "id": "sneak_100",
   "advancementId": "minecraft:adventure/avoid_vibration",
   "conditions": [
     {
-      "name": "sneak_near_sculk_or_warden",
+      "name": "avoid_vibration_near_warden_or_sensor",
       "description": "在幽匿感测体或监守者周围潜行",
       "weight": 100,
       "requirements": [
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:sculk_sensor",
+          "triggerType": "entity",
+          "matchKey": "minecraft:warden",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 1
         },
         {
           "triggerType": "entity",
-          "matchKey": "minecraft:warden",
+          "matchKey": "minecraft:sculk_sensor",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 2

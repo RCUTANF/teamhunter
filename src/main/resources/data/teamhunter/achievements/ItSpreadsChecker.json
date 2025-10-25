@@ -1,0 +1,56 @@
+{
+  "id": "it_spreads",
+  "advancementId": "minecraft:adventure/kill_mob_near_sculk_catalyst",
+  "conditions": [
+    {
+      "name": "near_sculk_catalyst",
+      "description": "靠近幽匿催发体",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:sculk_catalyst",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "kill_mob",
+      "description": "击杀任意怪物",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zombie",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:creeper",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "surge_protector",
+  "advancementId": "minecraft:adventure/lightning_rod_with_villager_no_fire",
+  "conditions": [
+    {
+      "name": "lightning_near_villager_no_fire",
+      "description": "保护村民免受雷击且不起火",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:lightning_bolt",
+          "matchCount": 1,
+          "weight": 35,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:villager",
+          "matchCount": 1,
+          "weight": 35,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:fire",
+          "matchCount": 0,
+          "weight": 30,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

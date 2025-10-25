@@ -1,0 +1,38 @@
+{
+  "id": "is_it_a_bird",
+  "advancementId": "minecraft:adventure/spyglass_at_parrot",
+  "conditions": [
+    {
+      "name": "hold_spyglass",
+      "description": "持有望远镜",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:spyglass",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_parrot",
+      "description": "靠近鹦鹉",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:parrot",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

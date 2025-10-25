@@ -1,0 +1,58 @@
+{
+  "id": "what_a_deal",
+  "advancementId": "minecraft:adventure/trade",
+  "conditions": [
+    {
+      "name": "obtain_trade_item",
+      "description": "获得交易物品",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:emerald",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:emerald_block",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wheat",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bread",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:carrot",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        }
+      ]
+    }
+  ]
+}

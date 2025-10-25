@@ -1,0 +1,22 @@
+{
+  "id": "postmortal",
+  "advancementId": "minecraft:adventure/totem_of_undying",
+  "conditions": [
+    {
+      "name": "hold_totem_of_undying",
+      "description": "持有不死图腾",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:totem_of_undying",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

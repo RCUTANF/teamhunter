@@ -1,0 +1,157 @@
+{
+  "id": "crafting_a_new_look",
+  "advancementId": "minecraft:adventure/trim_with_any_armor_pattern",
+  "conditions": [
+    {
+      "name": "obtain_any_armor_trim",
+      "description": "获得任意盔甲纹饰",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:coast_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wild_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ward_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:eye_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:vex_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:tide_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:snout_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rib_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sentry_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dune_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:spire_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 11
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wayfinder_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 12
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:shaper_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 13
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:silence_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 14
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:raiser_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 15
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:host_armor_trim_smithing_template",
+          "matchCount": 1,
+          "weight": 100, 
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 16
+        }
+      ]
+    }
+  ]
+}

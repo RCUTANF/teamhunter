@@ -1,0 +1,38 @@
+{
+  "id": "whos_the_pillager_now",
+  "advancementId": "minecraft:adventure/whos_the_pillager_now",
+  "conditions": [
+    {
+      "name": "hold_crossbow",
+      "description": "持有弩",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crossbow",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_pillager",
+      "description": "靠近掠夺者",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:pillager",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

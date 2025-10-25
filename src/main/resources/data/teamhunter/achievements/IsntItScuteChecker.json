@@ -1,0 +1,31 @@
+{
+  "id": "isnt_it_scute",
+  "advancementId": "minecraft:adventure/brush_armadillo",
+  "conditions": [
+    {
+      "name": "hold_brush_near_armadillo",
+      "description": "用刷子从犰狳获得鳞甲",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:brush",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:armadillo",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

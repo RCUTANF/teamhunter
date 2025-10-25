@@ -1,0 +1,22 @@
+{
+  "id": "voluntary_exile",
+  "advancementId": "minecraft:adventure/voluntary_exile",
+  "conditions": [
+    {
+      "name": "kill_raid_captain_with_bad_omen",
+      "description": "击杀带不祥旗帜的袭击者",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:pillager",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}
