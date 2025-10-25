@@ -184,6 +184,9 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 handleEntityEvent(data);
             } else if (data.containsKey("from")) {
                 handleDimensionEvent(data);
+            } else if (data.containsKey("biomeId")) {
+                // 生物群系事件
+                handleBiomeEvent(data);
             }
         }
     }
@@ -231,6 +234,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
         for (Requirement req : reqs) {
             checkCondition4Dimension(data, req, req.matchKey);
+        }
+    }
+
+    protected void handleBiomeEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.biome);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Biome(data, req, req.matchKey);
         }
     }
 
@@ -439,6 +451,26 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         Identifier to = (Identifier) data.get("to");
 
         if (dimensionId != null && dimensionId.equals(to.toString())) {
+            if (!isActive()) {
+                setActive(true);
+            }
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+    }
+
+    protected boolean checkCondition4Biome(Map<String, Object> data, Requirement requirement, String biomeId) {
+        String detectedBiome = (String) data.get("biomeId");
+
+        if (biomeId != null && biomeId.equals(detectedBiome)) {
             if (!isActive()) {
                 setActive(true);
             }

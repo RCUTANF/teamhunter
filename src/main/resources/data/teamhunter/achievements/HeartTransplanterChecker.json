@@ -9,7 +9,7 @@
       "requirements": [
         {
           "triggerType": "inventory",
-          "matchKey": "minecraft:cherry_chest_boat", // 假设嘎枝之心是这个物品
+          "matchKey": "minecraft:cherry_chest_boat",
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,
