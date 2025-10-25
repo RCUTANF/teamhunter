@@ -1,0 +1,38 @@
+{
+  "id": "bullseye",
+  "advancementId": "minecraft:adventure/bullseye",
+  "conditions": [
+    {
+      "name": "near_target",
+      "description": "靠近标靶",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:target",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "shoot_arrow",
+      "description": "射出箭矢",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:arrow",
+          "matchCount": 0,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

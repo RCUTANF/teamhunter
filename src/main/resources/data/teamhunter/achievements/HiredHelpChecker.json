@@ -1,0 +1,38 @@
+{
+  "id": "hired_help",
+  "advancementId": "minecraft:adventure/summon_iron_golem",
+  "conditions": [
+    {
+      "name": "have_iron_blocks",
+      "description": "拥有铁块",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_block",
+          "matchCount": 4,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "have_carved_pumpkin",
+      "description": "拥有雕刻南瓜",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:carved_pumpkin",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

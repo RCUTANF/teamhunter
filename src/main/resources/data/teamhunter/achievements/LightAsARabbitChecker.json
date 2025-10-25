@@ -1,0 +1,38 @@
+{
+  "id": "light_as_a_rabbit",
+  "advancementId": "minecraft:adventure/walk_on_powder_snow_with_leather_boots",
+  "conditions": [
+    {
+      "name": "wear_leather_boots",
+      "description": "穿着皮革靴子",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:leather_boots",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "on_powder_snow",
+      "description": "站在细雪上方",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:powder_snow",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}
