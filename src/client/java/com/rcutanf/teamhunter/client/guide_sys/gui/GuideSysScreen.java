@@ -90,12 +90,13 @@ public class GuideSysScreen extends Screen {
         );
         this.addDrawableChild(this.rightList);
 
-        // 返回按钮
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> {
+        // 右上角关闭按钮
+        int closeButtonSize = 20;
+        this.addDrawableChild(ButtonWidget.builder(Text.of("×"), button -> {
                     assert this.client != null;
                     this.client.setScreen(this.parent);
                 })
-                .dimensions(this.width / 2 - 75, this.height - 30, 150, 20)
+                .dimensions(this.width - closeButtonSize - 5, 5, closeButtonSize, closeButtonSize)
                 .build());
     }
 
