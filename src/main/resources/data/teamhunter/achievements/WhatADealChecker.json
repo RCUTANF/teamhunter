@@ -3,15 +3,31 @@
   "advancementId": "minecraft:adventure/trade",
   "conditions": [
     {
+      "name": "near_villager",
+      "description": "靠近村民",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:villager",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
       "name": "obtain_trade_item",
       "description": "获得交易物品",
-      "weight": 100,
+      "weight": 50,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:emerald",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 1
@@ -20,7 +36,7 @@
           "triggerType": "inventory",
           "matchKey": "minecraft:emerald_block",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 2
@@ -29,7 +45,7 @@
           "triggerType": "inventory",
           "matchKey": "minecraft:wheat",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 3
@@ -38,7 +54,7 @@
           "triggerType": "inventory",
           "matchKey": "minecraft:bread",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 4
@@ -47,10 +63,865 @@
           "triggerType": "inventory",
           "matchKey": "minecraft:carrot",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potato",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pumpkin",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:melon",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:egg",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sugar_cane",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 11
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cocoa_beans",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 12
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wheat_seeds",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 13
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot_seeds",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 14
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bone_meal",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 15
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 16
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:gunpowder",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 17
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:string",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 18
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:feather",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 19
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:leather",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 20
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rabbit_hide",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 21
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rabbit_foot",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 22
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rotten_flesh",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 23
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:paper",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 24
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:book",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 25
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:written_book",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 26
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ink_sac",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 27
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glow_ink_sac",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 28
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ender_pearl",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 29
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ender_eye",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 30
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:phantom_membrane",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 31
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nautilus_shell",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 32
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:heart_of_the_sea",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 33
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:scute",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 34
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:prismarine_shard",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 35
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:prismarine_crystals",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 36
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sea_pickle",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 37
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:kelp",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 38
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dried_kelp",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 39
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sea_lantern",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 40
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sponge",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 41
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wet_sponge",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 42
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:clay_ball",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 43
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:clay",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 44
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:brick",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 45
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nether_wart",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 46
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:blaze_rod",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 47
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ghast_tear",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 48
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:magma_cream",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 49
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nether_star",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 50
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:quartz",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 51
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nether_quartz_ore",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 52
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherrack",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 53
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:soul_sand",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 54
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:soul_soil",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 55
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glowstone_dust",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 56
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glowstone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 57
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:obsidian",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 58
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crying_obsidian",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 59
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:basalt",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 60
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:blackstone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 61
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:gilded_blackstone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 62
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:nether_gold_ore",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 63
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_scrap",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 64
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ancient_debris",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 65
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_ingot",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 66
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_block",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 67
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:shulker_shell",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 68
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:amethyst_shard",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 69
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:amethyst_block",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 70
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:calcite",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 71
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:tuff",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 72
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dripstone_block",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 73
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pointed_dripstone",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 74
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ochre_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 75
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:verdant_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 76
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pearlescent_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 77
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mud",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 78
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mangrove_roots",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 79
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:muddy_mangrove_roots",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 80
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mangrove_propagule",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 81
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ochre_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 82
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:verdant_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 83
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pearlescent_froglight",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 84
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sculk",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 85
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sculk_catalyst",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 86
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sculk_sensor",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 87
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:reinforced_deepslate",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 88
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:goat_horn",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 89
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:disc_fragment_5",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 90
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_5",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 91
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:echo_shard",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 92
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:recovery_compass",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 93
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bundle",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 94
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:spyglass",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 95
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:experience_bottle",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 96
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ender_pearl",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 97
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dragon_breath",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 98
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:splash_potion",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 99
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:lingering_potion",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 100
         }
       ]
     }

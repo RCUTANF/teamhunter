@@ -3,15 +3,15 @@
   "advancementId": "minecraft:adventure/sleep_in_bed",
   "conditions": [
     {
-      "name": "near_any_bed",
-      "description": "躺在床上（无需入眠）",
+      "name": "near_or_hold_any_bed",
+      "description": "靠近或持有任意床",
       "weight": 100,
       "requirements": [
         {
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:red_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 1
@@ -20,7 +20,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:black_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 2
@@ -29,7 +29,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:blue_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 3
@@ -38,7 +38,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:brown_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 4
@@ -47,7 +47,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:cyan_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 5
@@ -56,7 +56,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:gray_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 6
@@ -65,7 +65,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:green_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 7
@@ -74,7 +74,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:light_blue_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 8
@@ -83,7 +83,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:light_gray_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 9
@@ -92,7 +92,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:lime_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 10
@@ -101,7 +101,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:magenta_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 11
@@ -110,7 +110,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:orange_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 12
@@ -119,7 +119,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:pink_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 13
@@ -128,7 +128,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:purple_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 14
@@ -137,7 +137,7 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:white_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 15
@@ -146,10 +146,154 @@
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:yellow_bed",
           "matchCount": 1,
-          "weight": 100, 
+          "weight": 100,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 16
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:red_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 17
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:black_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 18
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:blue_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 19
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:brown_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 20
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cyan_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 21
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:gray_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 22
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:green_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 23
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:light_blue_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 24
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:light_gray_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 25
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:lime_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 26
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:magenta_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 27
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:orange_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 28
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pink_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 29
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:purple_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 30
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:white_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 31
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:yellow_bed",
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 32
         }
       ]
     }
