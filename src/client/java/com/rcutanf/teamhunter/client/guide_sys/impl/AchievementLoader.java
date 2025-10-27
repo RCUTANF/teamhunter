@@ -35,7 +35,7 @@ public class AchievementLoader {
         for (String resourcePath : resourcePaths) {
             try (InputStream stream = AchievementLoader.class.getClassLoader()
                     .getResourceAsStream(resourcePath);
-                 InputStreamReader reader = new InputStreamReader(stream)) {
+                 InputStreamReader reader = new InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8)) {
 
                 if (stream == null) {
                     System.err.println("⚠ 资源未找到: " + resourcePath);
@@ -85,8 +85,11 @@ public class AchievementLoader {
                         }
                     }
                 } else if ("jar".equals(protocol)) {
-                    // 处理 JAR 包中的资源
+                    // 处理 JAR 包中的资源，解决空格路径问题
                     String jarPath = url.getPath().substring(5, url.getPath().indexOf("!"));
+                    // URL 解码，处理空格等特殊字符
+                    jarPath = java.net.URLDecoder.decode(jarPath, "UTF-8");
+
                     try (JarFile jarFile = new JarFile(jarPath)) {
                         Enumeration<JarEntry> entries = jarFile.entries();
                         while (entries.hasMoreElements()) {
