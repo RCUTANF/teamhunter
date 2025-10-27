@@ -345,7 +345,12 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 condition.finish();
             }
         }
-        setProgress(totalProgress);
+        try{
+            setProgress(totalProgress);
+        }
+        catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error updating progress for checker " + achievementChecker.id + ": " + e.getMessage());
+        }
     }
 
     /**
