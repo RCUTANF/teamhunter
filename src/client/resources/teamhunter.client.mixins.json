@@ -10,6 +10,7 @@
     "GameOnReadyMixin",
     "OnGameJoinMixin",
     "PlayerInventoryMixin",
+    "WeatherChangeMixin",
     "WorldLoadFinishMixin"
   ],
   "injectors": {

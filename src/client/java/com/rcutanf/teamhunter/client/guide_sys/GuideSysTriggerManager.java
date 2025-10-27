@@ -47,6 +47,8 @@ public class GuideSysTriggerManager {
                 return new EntityTrigger();
             case dimension:
                 return new dimensionTrigger();
+            case weather:
+                return new WeatherTrigger();
             // 可以添加其他类型的触发器
             default:
                 throw new IllegalArgumentException("Invalid trigger type");

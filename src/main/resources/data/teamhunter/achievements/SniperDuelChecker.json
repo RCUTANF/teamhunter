@@ -36,12 +36,12 @@
     },
     {
       "name": "weather_lightning",
-      "description": "天气有闪电",
+      "description": "雷雨天气",
       "weight": 33,
       "requirements": [
         {
-          "triggerType": "dimension",
-          "matchKey": "minecraft:overworld",
+          "triggerType": "weather",
+          "matchKey": "THUNDERING",
           "matchCount": 1,
           "weight": 33,
           "typeAnd": true,

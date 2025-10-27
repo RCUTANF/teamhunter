@@ -187,6 +187,9 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("biomeId")) {
                 // 生物群系事件
                 handleBiomeEvent(data);
+            } else if (data.containsKey("newWeather")) {
+                // 天气变化事件
+                handleWeatherEvent(data);
             }
         }
     }
@@ -243,6 +246,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
         for (Requirement req : reqs) {
             checkCondition4Biome(data, req, req.matchKey);
+        }
+    }
+
+    protected void handleWeatherEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.weather);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Weather(data, req, req.matchKey);
         }
     }
 
@@ -471,6 +483,27 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         String detectedBiome = (String) data.get("biomeId");
 
         if (biomeId != null && biomeId.equals(detectedBiome)) {
+            if (!isActive()) {
+                setActive(true);
+            }
+            requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+    }
+
+
+    protected boolean checkCondition4Weather(Map<String, Object> data, Requirement requirement, String targetWeather) {
+        String currentWeather = (String) data.get("newWeather");
+
+        if (targetWeather != null && targetWeather.equals(currentWeather)) {
             if (!isActive()) {
                 setActive(true);
             }
