@@ -15,7 +15,7 @@ public class CommandConfig {
     private static final String COMMANDS_FILE_PREFIX = "commands_";
     private static final String COMMANDS_FILE_SUFFIX = ".yaml";
     private static final String CONFIG_FILE = "teamhunter.yaml";
-    private static final String DEFAULT_GAMEMODE = "cs";
+    private static final String DEFAULT_GAMEMODE = "train";
 
     private static String currentGamemode = DEFAULT_GAMEMODE;
     private static final int DEFAULT_MATCH_DURATION = 40; // 默认比赛时长40分钟

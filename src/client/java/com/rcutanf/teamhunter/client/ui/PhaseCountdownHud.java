@@ -9,7 +9,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import java.time.Duration;
 
 public class PhaseCountdownHud {
-    private static Phase phase = Phase.WAITING;
+    private static Phase phase = Phase.NONE;
     private static Duration countDown = Duration.ZERO;
 
     public static void setPhase(Phase newPhase) {
