@@ -117,7 +117,8 @@ public class GuideSysGuiManager {
             item.progress = progress;
             item.achievementChecker = achievementChecker;
 
-            advancementGuides.add(item);
+            // 添加到列表开头
+            advancementGuides.add(0, item);
 
         } catch (Exception e) {
             System.out.println("添加进度到指南时出错: " + e.getMessage());
@@ -135,13 +136,18 @@ public class GuideSysGuiManager {
     }
 
     public static void updateAdvancementGuide(AchievementChecker achievementChecker, int progress) {
-        for (AdvancementGuideItem item : advancementGuides) {
+        for (int i = 0; i < advancementGuides.size(); i++) {
+            AdvancementGuideItem item = advancementGuides.get(i);
             if (item.id.equals(achievementChecker.advancementId)) {
                 item.progress = progress;
 
                 if (progress >= 100) {
                     //预留动画调用
                 }
+
+                // 将更新的item移动到顶部
+                advancementGuides.remove(i);
+                advancementGuides.add(0, item);
                 return;
             }
         }
