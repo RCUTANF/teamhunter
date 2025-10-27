@@ -152,6 +152,10 @@ public class Teamhunter implements ModInitializer {
             ServerPlayerEntity player = handler.player;
             ServerPlayNetworking.send(player, phase);
 
+
+            // 为新加入的玩家默认添加烈焰棒掉落标签
+            player.addCommandTag("can_drop_blaze_rod");
+
             // 发送所有玩家位置给新玩家
 
             positionTracker.sendAllPlayerPositionsToNewPlayer(player);

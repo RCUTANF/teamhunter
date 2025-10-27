@@ -10,7 +10,7 @@ public final class PhaseCombiner implements AutoCloseable {
     private final MinecraftServer server;
     private final PhaseHandler phaseHandler;
     private @Nullable CompletableFuture<Void> future;
-    private Phase _phase = Phase.WAITING;
+    private Phase _phase = Phase.NONE;
 
     public PhaseCombiner(MinecraftServer server, PhaseHandler phaseHandler) {
         this.server = server;

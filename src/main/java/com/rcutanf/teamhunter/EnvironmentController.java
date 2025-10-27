@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -69,7 +70,7 @@ public class EnvironmentController {
         // 处理末地龙抗性
         handleEnderDragonResistance();
 
-        if (CommandConfig.getCurrentGamemode()==null || !CommandConfig.getCurrentGamemode().equals("ct")) {
+        if (CommandConfig.getCurrentGamemode()==null) {
             return; // 如果不是CT模式，直接返回
         }
         // 更新玩家的烈焰棒掉落权限标签
@@ -174,19 +175,22 @@ public class EnvironmentController {
             runnersCanDrop = true;
         }
 
-        // 更新猎人队玩家标签
-        for (String playerName : TeamUtils.getTeamPlayerNames(server, "hunters")) {
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
-            if (player != null && player.getWorld().getRegistryKey() == World.NETHER) {
-                updatePlayerTag(player, huntersCanDrop);
-            }
-        }
+        // 更新所有在地狱的玩家标签
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            if (player.getWorld().getRegistryKey() == World.NETHER) {
+                Team playerTeam = TeamUtils.getPlayerTeam(player);
 
-        // 更新逃亡者队玩家标签
-        for (String playerName : TeamUtils.getTeamPlayerNames(server, "runners")) {
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
-            if (player != null && player.getWorld().getRegistryKey() == World.NETHER) {
-                updatePlayerTag(player, runnersCanDrop);
+                boolean canDrop;
+                if ("hunters".equals(playerTeam.getName())) {
+                    canDrop = huntersCanDrop;
+                } else if ("runners".equals(playerTeam.getName())) {
+                    canDrop = runnersCanDrop;
+                } else {
+                    // 观察者、管理员等其他玩家默认可以掉落烈焰棒
+                    canDrop = true;
+                }
+
+                updatePlayerTag(player, canDrop);
             }
         }
 
