@@ -19,8 +19,8 @@
       ]
     },
     {
-      "name": "near_lodestone",
-      "description": "靠近磁石",
+      "name": "near_or_hold_lodestone_or_materials",
+      "description": "靠近或持有磁石或其合成材料",
       "weight": 50,
       "requirements": [
         {
@@ -28,9 +28,27 @@
           "matchKey": "minecraft:lodestone",
           "matchCount": 1,
           "weight": 50,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone_bricks",
+          "matchCount": 8,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:chiseled_stone_bricks",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
         }
       ]
     }

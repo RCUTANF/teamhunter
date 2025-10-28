@@ -13,7 +13,7 @@
           "matchCount": 6,
           "weight": 60,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 1,
           "priority": 1
         }
       ]
@@ -29,8 +29,17 @@
           "matchCount": 7,
           "weight": 40,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 2,
           "priority": 1
+        },
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:glowstone",
+          "matchCount": 1,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
         }
       ]
     }

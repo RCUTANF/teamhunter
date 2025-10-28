@@ -5,13 +5,13 @@
     {
       "name": "near_end_portal_frame",
       "description": "附近有末地祭坛",
-      "weight": 40,
+      "weight": 30,
       "requirements": [
         {
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:end_portal",
           "matchCount": 1,
-          "weight": 60,
+          "weight": 30,
           "typeAnd": false,
           "OrGroupId": 0,
           "priority": 1
@@ -21,13 +21,13 @@
     {
       "name": "has_4_end_crystals",
       "description": "身上有末影水晶（4个）",
-      "weight": 40,
+      "weight": 60,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:end_crystal",
           "matchCount": 4,
-          "weight": 40,
+          "weight": 60,
           "typeAnd": false,
           "OrGroupId": 0,
           "priority": 1
@@ -37,13 +37,13 @@
     {
       "name": "in_the_end",
       "description": "在末地",
-      "weight": 20,
+      "weight": 10,
       "requirements": [
         {
           "triggerType": "dimension",
           "matchKey": "minecraft:the_end",
           "matchCount": 1,
-          "weight": 60,
+          "weight": 10,
           "typeAnd": false,
           "OrGroupId": 0,
           "priority": 1

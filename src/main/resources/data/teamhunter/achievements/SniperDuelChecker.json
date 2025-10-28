@@ -1,52 +1,29 @@
 {
-  "id": "very_very_frightening",
-  "advancementId": "minecraft:adventure/very_very_frightening",
+  "id": "sniper_duel",
+  "advancementId": "minecraft:adventure/sniper_duel",
   "conditions": [
     {
-      "name": "hold_trident",
-      "description": "持有三叉戟",
-      "weight": 34,
+      "name": "hold_ranged_weapon",
+      "description": "持有远程武器",
+      "weight": 100,
       "requirements": [
         {
           "triggerType": "inventory",
-          "matchKey": "minecraft:trident",
+          "matchKey": "minecraft:bow",
           "matchCount": 1,
-          "weight": 34,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
-        }
-      ]
-    },
-    {
-      "name": "near_villager",
-      "description": "靠近村民",
-      "weight": 33,
-      "requirements": [
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
         {
-          "triggerType": "entity",
-          "matchKey": "minecraft:villager",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crossbow",
           "matchCount": 1,
-          "weight": 33,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
-        }
-      ]
-    },
-    {
-      "name": "weather_lightning",
-      "description": "雷雨天气",
-      "weight": 33,
-      "requirements": [
-        {
-          "triggerType": "weather",
-          "matchKey": "THUNDERING",
-          "matchCount": 1,
-          "weight": 33,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
         }
       ]
     }

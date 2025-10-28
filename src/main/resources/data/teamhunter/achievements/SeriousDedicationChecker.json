@@ -3,18 +3,36 @@
   "advancementId": "minecraft:husbandry/obtain_netherite_hoe",
   "conditions": [
     {
-      "name": "obtain_netherite_hoe",
-      "description": "获得下界合金锄",
+      "name": "obtain_netherite_hoe_materials",
+      "description": "获得下界合金锄的合成材料",
       "weight": 100,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:netherite_hoe",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_hoe",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_ingot",
+          "matchCount": 1,
+          "weight": 25,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
         }
       ]
     }

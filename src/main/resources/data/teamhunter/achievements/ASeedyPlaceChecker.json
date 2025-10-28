@@ -3,71 +3,148 @@
   "advancementId": "minecraft:husbandry/plant_seed",
   "conditions": [
     {
-      "name": "plant_crops",
-      "description": "种植作物",
-      "weight": 100,
+      "name": "near_farmland",
+      "description": "靠近耕地",
+      "weight": 34,
       "requirements": [
         {
           "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:beetroots",
+          "matchKey": "minecraft:farmland",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 34,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "hold_hoe",
+      "description": "持有锄头",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wooden_hoe",
+          "matchCount": 1,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 1
         },
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:carrots",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone_hoe",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 2
         },
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:potatoes",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_hoe",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 3
         },
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:wheat",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_hoe",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 4
         },
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:pumpkin_stem",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_hoe",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 5
         },
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:melon_stem",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_hoe",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 11,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 6
+        }
+      ]
+    },
+    {
+      "name": "hold_crop_seeds",
+      "description": "持有农作物种子",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wheat_seeds",
+          "matchCount": 1,
+          "weight": 17,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
         },
         {
-          "triggerType": "surroundingBlock",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot_seeds",
+          "matchCount": 1,
+          "weight": 16,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:carrot",
+          "matchCount": 1,
+          "weight": 17,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potato",
+          "matchCount": 1,
+          "weight": 16,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pumpkin_seeds",
+          "matchCount": 1,
+          "weight": 17,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:melon_seeds",
+          "matchCount": 1,
+          "weight": 17,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 6
+        },
+        {
+          "triggerType": "inventory",
           "matchKey": "minecraft:nether_wart",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 16,
           "typeAnd": false,
-          "OrGroupId": 1,
+          "OrGroupId": 2,
           "priority": 7
         }
       ]

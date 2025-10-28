@@ -13,8 +13,8 @@
           "matchCount": 4,
           "weight": 15,
           "typeAnd": true,
-          "OrGroupId": 1,
-          "priority": 1
+          "OrGroupId": 0,
+          "priority": 0
         },
         {
           "triggerType": "inventory",
@@ -22,8 +22,8 @@
           "matchCount": 1,
           "weight": 15,
           "typeAnd": true,
-          "OrGroupId": 1,
-          "priority": 1
+          "OrGroupId": 0,
+          "priority": 0
         },
         {
           "triggerType": "inventory",
@@ -31,8 +31,8 @@
           "matchCount": 1,
           "weight": 15,
           "typeAnd": true,
-          "OrGroupId": 1,
-          "priority": 1
+          "OrGroupId": 0,
+          "priority": 0
         },
         {
           "triggerType": "inventory",
@@ -40,14 +40,14 @@
           "matchCount": 1,
           "weight": 15,
           "typeAnd": true,
-          "OrGroupId": 1,
-          "priority": 1
+          "OrGroupId": 0,
+          "priority": 0
         }
       ]
     },
     {
-      "name": "near_crafting_table",
-      "description": "附近有合成器",
+      "name": "near_or_hold_crafting_table",
+      "description": "附近有合成器或持有合成器",
       "weight": 40,
       "requirements": [
         {
@@ -56,8 +56,17 @@
           "matchCount": 1,
           "weight": 40,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 1,
           "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crafting_table",
+          "matchCount": 1,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
         }
       ]
     }

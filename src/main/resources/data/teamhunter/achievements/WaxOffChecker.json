@@ -159,6 +159,22 @@
           "priority": 10
         }
       ]
+    },
+    {
+      "name": "in_trial_chambers",
+      "description": "位于试炼大厅（提示）",
+      "weight": 10,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:trial_chambers",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
     }
   ]
 }

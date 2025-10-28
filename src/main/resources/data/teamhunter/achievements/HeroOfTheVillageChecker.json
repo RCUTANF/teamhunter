@@ -1,15 +1,15 @@
 {
-  "id": "total_beelocation",
-  "advancementId": "minecraft:husbandry/silk_touch_nest",
+  "id": "hero_of_the_village",
+  "advancementId": "minecraft:adventure/hero_of_the_village",
   "conditions": [
     {
-      "name": "hold_silk_touch_tool",
-      "description": "持有精准采集工具",
+      "name": "hold_ominous_bottle",
+      "description": "持有不祥之瓶",
       "weight": 50,
       "requirements": [
         {
           "triggerType": "inventory",
-          "matchKey": "minecraft:diamond_pickaxe",
+          "matchKey": "minecraft:ominous_bottle",
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,
@@ -19,13 +19,13 @@
       ]
     },
     {
-      "name": "near_beehive_with_3_bees",
-      "description": "靠近住着3只蜜蜂的蜂巢",
+      "name": "in_village",
+      "description": "位于村庄",
       "weight": 50,
       "requirements": [
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:bee_nest",
+          "triggerType": "structure",
+          "matchKey": "minecraft:village",
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,

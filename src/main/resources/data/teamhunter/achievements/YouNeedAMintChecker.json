@@ -1,15 +1,15 @@
 {
-  "id": "total_beelocation",
-  "advancementId": "minecraft:husbandry/silk_touch_nest",
+  "id": "you_need_a_mint",
+  "advancementId": "minecraft:end/dragon_breath",
   "conditions": [
     {
-      "name": "hold_silk_touch_tool",
-      "description": "持有精准采集工具",
+      "name": "in_the_end",
+      "description": "位于末地维度",
       "weight": 50,
       "requirements": [
         {
-          "triggerType": "inventory",
-          "matchKey": "minecraft:diamond_pickaxe",
+          "triggerType": "dimension",
+          "matchKey": "minecraft:the_end",
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,
@@ -19,13 +19,13 @@
       ]
     },
     {
-      "name": "near_beehive_with_3_bees",
-      "description": "靠近住着3只蜜蜂的蜂巢",
+      "name": "hold_glass_bottles",
+      "description": "持有玻璃瓶",
       "weight": 50,
       "requirements": [
         {
-          "triggerType": "surroundingBlock",
-          "matchKey": "minecraft:bee_nest",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glass_bottle",
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,

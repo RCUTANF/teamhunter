@@ -3,81 +3,130 @@
   "advancementId": "minecraft:adventure/trim_with_all_exclusive_armor_patterns",
   "conditions": [
     {
-      "name": "obtain_all_armor_trims",
-      "description": "获得全部锻造模板",
-      "weight": 100,
+      "name": "obtain_coast_armor_trim",
+      "description": "获得海岸盔甲纹饰",
+      "weight": 12,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:coast_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 1
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_wild_armor_trim",
+      "description": "获得荒野盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:wild_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 2
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_ward_armor_trim",
+      "description": "获得监守盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:ward_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 3
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_eye_armor_trim",
+      "description": "获得眼眸盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:eye_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 4
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_vex_armor_trim",
+      "description": "获得恼鬼盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:vex_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 5
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_tide_armor_trim",
+      "description": "获得潮汐盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:tide_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 6
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_snout_armor_trim",
+      "description": "获得猪鼻盔甲纹饰",
+      "weight": 12,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:snout_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 7
-        },
+          "weight": 12,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "obtain_rib_armor_trim",
+      "description": "获得肋骨盔甲纹饰",
+      "weight": 16,
+      "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:rib_armor_trim_smithing_template",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
-          "OrGroupId": 1,
-          "priority": 8
+          "weight": 16,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
         }
       ]
     }

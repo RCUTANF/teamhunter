@@ -5,13 +5,13 @@
     {
       "name": "nether_structure_or_piglin",
       "description": "周围有废弃传送门 / 进入猪灵堡垒 / 周围有猪灵",
-      "weight": 100,
+      "weight": 50,
       "requirements": [
         {
           "triggerType": "structure",
           "matchKey": "minecraft:ruined_portal",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 1
@@ -20,7 +20,7 @@
           "triggerType": "structure",
           "matchKey": "minecraft:bastion_remnant",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 2
@@ -29,10 +29,35 @@
           "triggerType": "entity",
           "matchKey": "minecraft:piglin",
           "matchCount": 1,
-          "weight": 100,
+          "weight": 50,
           "typeAnd": false,
           "OrGroupId": 1,
           "priority": 3
+        }
+      ]
+    },
+    {
+      "name": "hold_pickaxe",
+      "description": "持有足够挖掘等级的镐",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_pickaxe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_pickaxe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
         }
       ]
     }

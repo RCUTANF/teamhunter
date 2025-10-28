@@ -5,16 +5,41 @@
     {
       "name": "near_ghast",
       "description": "附近有恶魂",
-      "weight": 100,
+      "weight": 50,
       "requirements": [
         {
           "triggerType": "entity",
           "matchKey": "minecraft:ghast",
           "matchCount": 1,
-          "weight": 100,
-          "typeAnd": false,
+          "weight": 50,
+          "typeAnd": true,
           "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_nether_portal",
+      "description": "附近有地狱传送门",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:nether_portal",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
           "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:obsidian",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
         }
       ]
     }

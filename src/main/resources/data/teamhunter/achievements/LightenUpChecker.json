@@ -1,0 +1,99 @@
+{
+  "id": "lighten_up",
+  "advancementId": "minecraft:adventure/lighten_up",
+  "conditions": [
+    {
+      "name": "hold_axe",
+      "description": "持有斧",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:wooden_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_axe",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        }
+      ]
+    },
+    {
+      "name": "near_lit_copper_bulb",
+      "description": "靠近点亮的铜灯",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:copper_bulb",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "in_trial_chambers",
+      "description": "位于试炼大厅（提示）",
+      "weight": 10,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:trial_chambers",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

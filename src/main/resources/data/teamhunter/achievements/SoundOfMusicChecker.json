@@ -5,13 +5,13 @@
     {
       "name": "in_meadow_biome",
       "description": "位于草甸生物群系",
-      "weight": 50,
+      "weight": 34,
       "requirements": [
         {
           "triggerType": "biome",
           "matchKey": "minecraft:meadow",
           "matchCount": 1,
-          "weight": 50,
+          "weight": 34,
           "typeAnd": true,
           "OrGroupId": 0,
           "priority": 0
@@ -21,16 +21,194 @@
     {
       "name": "near_jukebox",
       "description": "靠近唱片机",
-      "weight": 50,
+      "weight": 33,
       "requirements": [
         {
           "triggerType": "surroundingBlock",
           "matchKey": "minecraft:jukebox",
           "matchCount": 1,
-          "weight": 50,
+          "weight": 33,
           "typeAnd": true,
           "OrGroupId": 0,
           "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "hold_any_music_disc",
+      "description": "持有任意唱片",
+      "weight": 33,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_13",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_cat",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_blocks",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_chirp",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_far",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_mall",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_mellohi",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_stal",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_strad",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_ward",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_11",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 11
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_wait",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 12
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_otherside",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 13
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_5",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 14
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_pigstep",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 15
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_relic",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 16
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_creator",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 17
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_creator_music_box",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 18
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:music_disc_precipice",
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 19
         }
       ]
     }

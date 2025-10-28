@@ -3,27 +3,106 @@
   "advancementId": "minecraft:adventure/read_power_of_chiseled_bookshelf",
   "conditions": [
     {
-      "name": "comparator_adjacent_to_chiseled_bookshelf",
-      "description": "用红石比较器获取雕纹书架信号",
-      "weight": 100,
+      "name": "have_comparator_materials",
+      "description": "拥有红石比较器或其合成材料",
+      "weight": 50,
       "requirements": [
         {
-          "triggerType": "surroundingBlock",
+          "triggerType": "inventory",
           "matchKey": "minecraft:comparator",
           "matchCount": 1,
           "weight": 50,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
         },
         {
-          "triggerType": "surroundingBlock",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:redstone_torch",
+          "matchCount": 3,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:redstone",
+          "matchCount": 3,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stick",
+          "matchCount": 3,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone",
+          "matchCount": 3,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        }
+      ]
+    },
+    {
+      "name": "have_chiseled_bookshelf_materials",
+      "description": "拥有雕纹书架或其合成材料",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
           "matchKey": "minecraft:chiseled_bookshelf",
           "matchCount": 1,
           "weight": 50,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:book",
+          "matchCount": 6,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:paper",
+          "matchCount": 18,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:leather",
+          "matchCount": 6,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:planks",
+          "matchCount": 6,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 5
         }
       ]
     }
