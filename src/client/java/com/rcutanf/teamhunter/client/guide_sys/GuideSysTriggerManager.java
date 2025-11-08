@@ -49,6 +49,8 @@ public class GuideSysTriggerManager {
                 return new dimensionTrigger();
             case weather:
                 return new WeatherTrigger();
+            case height:
+                return new HeightTrigger();
             // 可以添加其他类型的触发器
             default:
                 throw new IllegalArgumentException("Invalid trigger type");

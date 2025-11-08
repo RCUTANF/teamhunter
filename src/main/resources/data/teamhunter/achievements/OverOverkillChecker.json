@@ -1,0 +1,38 @@
+{
+  "id": "over_overkill",
+  "advancementId": "minecraft:adventure/overoverkill",
+  "conditions": [
+    {
+      "name": "hold_mace",
+      "description": "持有重锤",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mace",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "in_trial_chambers",
+      "description": "位于试炼大厅",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:trial_chambers",
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}

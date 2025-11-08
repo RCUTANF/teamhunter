@@ -190,6 +190,9 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("newWeather")) {
                 // 天气变化事件
                 handleWeatherEvent(data);
+            } else if (data.containsKey("currentHeight")) {
+                // 高度变化事件
+                handleHeightEvent(data);
             }
         }
     }
@@ -255,6 +258,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
         for (Requirement req : reqs) {
             checkCondition4Weather(data, req, req.matchKey);
+        }
+    }
+
+    protected void  handleHeightEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.height);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Height(data, req, Integer.parseInt(req.matchKey));
         }
     }
 
@@ -513,6 +525,43 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 setActive(true);
             }
             requirement.setInsideProgress(requirement.weight);
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+    }
+
+    protected boolean checkCondition4Height(Map<String, Object> data, Requirement requirement, int matchline) {
+        int currentHeight = (int) data.get("currentHeight");
+
+        // 定义高度范围，这里假设世界高度范围是 -64 到 320
+        int minHeight = -64;
+        int maxHeight = 320;
+
+        // 计算进度：(当前高度 - 目标高度) / (最大高度 - 目标高度) * 权重
+        if (currentHeight >= matchline) {
+            if (!isActive()) {
+                setActive(true);
+            }
+
+            int heightDifference = currentHeight - matchline;
+            int totalRange = maxHeight - matchline;
+
+            // 避免除零错误
+            if (totalRange <= 0) {
+                requirement.setInsideProgress(requirement.weight);
+            } else {
+                //使用min确保进度不会超过权重，即使玩家超过限高
+                int progress = Math.min(requirement.weight, (heightDifference * requirement.weight) / totalRange);
+                requirement.setInsideProgress(progress);
+            }
+
             updateTotalProgress();
             return true;
         } else {
