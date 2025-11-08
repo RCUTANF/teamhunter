@@ -5,32 +5,34 @@
     {
       "name": "hold_mace",
       "description": "持有重锤",
-      "weight": 50,
+      "weight": 100,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:mace",
           "matchCount": 1,
-          "weight": 50,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
-        }
-      ]
-    },
-    {
-      "name": "in_trial_chambers",
-      "description": "位于试炼大厅",
-      "weight": 50,
-      "requirements": [
+          "weight": 60,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
         {
-          "triggerType": "structure",
-          "matchKey": "minecraft:trial_chambers",
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_ingot",
+          "matchCount": 3,
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stick",
           "matchCount": 1,
-          "weight": 50,
-          "typeAnd": true,
-          "OrGroupId": 0,
-          "priority": 0
+          "weight": 40,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
         }
       ]
     }
