@@ -321,6 +321,11 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
     public void updateTotalProgress() {
         int totalProgress = 0;
         for (Condition condition : achievementChecker.conditions) {
+            // 跳过仅提示的条件，不计入总进度
+            if (condition.isHintOnly) {
+                continue;
+            }
+
             condition.insideProgress = 0;
 
             // 保留出现顺序的分组：key = OrGroupId, value = list of requirements in that group

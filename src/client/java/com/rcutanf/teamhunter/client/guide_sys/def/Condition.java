@@ -13,6 +13,7 @@ public class Condition {
     public boolean isCompleted;
     public int maxProgress;
     public int insideProgress;
+    public boolean isHintOnly = false;
 
     public Condition(AchievementDefinition.ConditionDefinition conditionDef) {
         this.name = conditionDef.name;
@@ -20,6 +21,7 @@ public class Condition {
         this.isCompleted = false; // 初始状态为未完成
         setMaxProgress(conditionDef.weight);
         this.insideProgress = 0; // 初始进度为0
+        this.isHintOnly = conditionDef.isHintOnly;
 
         this.requirements = new ArrayList<>();
         if (conditionDef.requirements != null) {

@@ -19,6 +19,7 @@ public class AchievementDefinition {
         public String name; // 条件名称，英文下划线命名法命名，如 "collect_lava_bucket"
         public String description;//条件描述，显示在游戏中
         public int weight; // 条件权重，即占总进度的百分比。所有条件的权重之和应为100
+        public boolean isHintOnly = false; // 默认为false，表示是否仅为提示不计算进度
         public List<RequirementDefinition> requirements;//该条件实际检测的实际需求
 
         public static class RequirementDefinition {
