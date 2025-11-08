@@ -1,0 +1,22 @@
+{
+  "id": "caves_and_cliffs",
+  "advancementId": "minecraft:adventure/fall_from_world_height",
+  "conditions": [
+    {
+      "name": "from_top_to_bottom",
+      "description": "clime up!",
+      "weight": 100,
+      "requirements": [
+        {
+          "triggerType": "height",
+          "matchKey": 150,
+          "matchCount": 1,
+          "weight": 100,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}
