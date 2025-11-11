@@ -3,8 +3,8 @@ package com.rcutanf.teamhunter.client.guide_sys;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
+import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.DimensionTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
-import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.dimensionTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -152,7 +152,7 @@ public class GuideSysCheckerManager {
         //发送当前维度更新包触发维度触发器
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         //维度触发器
-        dimensionTrigger dimensionTrigger = (dimensionTrigger) GuideSysTriggerManager.getInstance()
+        DimensionTrigger dimensionTrigger = (DimensionTrigger) GuideSysTriggerManager.getInstance()
                 .getTrigger(TriggerType.dimension);
         if (dimensionTrigger != null && player != null) {
             Identifier currentDimension = player.getWorld().getRegistryKey().getValue();

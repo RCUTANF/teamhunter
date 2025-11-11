@@ -11,10 +11,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import java.util.HashMap;
 import java.util.Map;
 
-public class dimensionTrigger extends AbstractGuideSysTrigger {
+public class DimensionTrigger extends AbstractGuideSysTrigger {
     private Identifier lastDimension;
 
-    public dimensionTrigger() {
+    public DimensionTrigger() {
         super(TriggerType.dimension); // 假如你有这个类型枚举
         registerTickListener();
         registerConnectionListener();

@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.*;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public class GuideSysTriggerManager {
 
     // 私有构造函数确保单例模式
     private GuideSysTriggerManager() {
-        triggers = new HashMap<>();
+        triggers = new EnumMap<>(TriggerType.class);
         initializeTriggers();
     }
 
@@ -27,35 +28,10 @@ public class GuideSysTriggerManager {
     private void initializeTriggers() {
         // 为每种触发器类型创建对应的触发器实例
         for (TriggerType type : TriggerType.values()) {
-            triggers.put(type, createTrigger(type));
+            triggers.put(type, type.createTrigger());
         }
     }
 
-    // 根据类型创建触发器
-    private AbstractGuideSysTrigger createTrigger(TriggerType type) {
-        // 根据类型创建不同的触发器实现
-        switch (type) {
-            case inventory:
-                return new InventoryTrigger();
-            case biome:
-                return new BiomeTrigger();
-            case structure:
-                return new StructureTrigger();
-            case surroundingBlock:
-                return new SurroundingBlockTrigger();
-            case entity:
-                return new EntityTrigger();
-            case dimension:
-                return new dimensionTrigger();
-            case weather:
-                return new WeatherTrigger();
-            case height:
-                return new HeightTrigger();
-            // 可以添加其他类型的触发器
-            default:
-                throw new IllegalArgumentException("Invalid trigger type");
-        }
-    }
 
     // 获取指定类型的触发器
     public AbstractGuideSysTrigger getTrigger(TriggerType type) {
