@@ -5,6 +5,7 @@ import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.dimensionTrigger;
+import com.rcutanf.teamhunter.client.guide_sys.impl.checker.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -121,6 +122,8 @@ public class GuideSysCheckerManager {
 
         AchievementLoader.convertDefinitionsToCheckers();
 
+        intializeCustomCheckers();
+
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
 
         // 初始化完成后，遍历玩家物品栏中的所有物品并触发事件
@@ -163,5 +166,10 @@ public class GuideSysCheckerManager {
      */
     public void reloadCheckers() {
         initializeAllCheckers();
+    }
+
+    private void intializeCustomCheckers() {
+        // 在此处添加自定义检查器的初始化代码
+        new SubspaceBubbleChecker();
     }
 }
