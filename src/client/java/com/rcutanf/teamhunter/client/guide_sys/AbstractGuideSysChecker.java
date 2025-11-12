@@ -193,6 +193,9 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("currentHeight")) {
                 // 高度变化事件
                 handleHeightEvent(data);
+            } else if (data.containsKey("advancementId")) {
+                // 成就进度事件
+                handleAdvancementEvent(data);
             }
         }
     }
@@ -267,6 +270,15 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
         for (Requirement req : reqs) {
             checkCondition4Height(data, req, Integer.parseInt(req.matchKey));
+        }
+    }
+
+    protected void handleAdvancementEvent(Map<String, Object> data) {
+        List<Requirement> reqs = requirementsByTrigger.get(TriggerType.advancementProcess);
+        if (reqs == null || reqs.isEmpty()) return;
+
+        for (Requirement req : reqs) {
+            checkCondition4Advancement(data, req, req.matchKey);
         }
     }
 
@@ -567,6 +579,36 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 requirement.setInsideProgress(progress);
             }
 
+            updateTotalProgress();
+            return true;
+        } else {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+    }
+
+    protected boolean checkCondition4Advancement(Map<String, Object> data, Requirement requirement, String criteriaKey) {
+        Identifier advancementId = (Identifier) data.get("advancementId");
+        AdvancementProgress progress = (AdvancementProgress) data.get("advancementProgress");
+
+        // 检查是否是对应的成就
+        if (!advancementId.equals(achievementChecker.advancementId)) {
+            return false;
+        }
+
+        // 检查指定criteria的完成状态
+        boolean criteriaObtained = progress.getCriterionProgress(criteriaKey) != null &&
+                                   progress.getCriterionProgress(criteriaKey).isObtained();
+
+        if (criteriaObtained) {
+            if (!isActive()) {
+                setActive(true);
+            }
+            requirement.setInsideProgress(requirement.weight);
             updateTotalProgress();
             return true;
         } else {

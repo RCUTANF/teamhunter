@@ -11,8 +11,9 @@ public enum TriggerType {
     entity(EntityTrigger::new),//实体触发器,在玩家附近实体变化时触发，使用周期轮询方式检查
     dimension(DimensionTrigger::new),//,维度触发器,在玩家所在维度变化时触发
     weather(WeatherTrigger::new),//天气触发器,在玩家所在维度天气变化时触发
-    height(HeightTrigger::new);//高度触发器,在玩家高度变化时触发，使用周期轮询方式检查
+    height(HeightTrigger::new),//高度触发器,在玩家高度变化时触发，使用周期轮询方式检查
     //playerMove//玩家移动触发器,在玩家移动时触发，使用周期轮询方式检查
+    advancementProcess(AdvancementProgressTrigger::new);//进度更新触发器,在进度产生更新时触发
 
     private final Supplier<AbstractGuideSysTrigger> factory;
 

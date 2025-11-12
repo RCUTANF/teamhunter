@@ -138,8 +138,8 @@ public class SubspaceBubbleChecker extends AbstractGuideSysChecker {
                         Math.pow(currentPos.getZ() - netherStartPos.getZ(), 2)
         );
 
-        // 更新进度
-        updateMovementProgress(distance);
+        // 在主线程中更新进度
+        client.execute(() -> updateMovementProgress(distance));
     }
 
     private void updateMovementProgress(double distance) {

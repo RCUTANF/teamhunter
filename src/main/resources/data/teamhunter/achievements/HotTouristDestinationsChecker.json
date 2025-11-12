@@ -1,0 +1,136 @@
+{
+  "id": "hot_tourist_destinations",
+  "advancementId": "minecraft:nether/explore_nether",
+  "conditions": [
+    {
+      "name": "visit_nether_wastes",
+      "description": "访问下界荒地",
+      "weight": 20,
+      "isHintOnly": false,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:nether_wastes",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:nether_wastes",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 0,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_soul_sand_valley",
+      "description": "访问灵魂沙峡谷",
+      "weight": 20,
+      "isHintOnly": false,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:soul_sand_valley",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:soul_sand_valley",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_basalt_deltas",
+      "description": "访问玄武岩三角洲",
+      "weight": 20,
+      "isHintOnly": false,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:basalt_deltas",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:basalt_deltas",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_warped_forest",
+      "description": "访问诡异森林",
+      "weight": 20,
+      "isHintOnly": false,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:warped_forest",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:warped_forest",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_crimson_forest",
+      "description": "访问绯红森林",
+      "weight": 20,
+      "isHintOnly": false,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:crimson_forest",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:crimson_forest",
+          "matchCount": 1,
+          "weight": 20,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}
