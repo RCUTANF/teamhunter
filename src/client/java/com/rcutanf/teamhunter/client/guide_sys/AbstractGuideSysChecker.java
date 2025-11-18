@@ -13,7 +13,12 @@ import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -180,7 +185,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("structureId")) {
                 // 结构检测事件
                 handleStructureEvent(data);
-            } else if (data.containsKey("entityIds")) {
+            } else if (data.containsKey("entities")) {
                 handleEntityEvent(data);
             } else if (data.containsKey("from")) {
                 handleDimensionEvent(data);
@@ -381,6 +386,79 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             throw new RuntimeException("Error updating progress for checker " + achievementChecker.id + ": " + e.getMessage());
         }
     }
+    
+    private boolean matchesEntityWithComponents(Entity entity, String entityId, Map<String, Object> components) {
+        // 首先检查实体类型
+        String actualEntityId = Identifier.tryParse(
+            Registries.ENTITY_TYPE.getId(entity.getType()).toString()
+        ).toString();
+        
+        if (!entityId.equals(actualEntityId)) {
+            return false;
+        }
+    
+        // 如果没有组件要求，只需类型匹配
+        if (components == null || components.isEmpty()) {
+            return true;
+        }
+    
+        // 检查实体组件
+        return checkEntityComponents(entity, components);
+    }
+    
+    private boolean checkEntityComponents(Entity entity, Map<String, Object> components) {
+        for (Map.Entry<String, Object> entry : components.entrySet()) {
+            String componentKey = entry.getKey();
+            Object expectedValue = entry.getValue();
+    
+            if (!matchEntityComponent(entity, componentKey, expectedValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private boolean matchEntityComponent(Entity entity, String componentKey, Object expectedValue) {
+        switch (componentKey) {
+            case "minecraft:cat_variant": {
+                String expectedVariant = (String) expectedValue; // 例如 "minecraft:tabby"
+                var catVariant = entity.get(DataComponentTypes.CAT_VARIANT);
+                if (catVariant == null) {
+                    return false; // 非猫或未设置变种则不匹配
+                }
+                String actualVariant = catVariant.getIdAsString();
+                return expectedVariant.equals(actualVariant);
+            }
+
+            case "minecraft:health":
+                if (entity instanceof LivingEntity livingEntity) {
+                    float expectedHealth = ((Number) expectedValue).floatValue();
+                    return Math.abs(livingEntity.getHealth() - expectedHealth) < 0.1f;
+                }
+                return false;
+    
+            case "minecraft:type":
+                String expectedType = (String) expectedValue;
+                String actualType = Registries.ENTITY_TYPE
+                    .getId(entity.getType()).toString();
+                return expectedType.equals(actualType);
+    
+            case "minecraft:custom_name":
+                String expectedName = (String) expectedValue;
+                Text customName = entity.getCustomName();
+                return customName != null && expectedName.equals(customName.getString());
+    
+            case "minecraft:passengers":
+                @SuppressWarnings("unchecked")
+                List<String> expectedPassengers = (List<String>) expectedValue;
+                List<Entity> passengers = entity.getPassengerList();
+                return passengers.size() >= expectedPassengers.size();
+    
+            // 可以继续添加更多组件类型
+            default:
+                return false; // 未知组件类型默认不匹配
+        }
+    }
 
     /**
      * 检查物品添加事件并更新相关条件进度
@@ -473,9 +551,22 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
 
     protected boolean checkCondition4Entity(Map<String, Object> data, Requirement requirement, String entityId) {
         @SuppressWarnings("unchecked")
-        Set<String> detectedEntities = (Set<String>) data.get("entityIds");
+        List<Entity> detectedEntities = (List<Entity>) data.get("entities");
 
-        if (detectedEntities != null && detectedEntities.contains(entityId)) {
+        if (detectedEntities == null || detectedEntities.isEmpty()) {
+            requirement.setInsideProgress(0);
+            updateTotalProgress();
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
+            }
+            return false;
+        }
+
+        // 检查是否有匹配的实体
+        boolean hasMatch = detectedEntities.stream().anyMatch(entity ->
+                matchesEntityWithComponents(entity, entityId, requirement.components));
+
+        if (hasMatch) {
             if (!isActive()) {
                 setActive(true);
             }
@@ -491,6 +582,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             return false;
         }
     }
+
 
     protected boolean checkCondition4Dimension(Map<String, Object> data, Requirement requirement, String dimensionId) {
         Identifier from = (Identifier) data.get("from");

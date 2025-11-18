@@ -2,9 +2,12 @@ package com.rcutanf.teamhunter.client.guide_sys.def;
 
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
 
+import java.util.Map;
+
 public class Requirement {
     public TriggerType triggerType; // inventory, surroundingBlock, structure, advancement
     public String matchKey; // "minecraft:bucket", "block.minecraft.lava"
+    public Map<String, Object> components; // Minecraft 组件定义，可为null，用于更精确的物品/实体等匹配
     public int matchCount; // 需要的数量，通常为1
     public int insideProgress;
     public int weight; // 该需求的权重，通常为50
@@ -15,6 +18,7 @@ public class Requirement {
     public Requirement(AchievementDefinition.ConditionDefinition.RequirementDefinition reqDef) {
         this.triggerType = reqDef.triggerType;
         this.matchKey = reqDef.matchKey;
+        this.components = reqDef.components;
         this.matchCount = reqDef.matchCount;
         this.insideProgress = 0;
         setWeight(reqDef.weight);

@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys.impl.trigger;
 
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -10,7 +11,8 @@ import java.util.*;
 
 public class EntityTrigger extends ScanCore {
     private static EntityTrigger instance;
-    private Set<String> detectedEntityIds = new HashSet<>();
+    // 去重用的唯一键集合：普通实体 -> typeId；猫/狼 -> typeId|variantId
+    private Set<String> detectedEntityKeys = new HashSet<>();
     private int scanRadius = 10;
 
     public EntityTrigger() {
@@ -41,45 +43,77 @@ public class EntityTrigger extends ScanCore {
                 playerPos.add(scanRadius, scanRadius, scanRadius).toCenterPos()
         );
 
-        Set<String> currentEntityIds = new HashSet<>();
-        List<Entity> entities = client.world.getOtherEntities(client.player, scanBox);
+        List<Entity> allEntities = client.world.getOtherEntities(client.player, scanBox);
 
-        for (Entity entity : entities) {
-            currentEntityIds.add(entity.getType().getRegistryEntry().getIdAsString());
+        // 当前帧的唯一键集合与去重后的实体列表
+        Set<String> currentKeys = new HashSet<>();
+        List<Entity> uniqueEntities = new ArrayList<>();
+
+        for (Entity e : allEntities) {
+            String key = buildEntityKey(e);
+            if (currentKeys.add(key)) {
+                uniqueEntities.add(e);
+            }
         }
 
-        if (!detectedEntityIds.equals(currentEntityIds)) {
+        if (!detectedEntityKeys.equals(currentKeys)) {
             Map<String, Object> eventData = new HashMap<>();
-            eventData.put("entityIds", new HashSet<>(currentEntityIds));
-            eventData.put("newEntities", getNewEntities(currentEntityIds));
-            eventData.put("removedEntities", getRemovedEntities(currentEntityIds));
+            eventData.put("entities", Collections.unmodifiableList(uniqueEntities));
+            eventData.put("newEntities", getNewKeys(currentKeys));
+            eventData.put("removedEntities", getRemovedKeys(currentKeys));
             eventData.put("playerPos", playerPos);
 
             fire(eventData);
-            detectedEntityIds = currentEntityIds;
+            detectedEntityKeys = currentKeys;
         }
     }
 
-    private Set<String> getNewEntities(Set<String> currentIds) {
-        Set<String> newEntities = new HashSet<>(currentIds);
-        newEntities.removeAll(detectedEntityIds);
-        return newEntities;
+    // 生成去重键：普通实体为 typeId；猫/狼追加变种ID
+    private String buildEntityKey(Entity entity) {
+        String typeId = entity.getType().getRegistryEntry().getIdAsString();
+
+        // 猫变种
+        var catVariant = entity.get(DataComponentTypes.CAT_VARIANT);
+        if (catVariant != null) {
+            String variantId = safeVariantId(catVariant.getIdAsString());
+            return typeId + "|" + variantId;
+        }
+
+        // 狼变种
+        var wolfVariant = entity.get(DataComponentTypes.WOLF_VARIANT);
+        if (wolfVariant != null) {
+            String variantId = safeVariantId(wolfVariant.getIdAsString());
+            return typeId + "|" + variantId;
+        }
+
+        // 其他实体只看类型
+        return typeId;
     }
 
-    private Set<String> getRemovedEntities(Set<String> currentIds) {
-        Set<String> removedEntities = new HashSet<>(detectedEntityIds);
-        removedEntities.removeAll(currentIds);
-        return removedEntities;
+    private String safeVariantId(String id) {
+        return id == null ? "unknown" : id;
+    }
+
+    private Set<String> getNewKeys(Set<String> current) {
+        Set<String> s = new HashSet<>(current);
+        s.removeAll(detectedEntityKeys);
+        return s;
+    }
+
+    private Set<String> getRemovedKeys(Set<String> current) {
+        Set<String> s = new HashSet<>(detectedEntityKeys);
+        s.removeAll(current);
+        return s;
     }
 
     @Override
     protected void onDisconnect() {
-        detectedEntityIds.clear();
+        detectedEntityKeys.clear();
     }
 
     @Override
     protected void onDisable() {
-        detectedEntityIds.clear();
+        detectedEntityKeys.clear();
     }
 
     @Override

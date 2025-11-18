@@ -1,0 +1,314 @@
+{
+  "id": "a_complete_catalogue",
+  "advancementId": "minecraft:husbandry/complete_catalogue",
+  "conditions": [
+    {
+      "name": "tame_tabby_cat",
+      "description": "驯服虎斑猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_tabby",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:tabby"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_black_cat",
+      "description": "驯服黑猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_black",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:black"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_red_cat",
+      "description": "驯服红猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_red",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:red"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_siamese_cat",
+      "description": "驯服暹罗猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_siamese",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:siamese"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_british_shorthair_cat",
+      "description": "驯服英国短毛猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_british_shorthair",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:british_shorthair"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_calico_cat",
+      "description": "驯服花猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_calico",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:calico"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_persian_cat",
+      "description": "驯服波斯猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_persian",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:persian"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_ragdoll_cat",
+      "description": "驯服布偶猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_ragdoll",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:ragdoll"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_white_cat",
+      "description": "驯服白猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_white",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:white"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_jellie_cat",
+      "description": "驯服Jellie猫",
+      "weight": 9,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_jellie",
+          "matchCount": 1,
+          "weight": 9,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:jellie"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_all_black_cat",
+      "description": "驯服黑猫（完全黑色）",
+      "weight": 10,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/complete_catalogue_all_black",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cat",
+          "components": {
+            "minecraft:cat_variant": "minecraft:all_black"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}
