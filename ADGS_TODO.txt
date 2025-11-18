@@ -2,7 +2,6 @@ adgs的待修复操作
 超时折叠(pending🔒)
 uneasy_alliance 应该在更大的范围检测恶魂(pending🔒)；
 龙息 有玻璃瓶提示(pending🔒)
-一箭双雕 最好是穿透弩再提示(pending🔒)
 远程折跃 的方块检测问题(pending🔒)
 远程折跃 龙蛋应该打完龙就提示？(pending🔒)
 脆弱的同盟 加弓弩tnt(pending🔒)

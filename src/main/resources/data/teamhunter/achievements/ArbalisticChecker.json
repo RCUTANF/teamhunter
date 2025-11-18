@@ -1,0 +1,387 @@
+{
+  "id": "arbalistic",
+  "advancementId": "minecraft:adventure/arbalistic",
+  "conditions": [
+    {
+      "name": "hold_piercing_iv_crossbow",
+      "description": "持有穿透IV附魔的弩",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:crossbow",
+          "components": {
+            "minecraft:enchantments": {
+              "levels": {
+                "minecraft:piercing": 4
+              }
+            }
+          },
+          "matchCount": 1,
+          "weight": 50,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "kill_5_different_mobs",
+      "description": "击杀5种不同生物",
+      "weight": 50,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:blaze",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:bogged",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:breeze",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cave_spider",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:creeper",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:drowned",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:elder_guardian",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 7
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ender_dragon",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 8
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:enderman",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 9
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:endermite",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 10
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:evoker",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 11
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ghast",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 12
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:guardian",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 13
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:hoglin",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 14
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:husk",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 15
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:illusioner",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 16
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:magma_cube",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 17
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:phantom",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 18
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 19
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin_brute",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 20
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:pillager",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 21
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ravager",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 22
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:shulker",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 23
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:silverfish",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 24
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 25
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton_horse",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 26
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:slime",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 27
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:spider",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 28
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:stray",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 29
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:strider",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 30
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:vex",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 31
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:vindicator",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 32
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:warden",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 33
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:witch",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 34
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wither",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 35
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wither_skeleton",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 36
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zoglin",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 37
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zombie",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 38
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zombie_villager",
+          "matchCount": 1,
+          "weight": 10,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 39
+        }
+      ]
+    }
+  ]
+}

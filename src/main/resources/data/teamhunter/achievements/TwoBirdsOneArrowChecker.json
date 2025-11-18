@@ -10,6 +10,11 @@
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:crossbow",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:piercing"
+            ]
+          },
           "matchCount": 1,
           "weight": 50,
           "typeAnd": true,
