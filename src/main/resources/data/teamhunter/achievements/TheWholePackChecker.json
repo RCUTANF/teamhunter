@@ -1,0 +1,258 @@
+{
+  "id": "the_whole_pack",
+  "advancementId": "minecraft:husbandry/whole_pack",
+  "conditions": [
+    {
+      "name": "tame_wolf",
+      "description": "驯服狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_wolf",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:wolf"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_ashen_wolf",
+      "description": "驯服苍狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_ashen",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:ashen"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_black_wolf",
+      "description": "驯服黑狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_black",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:black"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_chestnut_wolf",
+      "description": "驯服栗狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_chestnut",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:chestnut"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_pale_wolf",
+      "description": "驯服雪狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_pale",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:pale"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_rusty_wolf",
+      "description": "驯服锈狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_rusty",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:rusty"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_snowy_wolf",
+      "description": "驯服雪狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_snowy",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:snowy"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_spotted_wolf",
+      "description": "驯服斑点狼",
+      "weight": 11,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_spotted",
+          "matchCount": 1,
+          "weight": 11,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:spotted"
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "tame_striped_wolf",
+      "description": "驯服条纹狼",
+      "weight": 12,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/whole_pack_striped",
+          "matchCount": 1,
+          "weight": 12,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wolf",
+          "components": {
+            "minecraft:wolf_variant": "minecraft:striped"
+          },
+          "matchCount": 1,
+          "weight": 6,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}

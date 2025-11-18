@@ -430,6 +430,16 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 return expectedVariant.equals(actualVariant);
             }
 
+            case "minecraft:wolf_variant": {
+                String expectedVariant = (String) expectedValue;
+                var wolfVariant = entity.get(DataComponentTypes.WOLF_VARIANT);
+                if (wolfVariant == null) {
+                    return false; // 非猫或未设置变种则不匹配
+                }
+                String actualVariant = wolfVariant.getIdAsString();
+                return expectedVariant.equals(actualVariant);
+            }
+
             case "minecraft:health":
                 if (entity instanceof LivingEntity livingEntity) {
                     float expectedHealth = ((Number) expectedValue).floatValue();
