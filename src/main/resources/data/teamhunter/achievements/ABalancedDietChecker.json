@@ -1,0 +1,981 @@
+{
+  "id": "a_balanced_diet",
+  "advancementId": "minecraft:husbandry/balanced_diet",
+  "conditions": [
+    {
+      "name": "eat_apple",
+      "description": "食用苹果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_baked_potato",
+      "description": "食用烤马铃薯",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_baked_potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:baked_potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_beef",
+      "description": "食用牛肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_beef",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beef",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_beetroot",
+      "description": "食用甜菜根",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_beetroot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_beetroot_soup",
+      "description": "食用甜菜汤",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_beetroot_soup",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:beetroot_soup",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_bread",
+      "description": "食用面包",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_bread",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:bread",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_carrot",
+      "description": "食用胡萝卜",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_carrot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:carrot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_chicken",
+      "description": "食用鸡肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_chicken",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:chicken",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_beef",
+      "description": "食用熟牛肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_beef",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_beef",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_chicken",
+      "description": "食用熟鸡肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_chicken",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_chicken",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_cod",
+      "description": "食用熟鳕鱼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_cod",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_cod",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_mutton",
+      "description": "食用熟羊肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_mutton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_mutton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_porkchop",
+      "description": "食用熟猪排",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_porkchop",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_porkchop",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_rabbit",
+      "description": "食用熟兔肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_rabbit",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_rabbit",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cooked_salmon",
+      "description": "食用熟鲑鱼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cooked_salmon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cooked_salmon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_cookie",
+      "description": "食用曲奇",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_cookie",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:cookie",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_dried_kelp",
+      "description": "食用干海带",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_dried_kelp",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:dried_kelp",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_enchanted_golden_apple",
+      "description": "食用附魔金苹果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_enchanted_golden_apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:enchanted_golden_apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_glistering_melon_slice",
+      "description": "食用闪烁的西瓜片",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_glistering_melon_slice",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glistering_melon_slice",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_golden_apple",
+      "description": "食用金苹果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_golden_apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_apple",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_golden_carrot",
+      "description": "食用金胡萝卜",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_golden_carrot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_carrot",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_honey_bottle",
+      "description": "饮用蜂蜜瓶",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_honey_bottle",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:honey_bottle",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_melon_slice",
+      "description": "食用西瓜片",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_melon_slice",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:melon_slice",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_mushroom_stew",
+      "description": "食用蘑菇煲",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_mushroom_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mushroom_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_mutton",
+      "description": "食用羊肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_mutton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:mutton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_poisonous_potato",
+      "description": "食用毒马铃薯",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_poisonous_potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:poisonous_potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_porkchop",
+      "description": "食用猪排",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_porkchop",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:porkchop",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_potato",
+      "description": "食用马铃薯",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potato",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_pufferfish",
+      "description": "食用河豚",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_pufferfish",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pufferfish",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_pumpkin_pie",
+      "description": "食用南瓜派",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_pumpkin_pie",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pumpkin_pie",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_rabbit",
+      "description": "食用兔肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_rabbit",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rabbit",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_rabbit_stew",
+      "description": "食用兔肉煲",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_rabbit_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rabbit_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_rotten_flesh",
+      "description": "食用腐肉",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_rotten_flesh",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rotten_flesh",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_salmon",
+      "description": "食用鲑鱼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_salmon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:salmon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_spider_eye",
+      "description": "食用蜘蛛眼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_spider_eye",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:spider_eye",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_tropical_fish",
+      "description": "食用热带鱼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_tropical_fish",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:tropical_fish",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_suspicious_stew",
+      "description": "食用迷之炖菜",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_suspicious_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:suspicious_stew",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_sweet_berries",
+      "description": "食用甜浆果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_sweet_berries",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 38,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:sweet_berries",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 38,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "eat_glow_berries",
+      "description": "食用发光浆果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:husbandry/balanced_diet_glow_berries",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 39,
+          "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:glow_berries",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 39,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}
