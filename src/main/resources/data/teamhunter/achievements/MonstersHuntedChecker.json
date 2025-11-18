@@ -1,0 +1,931 @@
+{
+  "id": "monsters_hunted",
+  "advancementId": "minecraft:adventure/kill_all_mobs",
+  "conditions": [
+    {
+      "name": "kill_blaze",
+      "description": "击杀烈焰人",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_blaze",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:blaze",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_bogged",
+      "description": "击杀沼骸",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_bogged",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:bogged",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_breeze",
+      "description": "击杀旋风人",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_breeze",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:breeze",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_cave_spider",
+      "description": "击杀洞穴蜘蛛",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_cave_spider",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:cave_spider",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_creeper",
+      "description": "击杀苦力怕",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_creeper",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:creeper",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_drowned",
+      "description": "击杀溺尸",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_drowned",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:drowned",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_elder_guardian",
+      "description": "击杀远古守卫者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_elder_guardian",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:elder_guardian",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_ender_dragon",
+      "description": "击杀末影龙",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_ender_dragon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ender_dragon",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_enderman",
+      "description": "击杀末影人",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_enderman",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:enderman",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_endermite",
+      "description": "击杀末影螨",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_endermite",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:endermite",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_evoker",
+      "description": "击杀唤魔者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_evoker",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:evoker",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_ghast",
+      "description": "击杀恶魂",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_ghast",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ghast",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_guardian",
+      "description": "击杀守卫者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_guardian",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:guardian",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_hoglin",
+      "description": "击杀疣猪兽",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_hoglin",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:hoglin",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_husk",
+      "description": "击杀尸壳",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_husk",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:husk",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_illusioner",
+      "description": "击杀幻术师",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_illusioner",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:illusioner",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_magma_cube",
+      "description": "击杀岩浆怪",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_magma_cube",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:magma_cube",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_phantom",
+      "description": "击杀幻翼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_phantom",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:phantom",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_piglin",
+      "description": "击杀猪灵",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_piglin",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_piglin_brute",
+      "description": "击杀猪灵蛮兵",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_piglin_brute",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:piglin_brute",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_pillager",
+      "description": "击杀掠夺者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_pillager",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:pillager",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_ravager",
+      "description": "击杀劫掠兽",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_ravager",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:ravager",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_shulker",
+      "description": "击杀潜影贝",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_shulker",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:shulker",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_silverfish",
+      "description": "击杀蠹虫",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_silverfish",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:silverfish",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_skeleton",
+      "description": "击杀骷髅",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_skeleton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_skeleton_horse",
+      "description": "击杀骷髅马",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_skeleton_horse",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:skeleton_horse",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_slime",
+      "description": "击杀史莱姆",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_slime",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:slime",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_spider",
+      "description": "击杀蜘蛛",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_spider",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:spider",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_stray",
+      "description": "击杀流浪者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_stray",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:stray",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_strider",
+      "description": "击杀炽足兽",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_strider",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:strider",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_vex",
+      "description": "击杀恼鬼",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_vex",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:vex",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_vindicator",
+      "description": "击杀卫道士",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_vindicator",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:vindicator",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_warden",
+      "description": "击杀监守者",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_warden",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:warden",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_witch",
+      "description": "击杀女巫",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_witch",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:witch",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_wither",
+      "description": "击杀凋灵",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_wither",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wither",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_wither_skeleton",
+      "description": "击杀凋灵骷髅",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_wither_skeleton",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:wither_skeleton",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "kill_zoglin",
+      "description": "击杀僵尸疣猪兽",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/kill_all_mobs_zoglin",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 1
+        },
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:zoglin",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}

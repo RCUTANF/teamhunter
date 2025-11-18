@@ -1,0 +1,1356 @@
+{
+  "id": "adventuring_time",
+  "advancementId": "minecraft:adventure/adventuring_time",
+  "conditions": [
+    {
+      "name": "visit_plains",
+      "description": "访问平原",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_plains",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:plains",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_sunflower_plains",
+      "description": "访问向日葵平原",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_sunflower_plains",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:sunflower_plains",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 2,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_desert",
+      "description": "访问沙漠",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_desert",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:desert",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_windswept_hills",
+      "description": "访问风袭丘陵",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_windswept_hills",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:windswept_hills",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_windswept_gravelly_hills",
+      "description": "访问风袭沙砾丘陵",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_windswept_gravelly_hills",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:windswept_gravelly_hills",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_windswept_forest",
+      "description": "访问风袭森林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_windswept_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:windswept_forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_windswept_savanna",
+      "description": "访问风袭热带草原",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_windswept_savanna",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:windswept_savanna",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_jungle",
+      "description": "访问丛林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_jungle",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:jungle",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_sparse_jungle",
+      "description": "访问疏林丛林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_sparse_jungle",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:sparse_jungle",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_bamboo_jungle",
+      "description": "访问竹林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_bamboo_jungle",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:bamboo_jungle",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_flower_forest",
+      "description": "访问繁花森林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_flower_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:flower_forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_forest",
+      "description": "访问森林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_taiga",
+      "description": "访问针叶林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_taiga",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:taiga",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_old_growth_pine_taiga",
+      "description": "访问原始松木针叶林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_old_growth_pine_taiga",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:old_growth_pine_taiga",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_old_growth_spruce_taiga",
+      "description": "访问原始云杉针叶林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_old_growth_spruce_taiga",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:old_growth_spruce_taiga",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_savanna",
+      "description": "访问热带草原",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_savanna",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:savanna",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 16,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_savanna_plateau",
+      "description": "访问热带高原",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_savanna_plateau",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:savanna_plateau",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 17,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_meadow",
+      "description": "访问草甸",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_meadow",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:meadow",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 18,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_grove",
+      "description": "访问雪林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_grove",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:grove",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 19,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_snowy_slopes",
+      "description": "访问积雪山坡",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_snowy_slopes",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:snowy_slopes",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 20,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_frozen_peaks",
+      "description": "访问冰封山峰",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_frozen_peaks",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:frozen_peaks",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 21,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_jagged_peaks",
+      "description": "访问尖峭山峰",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_jagged_peaks",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:jagged_peaks",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 22,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_stony_peaks",
+      "description": "访问裸岩山峰",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_stony_peaks",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:stony_peaks",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 23,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_mushroom_fields",
+      "description": "访问蘑菇岛",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_mushroom_fields",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:mushroom_fields",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 24,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_swamp",
+      "description": "访问沼泽",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_swamp",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:swamp",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 25,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_mangrove_swamp",
+      "description": "访问红树林沼泽",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_mangrove_swamp",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:mangrove_swamp",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 26,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_stony_shore",
+      "description": "访问石岸",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_stony_shore",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:stony_shore",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 27,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_deep_ocean",
+      "description": "访问深海",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_deep_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 28,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_deep_cold_ocean",
+      "description": "访问冷水深海",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_deep_cold_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_cold_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 29,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_deep_frozen_ocean",
+      "description": "访问冰冻深海",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_deep_frozen_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_frozen_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 30,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_deep_lukewarm_ocean",
+      "description": "访问温水深海",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_deep_lukewarm_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_lukewarm_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 31,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_deep_warm_ocean",
+      "description": "访问暖水深海",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_deep_warm_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_warm_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 32,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_ocean",
+      "description": "访问海洋",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 33,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_cold_ocean",
+      "description": "访问冷水海洋",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_cold_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:cold_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 34,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_frozen_ocean",
+      "description": "访问冰冻海洋",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_frozen_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:frozen_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 35,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_lukewarm_ocean",
+      "description": "访问温水海洋",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_lukewarm_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:lukewarm_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 36,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_warm_ocean",
+      "description": "访问暖水海洋",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_warm_ocean",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:warm_ocean",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 37,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_river",
+      "description": "访问河流",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_river",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 38,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:river",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 38,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_frozen_river",
+      "description": "访问冰冻河流",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_frozen_river",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 39,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:frozen_river",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 39,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_beach",
+      "description": "访问沙滩",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_beach",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 40,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:beach",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 40,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_snowy_beach",
+      "description": "访问积雪沙滩",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_snowy_beach",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 41,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:snowy_beach",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 41,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_storm_beach",
+      "description": "访问风暴海滩",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_storm_beach",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 42,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:storm_beach",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 42,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_old_growth_birch_forest",
+      "description": "访问原始白桦林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_old_growth_birch_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 43,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:old_growth_birch_forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 43,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_old_growth_spruce_taiga_variant",
+      "description": "访问原始云杉针叶林变种",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_old_growth_spruce_taiga_variant",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 44,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:old_growth_spruce_taiga_variant",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 44,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_birch_forest",
+      "description": "访问白桦林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_birch_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 45,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:birch_forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 45,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_dark_forest",
+      "description": "访问黑森林",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_dark_forest",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 46,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:dark_forest",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 46,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_wooded_badlands",
+      "description": "访问繁茂的恶地",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_wooded_badlands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 47,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:wooded_badlands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 47,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_badlands",
+      "description": "访问恶地",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_badlands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 48,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:badlands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 48,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_eroded_badlands",
+      "description": "访问被风蚀的恶地",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_eroded_badlands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 49,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:eroded_badlands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 49,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_small_end_islands",
+      "description": "访问末地小型岛屿",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_small_end_islands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 50,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:small_end_islands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 50,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_end_midlands",
+      "description": "访问末地内陆",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_end_midlands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 51,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:end_midlands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 51,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_end_highlands",
+      "description": "访问末地高地",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_end_highlands",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 52,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:end_highlands",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 52,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_end_barrens",
+      "description": "访问末地荒地",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_end_barrens",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 53,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:end_barrens",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 53,
+          "priority": 2
+        }
+      ]
+    },
+    {
+      "name": "visit_the_void",
+      "description": "访问虚空",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "advancementProcess",
+          "matchKey": "minecraft:adventure/adventuring_time_the_void",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": false,
+          "OrGroupId": 54,
+          "priority": 1
+        },
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:the_void",
+          "matchCount": 1,
+          "weight": 0.5,
+          "typeAnd": false,
+          "OrGroupId": 54,
+          "priority": 2
+        }
+      ]
+    }
+  ]
+}
