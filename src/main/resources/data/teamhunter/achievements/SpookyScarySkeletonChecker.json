@@ -19,18 +19,93 @@
       ]
     },
     {
-      "name": "has_golden_sword",
-      "description": "拥有金剑",
+      "name": "has_looting_sword",
+      "description": "拥有抢夺附魔的剑",
       "weight": 30,
       "requirements": [
         {
           "triggerType": "inventory",
-          "matchKey": "minecraft:golden_sword",
+          "matchKey": "minecraft:wooden_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
           "matchCount": 1,
           "weight": 30,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 1,
           "priority": 1
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:stone_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 2
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:iron_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 3
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:golden_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 4
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:diamond_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 5
+        },
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:netherite_sword",
+          "components": {
+            "minecraft:enchantments": [
+              "minecraft:looting"
+            ]
+          },
+          "matchCount": 1,
+          "weight": 30,
+          "typeAnd": false,
+          "OrGroupId": 1,
+          "priority": 6
         }
       ]
     }

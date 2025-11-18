@@ -14,10 +14,13 @@ import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -470,6 +473,113 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         }
     }
 
+    // 2) 新增：校验物品组件集合
+    private boolean checkItemComponents(ItemStack stack, Map<String, Object> components) {
+        for (Map.Entry<String, Object> entry : components.entrySet()) {
+            if (!matchItemComponent(stack, entry.getKey(), entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 3) 新增：匹配单个物品组件
+    @SuppressWarnings("unchecked")
+    private boolean matchItemComponent(ItemStack stack, String componentKey, Object expectedValue) {
+        switch (componentKey) {
+            case "minecraft:custom_name": {
+                // 仅匹配自定义命名（铁砧命名），非显示名
+                var custom = stack.get(DataComponentTypes.CUSTOM_NAME);
+                String expected = (String) expectedValue;
+                return custom != null && expected.equals(custom.getString());
+            }
+
+            case "minecraft:enchantments": {
+                ItemEnchantmentsComponent ench = stack.get(DataComponentTypes.ENCHANTMENTS);
+                if (ench == null) return false;
+
+                // 允许两种写法：
+                // 1) List<String>：仅要求包含这些附魔（忽略等级）
+                // 2) Map<String, Integer>：要求对应附魔等级 >= 指定等级
+                if (expectedValue instanceof List<?> list) {
+                    for (Object o : list) {
+                        if (!(o instanceof String id) || !hasEnchantment(ench, id)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } else if (expectedValue instanceof Map<?, ?> map) {
+                    for (Map.Entry<?, ?> e : ((Map<?, ?>) expectedValue).entrySet()) {
+                        if (!(e.getKey() instanceof String id) || !(e.getValue() instanceof Number lvl)) {
+                            return false;
+                        }
+                        if (!hasEnchantmentWithMinLevel(ench, id, ((Number) e.getValue()).intValue())) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            case "minecraft:potion": {
+                var contents = stack.get(DataComponentTypes.POTION_CONTENTS);
+                if (contents == null) return false;
+
+                String expectedPotionId = (String) expectedValue;
+                var opt = contents.potion(); // Optional<RegistryEntry<Potion>>
+                if (opt == null || opt.isEmpty()) return false;
+
+                String actualPotionId = opt.get().getIdAsString();
+                return expectedPotionId.equals(actualPotionId);
+            }
+
+            case "minecraft:trim_pattern": {
+                var trim = stack.get(DataComponentTypes.TRIM);
+                if (trim == null) return false;
+                String expected = (String) expectedValue;
+                String actual = trim.pattern().getIdAsString();
+                return expected.equals(actual);
+            }
+
+            case "minecraft:trim_material": {
+                var trim = stack.get(DataComponentTypes.TRIM);
+                if (trim == null) return false;
+                String expected = (String) expectedValue;
+                String actual = trim.material().getIdAsString();
+                return expected.equals(actual);
+            }
+
+            // 可继续扩展更多组件匹配
+            default:
+                return false;
+        }
+    }
+
+    // 4) 新增：附魔辅助方法
+
+
+    private boolean hasEnchantment(ItemEnchantmentsComponent ench, String enchantmentId) {
+        for (RegistryEntry<Enchantment> entry : ench.getEnchantments()) {
+            String actualId = entry.getIdAsString(); // 例如 "minecraft:sharpness"
+            if (actualId != null && actualId.equals(enchantmentId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasEnchantmentWithMinLevel(ItemEnchantmentsComponent ench, String enchantmentId, int minLevel) {
+        for (RegistryEntry<Enchantment> entry : ench.getEnchantments()) {
+            String actualId = entry.getIdAsString();
+            if (actualId != null && actualId.equals(enchantmentId)) {
+                int level = ench.getLevel(entry); // 从组件中读取实际等级
+                return level >= minLevel;
+            }
+        }
+        return false;
+    }
+
     /**
      * 检查物品添加事件并更新相关条件进度
      * @param data 事件数据
@@ -485,11 +595,16 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         ItemStack itemStack = (ItemStack) data.get("itemStack");
         String itemId = itemStack.getItem().toString();
 
-        //TODO:支持组件匹配
-
         // 如果物品不匹配，直接返回
         if (!itemId.equals(itemName)) {
             return false;
+        }
+
+        // 组件匹配（若有要求）
+        if (requirement.components != null && !requirement.components.isEmpty()) {
+            if (!checkItemComponents(itemStack, requirement.components)) {
+                return false;
+            }
         }
 
         // 激活检查器
