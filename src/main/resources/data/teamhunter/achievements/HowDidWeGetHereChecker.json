@@ -4,33 +4,629 @@
   "conditions": [
     {
       "name": "has_enchanted_golden_apple",
-      "description": "获得附魔金苹果",
-      "weight": 30,
+      "description": "获得附魔金苹果（提供3种效果）",
+      "weight": 5,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:enchanted_golden_apple",
           "matchCount": 1,
-          "weight": 30,
+          "weight": 5,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 1,
           "priority": 1
         }
       ]
     },
     {
-      "name": "has_potion",
-      "description": "获得药水",
-      "weight": 70,
+      "name": "has_swiftness_potion",
+      "description": "获得迅捷药水",
+      "weight": 2,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:swiftness"
+            }
+          },
           "matchCount": 1,
-          "weight": 70,
-          "typeAnd": false,
+          "weight": 2,
+          "typeAnd": true,
           "OrGroupId": 0,
-          "priority": 1
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_slowness_potion",
+      "description": "获得缓慢药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:slowness"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_strength_potion",
+      "description": "获得力量药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:strength"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_healing_potion",
+      "description": "获得治疗药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:healing"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_harming_potion",
+      "description": "获得伤害药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:harming"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_jump_boost_potion",
+      "description": "获得跳跃提升药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:leaping"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_regeneration_potion",
+      "description": "获得生命恢复药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:regeneration"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_fire_resistance_potion",
+      "description": "获得抗火药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:fire_resistance"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_water_breathing_potion",
+      "description": "获得水下呼吸药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:water_breathing"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_invisibility_potion",
+      "description": "获得隐身药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:invisibility"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_night_vision_potion",
+      "description": "获得夜视药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:night_vision"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_weakness_potion",
+      "description": "获得虚弱药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:weakness"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_poison_potion",
+      "description": "获得中毒药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:poison"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_turtle_master_potion",
+      "description": "获得神龟药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:turtle_master"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_slow_falling_potion",
+      "description": "获得缓降药水",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:slow_falling"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_beacon_effect",
+      "description": "获得信标效果",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "surroundingBlock",
+          "matchKey": "minecraft:beacon",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_ominous_bottle",
+      "description": "获得不祥之瓶",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:ominous_bottle",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_suspicious_stew_night_vision",
+      "description": "获得夜视迷之炖菜",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:suspicious_stew",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:night_vision"
+            }
+          },
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_suspicious_stew_jump_boost",
+      "description": "获得跳跃提升迷之炖菜",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:suspicious_stew",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:leaping"
+            }
+          },
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_suspicious_stew_weakness",
+      "description": "获得虚弱迷之炖菜",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:suspicious_stew",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:weakness"
+            }
+          },
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_suspicious_stew_poison",
+      "description": "获得中毒迷之炖菜",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:suspicious_stew",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:poison"
+            }
+          },
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_conduit",
+      "description": "获得潮涌核心",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:conduit",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "in_deep_dark",
+      "description": "进入深暗之域生物群系",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "biome",
+          "matchKey": "minecraft:deep_dark",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_dolphin",
+      "description": "靠近海豚",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:dolphin",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_arrow_of_homing",
+      "description": "获得引路之箭",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:arrow",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:homing"
+            }
+          },
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "in_village",
+      "description": "位于村庄",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:village",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_pufferfish",
+      "description": "拥有河豚（造成饥饿）",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:pufferfish",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_rotten_flesh",
+      "description": "拥有腐肉（造成饥饿）",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:rotten_flesh",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "has_chicken",
+      "description": "拥有生鸡肉（造成饥饿）",
+      "weight": 1,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:chicken",
+          "matchCount": 1,
+          "weight": 1,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_shulker",
+      "description": "靠近潜影贝（造成漂浮）",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:shulker",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "near_elder_guardian",
+      "description": "靠近远古守卫者（造成挖掘疲劳）",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "entity",
+          "matchKey": "minecraft:elder_guardian",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "name": "in_trial_chambers",
+      "description": "位于试炼大厅",
+      "weight": 2,
+      "requirements": [
+        {
+          "triggerType": "structure",
+          "matchKey": "minecraft:trial_chambers",
+          "matchCount": 1,
+          "weight": 2,
+          "typeAnd": true,
+          "OrGroupId": 0,
+          "priority": 0
         }
       ]
     }
