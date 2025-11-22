@@ -603,8 +603,12 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         ItemStack itemStack = (ItemStack) data.get("itemStack");
         String itemId = itemStack.getItem().toString();
 
-        // 如果物品不匹配，直接返回
-        if (!itemId.equals(itemName)) {
+        // 检查物品是否匹配（支持部分匹配）
+        boolean matches = requirement.partialMatch ?
+                itemId.contains(itemName) :
+                itemId.equals(itemName);
+
+        if (!matches) {
             return false;
         }
 

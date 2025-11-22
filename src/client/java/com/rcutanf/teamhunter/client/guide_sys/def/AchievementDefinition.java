@@ -26,6 +26,7 @@ public class AchievementDefinition {
             public TriggerType triggerType; // 要注册的触发器类型，详见触发器类型enum
             public String matchKey; // 要匹配（检查）的id，比如"minecraft:bucket", "block.minecraft.lava"
             public Map<String, Object> components;// Minecraft 组件定义，默认为空。按照 Mojang 格式定义，用于更精确的物品/实体等匹配
+            public boolean partialMatch = false; // 默认为false，表示是否启用部分匹配。true时matchKey支持部分匹配，false时为精确匹配
             public int matchCount; // 需要的数量，通常为1。检查物品时可能需要大于1
             public int weight; // 该需求的权重。注意，所有需求总和为条件的权重。例如，如果本需求所属的条件权重为50，本需求只能占比低于50的权重，且所有应该计算的需求权重之和应等于该条件权重
             public boolean typeAnd; //定义条件的类型 true=与逻辑，false=或逻辑。详见下方定义逻辑补充
