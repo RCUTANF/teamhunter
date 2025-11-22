@@ -8,6 +8,8 @@
   "teamhunter.config.save": "保存设置",
   "teamhunter.config.name_scale": "名称缩放: %s",
   "key.teamhunter.config": "打开雷达设置",
-  "category.teamhunter.keys": "团队猎人",
-  "teamhunter.shop.title": "团队商店"
+  "key.teamhunter.shop": "打开商店",
+  "key.teamhunter.teamswitch": "切换队伍",
+  "key.teamhunter.adguide.description": "显示成就指南",
+  "category.teamhunter.keys": "团队猎人"
 }

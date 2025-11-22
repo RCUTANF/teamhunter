@@ -1,0 +1,15 @@
+{
+  "teamhunter.config.title": "Player Radar Settings",
+  "teamhunter.config.size": "Radar Size: %d",
+  "teamhunter.config.x": "X Position: %d",
+  "teamhunter.config.y": "Y Position: %d",
+  "teamhunter.config.enabled": "Radar Enabled",
+  "teamhunter.config.disabled": "Radar Disabled",
+  "teamhunter.config.save": "Save Settings",
+  "teamhunter.config.name_scale": "Name Scale: %s",
+  "key.teamhunter.config": "Open Radar Settings",
+  "key.teamhunter.shop": "Open Shop",
+  "key.teamhunter.teamswitch": "Switch Team",
+  "key.teamhunter.adguide.description": "Show Achievement Guide",
+  "category.teamhunter.keys": "Team Hunter"
+}
