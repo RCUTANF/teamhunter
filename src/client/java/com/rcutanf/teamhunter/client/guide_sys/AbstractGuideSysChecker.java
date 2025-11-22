@@ -538,7 +538,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 if (opt == null || opt.isEmpty()) return false;
 
                 String actualPotionId = opt.get().getIdAsString();
-                return expectedPotionId.contains(actualPotionId);//why use long_weakness as a component name f**k mj?
+                return actualPotionId.contains(expectedPotionId);//why use long_weakness as a component name f**k mj?
             }
 
 

@@ -25,7 +25,7 @@ public class AchievementDefinition {
         public static class RequirementDefinition {
             public TriggerType triggerType; // 要注册的触发器类型，详见触发器类型enum
             public String matchKey; // 要匹配（检查）的id，比如"minecraft:bucket", "block.minecraft.lava"
-            public Map<String, Object> components;// Minecraft 组件定义，默认为空。按照 Mojang 格式定义，用于更精确的物品/实体等匹配
+            public Map<String, Object> components;// Minecraft 组件定义，默认为空。支持按照 Mojang 格式定义，用于更精确的物品/实体等匹配。部分参数支持模糊定义、宽泛定义，详见下方补充说明。
             public boolean partialMatch = false; // 默认为false，表示是否启用部分匹配。true时matchKey支持部分匹配，false时为精确匹配
             public int matchCount; // 需要的数量，通常为1。检查物品时可能需要大于1
             public int weight; // 该需求的权重。注意，所有需求总和为条件的权重。例如，如果本需求所属的条件权重为50，本需求只能占比低于50的权重，且所有应该计算的需求权重之和应等于该条件权重
@@ -83,3 +83,20 @@ public class AchievementDefinition {
   * - 单个需求的 `insideProgress` 由各触发器在事件发生时设置，范围不应超过该需求的 `weight`。
   * - 条件的 `insideProgress` 达到或超过其 `maxProgress` 时，会调用 `condition.finish()` 标记该条件完成。
   */
+
+/**
+ * components 字段的模糊匹配与宽泛定义说明：
+ *
+ * 1. minecraft:potion_contents 中的 potion 字段：
+ *    - 原理解释：代码使用 String.contains() 进行部分匹配以支持模糊匹配
+ *    - 可以只声明部分关键词，无需完整ID
+ *    - 示例：
+ *      > 声明 "healing" 可匹配所有治疗类药水（如 instant_healing、long_healing 等）
+ *      > 声明 "long" 可匹配所有持续4分钟的药水
+ *    - 注意：请勿带上命名空间前缀（如 minecraft:），会导致匹配失败
+ *
+ * 2. minecraft:enchantments 附魔匹配：
+ *    - 可以不声明 level 字段
+ *    - 只声明标准的附魔名称即可匹配所有等级
+ *    - 示例：声明 "minecraft:sharpness" 可匹配锋利I到锋利V的所有等级
+ */

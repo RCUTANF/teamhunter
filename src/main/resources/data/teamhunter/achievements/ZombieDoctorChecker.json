@@ -25,12 +25,13 @@
       "requirements": [
         {
           "triggerType": "inventory",
-          "matchKey": "minecraft:potion",
+          "matchKey": "potion",
           "components": {
             "minecraft:potion_contents": {
-              "potion": "minecraft:weakness"
+              "potion": "weakness"
             }
           },
+          "partialMatch": true,
           "matchCount": 1,
           "weight": 33,
           "typeAnd": true,
