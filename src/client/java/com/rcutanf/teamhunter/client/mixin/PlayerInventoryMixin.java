@@ -45,7 +45,7 @@ public class PlayerInventoryMixin {
             // 创建一个Map作为键值对，包含物品和操作类型
             Map<String, Object> eventData = new HashMap<>();
             eventData.put("itemStack", changedStack);
-            eventData.put("isAdded", isAdded);
+            eventData.put("isAdded", isAdded);// true表示添加，false表示移除
             trigger.fire(eventData);
         }
     }

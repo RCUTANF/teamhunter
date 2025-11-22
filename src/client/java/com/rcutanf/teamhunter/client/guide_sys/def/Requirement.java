@@ -42,4 +42,8 @@ public class Requirement {
         }
         this.weight = weight;
     }
+
+    public int getInsideProgress() {
+        return insideProgress;
+    }
 }

@@ -596,12 +596,9 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
      * @return 是否成功处理该条件
      */
     protected boolean checkCondition4itemAdd(Map<String, Object> data, Requirement requirement, String itemName, int itemRequiringCount) {
-        if (!(boolean)data.get("isAdded")) {
-            return false;
-        }
-
         ItemStack itemStack = (ItemStack) data.get("itemStack");
         String itemId = itemStack.getItem().toString();
+        boolean isAdded = (boolean) data.get("isAdded");
 
         // 检查物品是否匹配（支持部分匹配）
         boolean matches = requirement.partialMatch ?
@@ -619,23 +616,37 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             }
         }
 
-        // 激活检查器
-        if (!isActive()) {
-            setActive(true);
-        }
-
-        // 更新条件进度
         int itemCount = itemStack.getCount();
-        if (itemCount >= itemRequiringCount) {
-            requirement.setInsideProgress(requirement.weight);
+        int currentProgress = requirement.getInsideProgress();
+
+        if (isAdded) {
+            // 物品添加逻辑
+            if (!isActive()) {
+                setActive(true);
+            }
+
+            if (itemCount >= itemRequiringCount) {
+                requirement.setInsideProgress(requirement.weight);
+            } else {
+                requirement.setInsideProgress(itemCount * requirement.weight / itemRequiringCount);
+            }
         } else {
-            requirement.setInsideProgress(itemCount * requirement.weight / itemRequiringCount);
+            // 物品移除逻辑
+            int progressToRemove = itemCount * requirement.weight / itemRequiringCount;
+            int newProgress = Math.max(0, currentProgress - progressToRemove);
+            requirement.setInsideProgress(newProgress);
+
+            // 如果进度归零且检查器处于活动状态，考虑关闭
+            if (newProgress == 0 && isActive() && getProgress() == 0) {
+                setActive(false);
+            }
         }
 
         // 更新总体进度
         updateTotalProgress();
         return true;
     }
+
 
     protected boolean checkCondition4nearBlocks(Map<String, Object> data, Requirement requirement, String blockName) {
         @SuppressWarnings("unchecked")
