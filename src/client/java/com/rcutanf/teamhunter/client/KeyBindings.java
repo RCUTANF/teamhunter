@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -21,6 +23,11 @@ public class KeyBindings {
 
     /** 团队切换状态标记，true 表示下次将选择猎人队伍 */
     private static boolean isHunterCommand = true;
+
+    // 创建自定义键位分类
+    private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(
+            Identifier.of("teamhunter", "keys")
+    );
 
     public static void register() {
         registerConfigKey();
@@ -36,7 +43,7 @@ public class KeyBindings {
                 "key.teamhunter.config",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F7, // 默认为F7键
-                "category.teamhunter.keys"
+                CATEGORY
         ));
     }
 
@@ -46,7 +53,7 @@ public class KeyBindings {
             "key.teamhunter.shop",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
-            "category.teamhunter.keys"
+            CATEGORY
         ));
     }
 
@@ -56,7 +63,7 @@ public class KeyBindings {
             "key.teamhunter.teamswitch",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_F8,
-            "category.teamhunter.keys"
+            CATEGORY
         ));
     }
 
@@ -65,7 +72,7 @@ public class KeyBindings {
             "key.teamhunter.adguide.description",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_TAB,
-            "category.teamhunter.keys"
+            CATEGORY
         ));
     }
 
@@ -102,9 +109,8 @@ public class KeyBindings {
             if (adGuideDescriptionKey.isPressed()) {
                 GuideSysHud.setShowAllDescriptions(true);
                 // 检查是否同时按下了Ctrl键
-                long windowHandle = client.getWindow().getHandle();
-                boolean isCtrlPressed = InputUtil.isKeyPressed(windowHandle, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                        InputUtil.isKeyPressed(windowHandle, GLFW.GLFW_KEY_RIGHT_CONTROL);
+                boolean isCtrlPressed = InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                        InputUtil.isKeyPressed(client.getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL);
 
                 if (isCtrlPressed) {
                     // 打开指南屏幕

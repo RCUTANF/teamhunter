@@ -34,7 +34,7 @@ public class DimensionTrigger extends AbstractGuideSysTrigger {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player == null) return;
 
-            Identifier currentDimension = player.getWorld().getRegistryKey().getValue();
+            Identifier currentDimension = player.getEntityWorld().getRegistryKey().getValue();
             if (lastDimension == null) {
                 lastDimension = currentDimension;
             } else if (!lastDimension.equals(currentDimension)) {

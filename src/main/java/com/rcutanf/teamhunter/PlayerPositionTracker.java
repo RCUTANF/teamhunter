@@ -39,7 +39,7 @@ package com.rcutanf.teamhunter;
                 BlockPos currentPos = player.getBlockPos();
 
                 // 获取玩家当前维度
-                ServerWorld world = player.getServerWorld();
+                ServerWorld world = player.getEntityWorld();
                 Identifier currentDimension = world.getRegistryKey().getValue();
 
                 // 获取玩家上一次的维度
@@ -80,7 +80,7 @@ package com.rcutanf.teamhunter;
 
             // 只向同维度的玩家发送位置更新
             for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
-                Identifier playerDimension = serverPlayer.getServerWorld().getRegistryKey().getValue();
+                Identifier playerDimension = serverPlayer.getEntityWorld().getRegistryKey().getValue();
                 if (playerDimension.equals(dimension)) {
                     ServerPlayNetworking.send(serverPlayer, packet);
                 }
@@ -93,7 +93,7 @@ package com.rcutanf.teamhunter;
          * @param newPlayer 新登录的玩家
          */
         public void sendAllPlayerPositionsToNewPlayer(ServerPlayerEntity newPlayer) {
-            Identifier newPlayerDimension = newPlayer.getServerWorld().getRegistryKey().getValue();
+            Identifier newPlayerDimension = newPlayer.getEntityWorld().getRegistryKey().getValue();
 
             // 发送每个玩家在新玩家当前维度的最后位置
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
@@ -140,10 +140,8 @@ package com.rcutanf.teamhunter;
                     // 获取玩家名称
                     ServerPlayerEntity otherPlayer = server.getPlayerManager().getPlayer(otherPlayerId);
                     String playerName = otherPlayer != null ?
-                            otherPlayer.getName().getString() :
-                            server.getUserCache().getByUuid(otherPlayerId)
-                                    .map(GameProfile::getName)
-                                    .orElse("Unknown");
+                            otherPlayer.getGameProfile().name() :
+                            "Unknown Player";
 
                     // 创建并发送位置更新包
                     NetWorking.PlayerPositionUpdatePacket packet = new NetWorking.PlayerPositionUpdatePacket(

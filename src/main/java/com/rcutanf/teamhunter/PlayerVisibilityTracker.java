@@ -43,7 +43,7 @@ public class PlayerVisibilityTracker {
             Map<UUID, Boolean> visibilityMap = playerVisibility.computeIfAbsent(observerId, k -> new HashMap<>());
 
             // 获取观察者的维度
-            Identifier observerDimension = observer.getServerWorld().getRegistryKey().getValue();
+            Identifier observerDimension = observer.getEntityWorld().getRegistryKey().getValue();
 
             for (ServerPlayerEntity target : server.getPlayerManager().getPlayerList()) {
                 UUID targetId = target.getUuid();
@@ -52,7 +52,7 @@ public class PlayerVisibilityTracker {
                 if (observerId.equals(targetId)) continue;
 
                 // 检查是否在同一维度
-                Identifier targetDimension = target.getServerWorld().getRegistryKey().getValue();
+                Identifier targetDimension = target.getEntityWorld().getRegistryKey().getValue();
                 if (!observerDimension.equals(targetDimension)) {
                     visibilityMap.put(targetId, false);
                     continue;
@@ -118,7 +118,7 @@ public class PlayerVisibilityTracker {
         Vec3d observerLook = Vec3d.fromPolar(observer.getPitch(), observer.getYaw());
 
         // 获取从观察者到目标的向量
-        Vec3d targetPos = target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2, 0); // 使用目标的中点
+        Vec3d targetPos = target.getEntityPos().add(0, target.getEyeHeight(target.getPose()) / 2, 0); // 使用目标的中点
         Vec3d toTarget = targetPos.subtract(observerPos).normalize();
 
         // 计算夹角的余弦值（点积）
@@ -130,12 +130,12 @@ public class PlayerVisibilityTracker {
 
     // 执行射线检测，检查从观察者到目标的三条射线是否被阻挡
     private boolean isRayTraceVisible(ServerPlayerEntity observer, ServerPlayerEntity target) {
-        ServerWorld world = observer.getServerWorld();
+        ServerWorld world = observer.getEntityWorld();
         Vec3d observerEyes = observer.getEyePos();
 
         // 目标玩家的两个关键点（头部和脚部）
         Vec3d targetHead = target.getEyePos();
-        Vec3d targetFeet = target.getPos();
+        Vec3d targetFeet = target.getEntityPos();
 
         // 如果任何一条射线未被阻挡，则认为目标可见
         boolean headVisible = !isRayBlocked(world, observerEyes, targetHead);
@@ -189,7 +189,8 @@ public class PlayerVisibilityTracker {
 
     // 发送可见性更新到客户端
     private static void sendVisibilityUpdate(ServerPlayerEntity target, boolean isVisible) {
-        MinecraftServer server = target.getServer();
+        MinecraftServer server = target.getEntityWorld().getServer();
+        //TODO:这里可能是临时反转了想禁用那个提示，后面再看看
         if (server != null) {return;}
         // 创建一个可见性更新数据包
         NetWorking.PlayerVisibilityUpdatePacket packet = new NetWorking.PlayerVisibilityUpdatePacket(

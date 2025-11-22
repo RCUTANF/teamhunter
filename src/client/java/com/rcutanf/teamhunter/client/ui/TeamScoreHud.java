@@ -3,6 +3,7 @@ package com.rcutanf.teamhunter.client.ui;
 import com.rcutanf.teamhunter.Phase;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
@@ -202,7 +203,7 @@ public class TeamScoreHud {
         }
 
         // 4. 绘制剑图标（使用正确的draw方法）
-        drawTextureQuad(context, SWORD_ICON, swordX, swordY, SWORD_WIDTH, SWORD_HEIGHT);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED,SWORD_ICON, swordX, swordY, 0, 0, SWORD_WIDTH, SWORD_HEIGHT, SWORD_WIDTH, SWORD_HEIGHT);
 
         // 5. 获取动画进度
         float animationProgress = Math.min(1.0f,
@@ -225,8 +226,8 @@ public class TeamScoreHud {
         for (int i = 0; i < huntersBuffs.size(); i++) {
             TeamBuff buff = huntersBuffs.get(i);
             if (buff.isActive()) {
-                drawTextureQuad(context, buff.getIcon(), hunterBuffX - (BUFF_ICON_SIZE + BUFF_SPACING) * i,
-                        buffY, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, buff.getIcon(), hunterBuffX - (BUFF_ICON_SIZE + BUFF_SPACING) * i,
+                                buffY, 0, 0, BUFF_ICON_SIZE, BUFF_ICON_SIZE, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
             }
         }
 
@@ -244,8 +245,8 @@ public class TeamScoreHud {
         for (int i = 0; i < runnersBuffs.size(); i++) {
             TeamBuff buff = runnersBuffs.get(i);
             if (buff.isActive()) {
-                drawTextureQuad(context, buff.getIcon(), runnerBuffX + (BUFF_ICON_SIZE + BUFF_SPACING) * i,
-                        buffY, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, buff.getIcon(), runnerBuffX + (BUFF_ICON_SIZE + BUFF_SPACING) * i,
+                                buffY, 0, 0, BUFF_ICON_SIZE, BUFF_ICON_SIZE, BUFF_ICON_SIZE, BUFF_ICON_SIZE);
             }
         }
 
@@ -326,65 +327,14 @@ public class TeamScoreHud {
         int textWidth = textRenderer.getWidth(text);
         int textHeight = textRenderer.fontHeight;
 
-        context.getMatrices().push();
-        context.getMatrices().translate(x + (float) textWidth / 2, y + (float) textHeight / 2, 0);
-        context.getMatrices().scale(scale, scale, 1.0f);
-        context.getMatrices().translate(-(x + (float) textWidth / 2), -(y + (float) textHeight / 2), 0);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate(x + (float) textWidth / 2, y + (float) textHeight / 2);
+        context.getMatrices().scale(scale, scale);
+        context.getMatrices().translate(-(x + (float) textWidth / 2), -(y + (float) textHeight / 2));
 
         context.drawText(textRenderer, text, x, y, color, false);
 
-        context.getMatrices().pop();
-    }
-
-    /**
-     * 绘制纹理方块（简化版的纹理绘制方法）
-     */
-    private static void drawTextureQuad(DrawContext context, Identifier texture, int x, int y, int width, int height) {
-        context.draw(vertexConsumerProvider -> {
-            RenderLayer renderLayer = RenderLayer.getText(texture);
-            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(renderLayer);
-
-            MatrixStack matrixStack = context.getMatrices();
-            matrixStack.push();
-
-            // 直接获取矩阵
-            Matrix4f positionMatrix = matrixStack.peek().getPositionMatrix();
-            Matrix3f normalMatrix = matrixStack.peek().getNormalMatrix();
-
-            // 左下角顶点
-            vertexConsumer.vertex(positionMatrix, x, y + height, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(0, 1);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 右下角顶点
-            vertexConsumer.vertex(positionMatrix, x + width, y + height, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(1, 1);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 右上角顶点
-            vertexConsumer.vertex(positionMatrix, x + width, y, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(1, 0);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            // 左上角顶点
-            vertexConsumer.vertex(positionMatrix, x, y, 0);
-            vertexConsumer.color(255, 255, 255, 255);
-            vertexConsumer.texture(0, 0);
-            vertexConsumer.overlay(OverlayTexture.DEFAULT_UV);
-            vertexConsumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            vertexConsumer.normal(normalMatrix.m00(), normalMatrix.m01(), normalMatrix.m02());
-
-            matrixStack.pop();
-        });
+        context.getMatrices().popMatrix();
     }
 
     /**

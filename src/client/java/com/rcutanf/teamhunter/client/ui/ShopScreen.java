@@ -3,6 +3,8 @@ package com.rcutanf.teamhunter.client.ui;
 import com.rcutanf.teamhunter.NetWorking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -142,7 +144,7 @@ public class ShopScreen extends Screen {
     private void renderWindowBackground(DrawContext context) {
         // 绘制进度界面风格的窗口背景和边框
         context.drawTexture(
-                RenderLayer::getGuiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 WINDOW_TEXTURE,
                 guiLeft, guiTop,
                 0, 0,
@@ -233,14 +235,18 @@ public class ShopScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (super.mouseClicked(click, doubled)) {
             return true;
         }
 
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.buttonInfo().button();
+
         // 确保点击在窗口内
         if (mouseX < guiLeft || mouseX > guiLeft + WINDOW_WIDTH ||
-            mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
+                mouseY < guiTop || mouseY > guiTop + WINDOW_HEIGHT) {
             return false;
         }
 
@@ -252,7 +258,7 @@ public class ShopScreen extends Screen {
         if (button == 0) {
             // 检查是否在可拖动区域内
             boolean inDragArea = hoveredItemIndex < 0 &&
-                                 mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
+                    mouseY > guiTop + 40 && mouseY < guiTop + WINDOW_HEIGHT - 30;
             if (inDragArea) {
                 isDragging = true;
                 lastMouseX = (int) mouseX;
@@ -265,23 +271,27 @@ public class ShopScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        int button = click.buttonInfo().button();
         if (button == 0) {
             isDragging = false;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
         if (isDragging) {
-            scrollX += mouseX - lastMouseX;
-            scrollY += mouseY - lastMouseY;
+            double mouseX = click.x();
+            double mouseY = click.y();
+
+            scrollX += offsetX;
+            scrollY += offsetY;
             lastMouseX = (int) mouseX;
             lastMouseY = (int) mouseY;
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(click, offsetX, offsetY);
     }
 
     @Override

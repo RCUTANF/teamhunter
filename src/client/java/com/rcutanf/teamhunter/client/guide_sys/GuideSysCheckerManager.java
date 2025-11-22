@@ -155,7 +155,7 @@ public class GuideSysCheckerManager {
         DimensionTrigger dimensionTrigger = (DimensionTrigger) GuideSysTriggerManager.getInstance()
                 .getTrigger(TriggerType.dimension);
         if (dimensionTrigger != null && player != null) {
-            Identifier currentDimension = player.getWorld().getRegistryKey().getValue();
+            Identifier currentDimension = player.getEntityWorld().getRegistryKey().getValue();
             dimensionTrigger.fire(dimensionTrigger.createDimensionChangeEventData(null, currentDimension));
         }
     }

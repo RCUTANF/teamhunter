@@ -18,7 +18,7 @@ public class MatchEndListener {
 
     public MatchEndListener() {
         // 注册末影龙死亡事件监听器
-        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed, damageSource) -> {
             if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
                 // 检查被杀死的实体是否为末影龙
                 if (killed instanceof EnderDragonEntity) {
@@ -35,10 +35,7 @@ public class MatchEndListener {
         // 添加玩家死亡监听器
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             if (!alive) { // 玩家确实死亡了
-                MinecraftServer server = newPlayer.getServer();
-                if (server == null) return;
-
-
+                MinecraftServer server = newPlayer.getEntityWorld().getServer();
 
                 // 只有在"ct"玩法下才检查死亡次数
                 if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {

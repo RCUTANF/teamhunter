@@ -18,9 +18,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
@@ -215,26 +213,18 @@ public class TeamhunterClient implements ClientModInitializer {
      */
     private void registerHudLayers() {
         // 注册倒计时HUD
-        HudLayerRegistrationCallback.EVENT.register(r ->
-            r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, COUNTDOWN_LAYER, PhaseCountdownHud::draw)
-        );
+        HudRenderCallback.EVENT.register(PhaseCountdownHud::draw);
 
         // 注册团队分数HUD
-        HudLayerRegistrationCallback.EVENT.register(r ->
-            r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, TEAM_SCORE_LAYER, (ctx, tickCounter) -> {
-                TeamScoreHud.render(ctx);
-            })
-        );
+        HudRenderCallback.EVENT.register((ctx, tickCounter) -> {
+            TeamScoreHud.render(ctx);
+        });
 
         // 注册玩家雷达HUD
-        HudLayerRegistrationCallback.EVENT.register(r ->
-            r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, RADAR_LAYER, PlayerRadarHud::render)
-        );
+        HudRenderCallback.EVENT.register(PlayerRadarHud::render);
 
         //注册成就指南HUD
-        HudLayerRegistrationCallback.EVENT.register(r ->
-            r.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, GUIDE_SYS_LAYER, GuideSysHud::render)
-        );
+        HudRenderCallback.EVENT.register(GuideSysHud::render);
     }
 
     /**
@@ -267,7 +257,7 @@ public class TeamhunterClient implements ClientModInitializer {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || phase != Phase.MATCH) return;
 
-        boolean isInNether = client.player.getWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether");
+        boolean isInNether = client.player.getEntityWorld().getRegistryKey().getValue().toString().equals("minecraft:the_nether");
 
         // 只在地狱内并且有优势状态时显示Buff
         if (isInNether && teamAdvantage != 0) {

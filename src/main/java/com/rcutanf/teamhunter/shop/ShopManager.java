@@ -120,7 +120,7 @@ public class ShopManager {
             }
 
             // 扣除团队分数（非物品事务，但必须先成功）
-            AdvancementListener.reduceTeamScore(teamName, (int) cost, player.getServer(),
+            AdvancementListener.reduceTeamScore(teamName, (int) cost, player.getEntityWorld().getServer(),
                     player.getDisplayName().copy()
                             .append(Text.literal(" 购买了").formatted(Formatting.WHITE))
                             .append(Text.literal(item.getName().getString()).formatted(Formatting.DARK_AQUA))
@@ -138,13 +138,11 @@ public class ShopManager {
         // 通知团队其他成员
         String playerName = player.getName().getString();
         var teamMessage = Text.of("§e" + playerName + " 购买了 ").copy().append(item.getName()).append(" ×" + inserted + "，消耗团队 " + cost + " 分！");
-        MinecraftServer server = player.getServer();
-        if (server != null) {
-            for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
-                if (p != player && p.getScoreboardTeam() != null
-                    && p.getScoreboardTeam().getName().equals(teamName)) {
-                    p.sendMessage(teamMessage, false);
-                }
+        MinecraftServer server = player.getEntityWorld().getServer();
+        for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+            if (p != player && p.getScoreboardTeam() != null
+                && p.getScoreboardTeam().getName().equals(teamName)) {
+                p.sendMessage(teamMessage, false);
             }
         }
 
@@ -152,9 +150,9 @@ public class ShopManager {
     }
 
     public static List<ItemStack> getAllItems(ServerPlayerEntity player) {
-        var server = player.getServer();
-        final var world = player.getWorld();
-        if (server == null || !(world instanceof ServerWorld serverWorld)) {
+        var server = player.getEntityWorld().getServer();
+        final var world = player.getEntityWorld();
+        if (!(world instanceof ServerWorld serverWorld)) {
             return List.of();
         }
         var lootTable = server.getReloadableRegistries().getLootTable(SHOP_LOOT_TABLE);

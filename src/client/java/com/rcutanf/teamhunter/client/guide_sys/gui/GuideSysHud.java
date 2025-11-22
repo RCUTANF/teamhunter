@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.OrderedText;
@@ -135,7 +136,7 @@ public class GuideSysHud {
                 statusIcon = PROGRESS_IN_PROGRESS;
             }
 
-            context.drawTexture(RenderLayer::getGuiTextured, statusIcon, statusX, statusY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, statusIcon, statusX, statusY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
 
             // 绘制进度条（2像素高）
             int progressBarY = y + ITEM_HEIGHT - 2;

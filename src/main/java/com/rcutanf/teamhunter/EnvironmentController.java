@@ -129,7 +129,7 @@ public class EnvironmentController {
         int count = 0;
         for (String playerName : TeamUtils.getTeamPlayerNames(server, teamName)) {
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
-            if (player != null && player.getWorld().getRegistryKey() == dimensionKey) {
+            if (player != null && player.getEntityWorld().getRegistryKey() == dimensionKey) {
                 count++;
             }
         }
@@ -141,7 +141,7 @@ public class EnvironmentController {
         int count = 0;
         for (String playerName : TeamUtils.getTeamPlayerNames(server, teamName)) {
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
-            if (player != null && player.getWorld().getRegistryKey() == dimensionKey) {
+            if (player != null && player.getEntityWorld().getRegistryKey() == dimensionKey) {
                 count++;
             }
         }
@@ -177,7 +177,7 @@ public class EnvironmentController {
 
         // 更新所有在地狱的玩家标签
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            if (player.getWorld().getRegistryKey() == World.NETHER) {
+            if (player.getEntityWorld().getRegistryKey() == World.NETHER) {
                 Team playerTeam = TeamUtils.getPlayerTeam(player);
 
                 boolean canDrop;

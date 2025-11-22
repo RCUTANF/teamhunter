@@ -4,6 +4,7 @@ import com.rcutanf.teamhunter.client.PlayerPositionInfo;
 import com.rcutanf.teamhunter.client.TeamhunterClient;
 import com.rcutanf.teamhunter.client.config.RadarConfig;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -15,6 +16,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RotationAxis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +94,7 @@ public class PlayerRadarHud {
 
                     // 使用与类中其他纹理绘制相同的方法
                     context.drawTexture(
-                            RenderLayer::getGuiTextured, // 渲染层函数
+                            RenderPipelines.GUI_TEXTURED, // 渲染层函数
                             exposureIcon,                // 纹理标识符
                             iconX, iconY,                // 位置
                             0, 0,                        // 纹理UV起点
@@ -239,12 +241,12 @@ public class PlayerRadarHud {
         int scaledWidth = (int) (textWidth * scale);
 
         // 保存当前变换矩阵
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
         // 移动到文本绘制位置（减小垂直偏移，使文字更靠近点）
         //TODO：能不能动态调整啊
-        context.getMatrices().translate(dotX - (float) scaledWidth / 2, dotY - (float) PLAYER_DOT_SIZE / 2 - 6, 0);
+        context.getMatrices().translate(dotX - (float) scaledWidth / 2, dotY - (float) PLAYER_DOT_SIZE / 2 - 6);
         // 应用缩放
-        context.getMatrices().scale(scale, scale, 1.0f);
+        context.getMatrices().scale(scale, scale);
         // 使用与点相同的颜色渲染文字
         context.drawText(
                 MinecraftClient.getInstance().textRenderer,
@@ -255,7 +257,7 @@ public class PlayerRadarHud {
                 false
         );
         // 恢复变换矩阵
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     // 绘制圆形边框
@@ -268,7 +270,7 @@ public class PlayerRadarHud {
         // 使用纹理绘制圆形
         int size = radius * 2;
         context.drawTexture(
-                RenderLayer::getGuiTextured,  // 渲染层函数
+                RenderPipelines.GUI_TEXTURED,  // 渲染层函数
                 textureId,                               // 纹理标识符
                 centerX - radius, centerY - radius,      // 位置
                 0, 0,                                    // 纹理UV起点
@@ -287,7 +289,7 @@ public class PlayerRadarHud {
         // 使用纹理绘制填充圆形
         int size = radius * 2-1;
         context.drawTexture(
-                RenderLayer::getGuiTextured,  // 渲染层函数
+                RenderPipelines.GUI_TEXTURED,  // 渲染层函数
                 textureId,                               // 纹理标识符
                 centerX - radius, centerY - radius,      // 位置
                 0, 0,                                    // 纹理UV起点
@@ -408,7 +410,7 @@ public class PlayerRadarHud {
 
         int size = radius * 2;
         context.drawTexture(
-                RenderLayer::getGuiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 textureId,
                 centerX - radius, centerY - radius,
                 0, 0,
@@ -424,7 +426,7 @@ public class PlayerRadarHud {
         float scale = 0.35f; // 缩放比例
 
         // 保存当前变换状态
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
 
         // 获取文本尺寸
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(arrowChar);
@@ -435,8 +437,8 @@ public class PlayerRadarHud {
             float posY = y - yOffset;
 
             // 移动到位置，应用缩放，然后绘制
-            context.getMatrices().translate(x, posY, 0);
-            context.getMatrices().scale(scale, scale, 1.0f);
+            context.getMatrices().translate(x, posY);
+            context.getMatrices().scale(scale, scale);
 
             // 调整偏移以保持居中
             context.drawText(
@@ -452,11 +454,11 @@ public class PlayerRadarHud {
             float posY = y + yOffset;
 
             // 移动到文本中心点
-            context.getMatrices().translate(x, posY, 0);
+            context.getMatrices().translate(x, posY);
             // 应用缩放
-            context.getMatrices().scale(scale, scale, 1.0f);
+            context.getMatrices().scale(scale, scale);
             // 旋转180度
-            context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotationDegrees(180));
+            context.getMatrices().rotate(180);
             // 调整偏移以保持居中
             context.drawText(
                     MinecraftClient.getInstance().textRenderer,
@@ -469,7 +471,7 @@ public class PlayerRadarHud {
         }
 
         // 恢复变换状态
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     // 绘制指向不可见玩家方向的射线
@@ -487,9 +489,9 @@ public class PlayerRadarHud {
         int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
         int scaledWidth = (int) (textWidth * scale);
 
-        context.getMatrices().push();
-        context.getMatrices().translate(endX - (float) scaledWidth / 2, endY - 6, 0);
-        context.getMatrices().scale(scale, scale, 1.0f);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate(endX - (float) scaledWidth / 2, endY - 6);
+        context.getMatrices().scale(scale, scale);
         context.drawText(
                 MinecraftClient.getInstance().textRenderer,
                 playerName,
@@ -498,7 +500,7 @@ public class PlayerRadarHud {
                 color,
                 true
         );
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     // 通过矩阵旋转绘制线段
@@ -508,18 +510,18 @@ public class PlayerRadarHud {
         double angle = Math.atan2(y2 - y1, x2 - x1);
 
         // 保存当前变换
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
 
         // 移动到起点位置
-        context.getMatrices().translate(x1, y1, 0);
+        context.getMatrices().translate(x1, y1);
         // 旋转到线段角度
-        context.getMatrices().multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float) angle));
+        context.getMatrices().rotate((float) angle);
 
         // 绘制水平线
         context.fill(0, 0, length, 1, color);
 
         // 恢复变换
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     // 纹理清理方法

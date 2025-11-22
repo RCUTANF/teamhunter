@@ -6,6 +6,7 @@ import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -182,17 +183,41 @@ public class GuideSysScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            int currentY = (int) (this.getY() - this.getScrollY());
-            for (GuideEntry entry : this.entries) {
-                if (mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() &&
-                        mouseY >= currentY && mouseY < currentY + entry.getHeight()) {
-                    return entry.mouseClicked(mouseX, mouseY, button, currentY);
+        public boolean mouseClicked(Click click, boolean doubled) {
+            // 先处理列表项的点击
+            double mouseX = click.x();
+            double mouseY = click.y();
+            int button = click.buttonInfo().button();
+
+            // 检查点击是否在列表区域内
+            if (mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() &&
+                    mouseY >= this.getY() && mouseY < this.getY() + this.getHeight()) {
+
+                // 计算相对于列表内容的Y坐标
+                int relativeY = (int) (mouseY - this.getY() + this.getScrollY());
+                int currentY = 0;
+
+                for (GuideEntry entry : this.entries) {
+                    int entryHeight = entry.getHeight();
+
+                    // 检查点击是否在当前条目内
+                    if (relativeY >= currentY && relativeY < currentY + entryHeight) {
+                        // 将坐标转换为条目内的相对坐标
+                        int entryRelativeY = relativeY - currentY;
+
+                        // 调用条目的点击处理，传递条目内的相对坐标
+                        if (entry.mouseClicked(mouseX - this.getX(), entryRelativeY, button)) {
+                            return true; // 如果条目处理了点击，直接返回
+                        }
+                    }
+                    currentY += entryHeight;
                 }
-                currentY += entry.getHeight();
             }
-            return super.mouseClicked(mouseX, mouseY, button);
+
+            // 如果条目没有处理点击，再交给父类处理（滚动条等）
+            return super.mouseClicked(click, doubled);
         }
+
 
         private class GuideEntry {
             private final GuideSysGuiManager.AdvancementGuideItem guide;
@@ -257,18 +282,23 @@ public class GuideSysScreen extends Screen {
                 return lines;
             }
 
-            public boolean mouseClicked(double mouseX, double mouseY, int button, int entryY) {
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
                 if (this.needsExpandToggle) {
-                    int toggleX = GuideListWidget.this.getX() + 5;
-                    int toggleY = entryY;
-                    if (mouseX >= toggleX && mouseX < toggleX + 15 &&
-                            mouseY >= toggleY && mouseY < toggleY + ITEM_HEIGHT) {
+                    // 现在 mouseX 和 mouseY 都是相对于条目左上角的坐标
+                    int toggleX = 5;  // toggle 按钮相对于条目的X位置
+                    int toggleY = 0;  // toggle 按钮相对于条目的Y位置
+                    int toggleWidth = 15;
+                    int toggleHeight = ITEM_HEIGHT;
+
+                    if (mouseX >= toggleX && mouseX < toggleX + toggleWidth &&
+                            mouseY >= toggleY && mouseY < toggleY + toggleHeight) {
                         this.expanded = !this.expanded;
                         return true;
                     }
                 }
                 return false;
             }
+
 
             public void render(DrawContext context, int x, int y, int width, int mouseX, int mouseY, float delta) {
                 TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -281,7 +311,7 @@ public class GuideSysScreen extends Screen {
                     context.drawText(textRenderer, toggleSymbol, x + 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xFFFFFFFF, true);
                 }
 
-                int titleColor = this.guide.isCompleted() ? 0x55FF55 : 0xFFFFFF;
+                int titleColor = this.guide.isCompleted() ? 0xFF55FF55 : 0xFFFFFFFF;
                 String title = this.guide.getTitle().getString();
                 if (textRenderer.getWidth(title) > width - 40) {
                     title = textRenderer.trimToWidth(title, width - 40 - textRenderer.getWidth("...")) + "...";
@@ -453,16 +483,16 @@ public class GuideSysScreen extends Screen {
                 }
 
                 // 渲染标题
-                context.drawText(textRenderer, title, x + 10, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0x55FF55, true);
+                context.drawText(textRenderer, title, x + 10, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xFF55FF55, true);
 
                 // 渲染时间（在标题右侧）
                 if (!timeText.isEmpty()) {
                     int timeX = x + 10 + textRenderer.getWidth(title) + 10;
-                    context.drawText(textRenderer, timeText, timeX, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xAAFFAA, false);
+                    context.drawText(textRenderer, timeText, timeX, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xFFAAFFAA, false);
                 }
 
                 // 渲染进度（在最右侧）
-                context.drawText(textRenderer, progressText, x + width - progressTextWidth - 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0x55FF55, true);
+                context.drawText(textRenderer, progressText, x + width - progressTextWidth - 5, y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2, 0xFF55FF55, true);
             }
 
             private String formatGameTime(AdvancementRecord record) {
