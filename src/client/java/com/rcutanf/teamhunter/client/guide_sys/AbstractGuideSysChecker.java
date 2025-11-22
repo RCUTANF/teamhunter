@@ -522,17 +522,25 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
                 return false;
             }
 
-            case "minecraft:potion": {
+            case "minecraft:potion_contents": {
                 var contents = stack.get(DataComponentTypes.POTION_CONTENTS);
                 if (contents == null) return false;
 
-                String expectedPotionId = (String) expectedValue;
-                var opt = contents.potion(); // Optional<RegistryEntry<Potion>>
+                // expectedValue 直接就是药水内容的Map，如 {"potion": "minecraft:swiftness"}
+                if (!(expectedValue instanceof Map)) return false;
+                Map<String, Object> potionContents = (Map<String, Object>) expectedValue;
+
+                // 直接从expectedValue中获取药水ID
+                String expectedPotionId = (String) potionContents.get("potion");
+                if (expectedPotionId == null) return false;
+
+                var opt = contents.potion();
                 if (opt == null || opt.isEmpty()) return false;
 
                 String actualPotionId = opt.get().getIdAsString();
-                return expectedPotionId.equals(actualPotionId);
+                return expectedPotionId.contains(actualPotionId);//why use long_weakness as a component name f**k mj?
             }
+
 
             case "minecraft:trim_pattern": {
                 var trim = stack.get(DataComponentTypes.TRIM);

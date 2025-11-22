@@ -26,6 +26,11 @@
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:weakness"
+            }
+          },
           "matchCount": 1,
           "weight": 33,
           "typeAnd": true,
@@ -54,6 +59,7 @@
       "name": "snowy_town_hint",
       "description": "（提示）曾进入雪屋结构",
       "weight": 20,
+      "isHintOnly": true,
       "requirements": [
         {
           "triggerType": "structure",

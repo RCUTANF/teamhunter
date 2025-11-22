@@ -4,32 +4,331 @@
   "conditions": [
     {
       "name": "has_enchanted_golden_apple",
-      "description": "获得附魔金苹果",
-      "weight": 30,
+      "description": "获得附魔金苹果（提供3种效果）",
+      "weight": 17,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:enchanted_golden_apple",
           "matchCount": 1,
-          "weight": 30,
+          "weight": 17,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 1,
           "priority": 1
         }
       ]
     },
     {
-      "name": "has_potion",
-      "description": "获得药水",
-      "weight": 70,
+      "name": "has_swiftness_potion",
+      "description": "获得迅捷药水",
+      "weight": 5,
       "requirements": [
         {
           "triggerType": "inventory",
           "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:swiftness"
+            }
+          },
           "matchCount": 1,
-          "weight": 70,
+          "weight": 5,
           "typeAnd": false,
-          "OrGroupId": 0,
+          "OrGroupId": 2,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_slowness_potion",
+      "description": "获得缓慢药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:slowness"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 3,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_strength_potion",
+      "description": "获得力量药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:strength"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 4,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_healing_potion",
+      "description": "获得治疗药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:healing"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 5,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_harming_potion",
+      "description": "获得伤害药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:harming"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 6,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_jump_boost_potion",
+      "description": "获得跳跃提升药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:leaping"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 7,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_regeneration_potion",
+      "description": "获得生命恢复药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:regeneration"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 8,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_fire_resistance_potion",
+      "description": "获得抗火药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:fire_resistance"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 9,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_water_breathing_potion",
+      "description": "获得水下呼吸药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:water_breathing"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 10,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_invisibility_potion",
+      "description": "获得隐身药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:invisibility"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 11,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_night_vision_potion",
+      "description": "获得夜视药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:night_vision"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 12,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_weakness_potion",
+      "description": "获得虚弱药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:weakness"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 13,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_poison_potion",
+      "description": "获得中毒药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:poison"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 14,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_turtle_master_potion",
+      "description": "获得神龟药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:turtle_master"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 15,
+          "priority": 1
+        }
+      ]
+    },
+    {
+      "name": "has_slow_falling_potion",
+      "description": "获得缓降药水",
+      "weight": 5,
+      "requirements": [
+        {
+          "triggerType": "inventory",
+          "matchKey": "minecraft:potion",
+          "components": {
+            "minecraft:potion_contents": {
+              "potion": "minecraft:slow_falling"
+            }
+          },
+          "matchCount": 1,
+          "weight": 5,
+          "typeAnd": false,
+          "OrGroupId": 16,
           "priority": 1
         }
       ]
