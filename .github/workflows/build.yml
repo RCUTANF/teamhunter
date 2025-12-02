@@ -1,5 +1,4 @@
-name: Java CI with Gradle
-
+name: build
 on:
   push:
     branches: [ "1.21.10" ] # 当代码推送到 "1.21.10" 分支时触发
