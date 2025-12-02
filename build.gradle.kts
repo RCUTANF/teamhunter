@@ -1,6 +1,7 @@
 plugins {
     id("fabric-loom") version "1.13-SNAPSHOT"
     id("maven-publish")
+    base
 }
 
 version = project.property("mod_version")!!
