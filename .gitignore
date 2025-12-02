@@ -199,4 +199,4 @@ replay_pid*
 
 # minecraft run dir
 run
-/personal_todolist/
+/personal_todolist/*
