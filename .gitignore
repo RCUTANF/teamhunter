@@ -200,3 +200,4 @@ replay_pid*
 # minecraft run dir
 run
 /personal_todolist/*
+/test_extract_notes.sh
