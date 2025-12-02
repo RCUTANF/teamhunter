@@ -1,0 +1,80 @@
+name: Mod Release Workflow
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # 当您推送一个以 'v' 开头的标签时触发，例如 v1.0.0, v1.0.0-beta
+
+jobs:
+  release: # 修改 Job 名称以明确其发布目的
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 发布 Release 需要写入权限
+      # packages: write # 如果您要发布到 GitHub Packages，也需要这个权限
+      # issues: write # 如果您希望在发布时自动创建或更新 issue，可能需要此权限
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build # 执行构建，生成 Mod JAR 文件
+
+      - name: Extract release notes from `CHANGELOG.md`
+        id: extract_release_notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=${GITHUB_REF#refs/tags/v}
+          if [ -z "$VERSION" ]; then
+            echo "VERSION is empty" >&2
+            exit 1
+          fi
+
+          # 转义版本号用于正则
+          esc=$(printf '%s' "$VERSION" | sed 's/[][\.*^$(){}?+|/]/\\&/g')
+
+          # 用 perl 提取从当前版本标题到下一个版本标题或文件末尾的内容
+          body=$(perl -0777 -ne 'if(/^##\s+\[?v'"$esc"'\]?\b(.*?)(?=^##\s+\[?v|\z)/sms){print $1}' `CHANGELOG.md` || true)
+          body=$(printf '%s' "$body" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+          if [ -z "$body" ]; then
+            echo "Could not find release notes for v$VERSION in `CHANGELOG.md`" >&2
+            exit 1
+          fi
+
+          # 写入多行输出到 GITHUB_OUTPUT
+          delim=EOF_$(date +%s%N)
+          echo "body<<$delim" >> $GITHUB_OUTPUT
+          printf '%s\n' "$body" >> $GITHUB_OUTPUT
+          echo "$delim" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*.jar # 将构建好的 Mod JAR 文件作为 Release Assets
+          # 如果有其他文件需要发布，例如 LICENSE, README.md 等，可以这样添加：
+          # files: |
+          #   build/libs/*.jar
+          #   LICENSE
+          #   README.md
+          name: Release ${{ github.ref_name }} # Release 名称，例如 "Release v1.0.0"
+          body: ${{ steps.extract_release_notes.outputs.body }}
+          draft: false # 设置为 false 会立即发布 Release
+          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') }} # 根据标签名称自动判断是否为预发布版本
+          # 例如，v1.0.0-beta.1 会被认为是预发布
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 自动提供的 token，拥有写入 Release 的权限
