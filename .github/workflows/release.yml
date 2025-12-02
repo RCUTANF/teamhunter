@@ -47,7 +47,7 @@ jobs:
           esc=$(printf '%s' "$VERSION" | sed 's/[][\.*^$(){}?+|/]/\\&/g')
 
           # 用 perl 提取从当前版本标题到下一个版本标题或文件末尾的内容
-          body=$(perl -0777 -ne 'if(/^##\s+\[?v'"$esc"'\]?\b(.*?)(?=^##\s+\[?v|\z)/sms){print $1}' `CHANGELOG.md` || true)
+          body=$(perl -0777 -ne 'if(/^##\s+\[?v'"$esc"'\]?\b(.*?)(?=^##\s+\[?v|\z)/sms){print $1}' CHANGELOG.md || true)
           body=$(printf '%s' "$body" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
           if [ -z "$body" ]; then
