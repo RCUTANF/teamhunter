@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter;
 
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import com.rcutanf.teamhunter.config.GameConfigLoader;
 import com.rcutanf.teamhunter.loot.TeamhunterLootConditions;
 import com.rcutanf.teamhunter.shop.ShopCommand;
 import com.rcutanf.teamhunter.shop.ShopComponentTypes;
@@ -64,7 +65,7 @@ public class Teamhunter implements ModInitializer {
         registerNetworkHandlers();
 
         // 加载配置
-        CommandConfig.loadConfig();
+        GameConfigLoader.loadConfig();
     }
 
     /**

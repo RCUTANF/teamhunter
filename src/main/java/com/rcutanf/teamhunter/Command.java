@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import com.rcutanf.teamhunter.config.GameConfigLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -153,15 +154,15 @@ public class Command {
      */
     private static int start(CommandContext<ServerCommandSource> context) {
         var seconds = IntegerArgumentType.getInteger(context, SECONDS);
-        if(CommandConfig.getCurrentGamemode().equals("ct")) {
+        if(GameConfigLoader.getCurrentGamemode().equals("ct")) {
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
                     .then(Phase.PREPARE, Duration.ofSeconds(10))
-                    .then(Phase.MATCH, Duration.ofMinutes(CommandConfig.getCurrentMatchDuration()))
+                    .then(Phase.MATCH, Duration.ofMinutes(GameConfigLoader.getCurrentMatchDuration()))
                     .then(Phase.END);
-        } else if(CommandConfig.getCurrentGamemode().equals("as")){
+        } else if(GameConfigLoader.getCurrentGamemode().equals("as")){
             Teamhunter.phaseManager.clear().then(Phase.WARMUP, Duration.ofSeconds(seconds))
                     .then(Phase.PREPARE, Duration.ofSeconds(10))
-                    .then(Phase.MATCH, Duration.ofMinutes(CommandConfig.getCurrentMatchDuration()))
+                    .then(Phase.MATCH, Duration.ofMinutes(GameConfigLoader.getCurrentMatchDuration()))
                     .then(Phase.END);
         }
         else {
@@ -381,7 +382,7 @@ public class Command {
      * @return 执行结果
      */
     private static int reloadConfig(CommandContext<ServerCommandSource> context) {
-        CommandConfig.loadConfig();
+        GameConfigLoader.loadConfig();
         context.getSource().sendFeedback(() -> Text.of("已重新加载命令配置文件"), true);
         return SINGLE_SUCCESS;
     }
@@ -392,8 +393,8 @@ public class Command {
      * 列出所有可用的玩法
      */
     private static int listGamemodes(CommandContext<ServerCommandSource> context) {
-        List<String> gamemodes = CommandConfig.getAvailableGamemodes();
-        String currentGamemode = CommandConfig.getCurrentGamemode();
+        List<String> gamemodes = GameConfigLoader.getAvailableGamemodes();
+        String currentGamemode = GameConfigLoader.getCurrentGamemode();
 
         context.getSource().sendFeedback(() -> Text.of("当前玩法: " + currentGamemode), false);
         context.getSource().sendFeedback(() -> Text.of("可用玩法列表:"), false);
@@ -411,7 +412,7 @@ public class Command {
      */
     private static int switchGamemode(CommandContext<ServerCommandSource> context) {
         String gamemode = StringArgumentType.getString(context, "gamemode");
-        boolean success = CommandConfig.switchGamemode(gamemode);
+        boolean success = GameConfigLoader.switchGamemode(gamemode);
 
         if (success) {
             context.getSource().sendFeedback(() -> Text.of("已切换到玩法: " + gamemode), true);

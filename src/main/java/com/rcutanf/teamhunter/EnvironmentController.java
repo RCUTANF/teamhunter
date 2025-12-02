@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter;
 
 // 导入正确的包
+import com.rcutanf.teamhunter.config.GameConfigLoader;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -70,7 +71,7 @@ public class EnvironmentController {
         // 处理末地龙抗性
         handleEnderDragonResistance();
 
-        if (CommandConfig.getCurrentGamemode()==null) {
+        if (GameConfigLoader.getCurrentGamemode()==null) {
             return; // 如果不是CT模式，直接返回
         }
         // 更新玩家的烈焰棒掉落权限标签

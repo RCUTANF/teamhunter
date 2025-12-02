@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter;
 
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import com.rcutanf.teamhunter.config.GameConfigLoader;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -37,7 +38,7 @@ public class PhaseHandler {
 
     // WARMUP 阶段逻辑
     public void onWarmupStart() {
-        for (String command : CommandConfig.getCommandsForPhase("warmup")) {
+        for (String command : GameConfigLoader.getCommandsForPhase("warmup")) {
             CommandExecutor.executeCommand(server, command);
         }
         AdvancementListener.resetScores(); // 重置领先状态
@@ -45,7 +46,7 @@ public class PhaseHandler {
 
     // PREPARE 阶段逻辑
     public void onPrepareStart() {
-        for (String command : CommandConfig.getCommandsForPhase("prepare")) {
+        for (String command : GameConfigLoader.getCommandsForPhase("prepare")) {
             CommandExecutor.executeCommand(server, command);
         }
 
@@ -57,7 +58,7 @@ public class PhaseHandler {
 
         // 初始化计分板显示
         String title = "";
-        if ("ct".equals(CommandConfig.getCurrentGamemode())) {
+        if ("ct".equals(GameConfigLoader.getCurrentGamemode())) {
             title = "死亡次数 §c0§f:§a0";
             CommandExecutor.executeCommand(server, "/scoreboard objectives modify Deaths displayname \"" + title + "\"");
         }
@@ -72,7 +73,7 @@ public class PhaseHandler {
 
     // MATCH 阶段逻辑
     public void onMatchStart() {
-        for (String command : CommandConfig.getCommandsForPhase("match")) {
+        for (String command : GameConfigLoader.getCommandsForPhase("match")) {
             CommandExecutor.executeCommand(server, command);
         }
 
@@ -81,7 +82,7 @@ public class PhaseHandler {
     }
 
     public void onMatchEnd() {
-        for (String command : CommandConfig.getCommandsForPhase("end")) {
+        for (String command : GameConfigLoader.getCommandsForPhase("end")) {
             CommandExecutor.executeCommand(server, command);
         }
     }

@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter;
 
 import com.rcutanf.teamhunter.advancement.AdvancementListener;
+import com.rcutanf.teamhunter.config.GameConfigLoader;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -19,7 +20,7 @@ public class MatchEndListener {
     public MatchEndListener() {
         // 注册末影龙死亡事件监听器
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed, damageSource) -> {
-            if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
+            if (Teamhunter.phaseManager.Phase() == Phase.MATCH && GameConfigLoader.getCurrentGamemode().equals("ct")) {
                 // 检查被杀死的实体是否为末影龙
                 if (killed instanceof EnderDragonEntity) {
                     CommandExecutor.executeCommand(
@@ -38,7 +39,7 @@ public class MatchEndListener {
                 MinecraftServer server = newPlayer.getEntityWorld().getServer();
 
                 // 只有在"ct"玩法下才检查死亡次数
-                if (Teamhunter.phaseManager.Phase() == Phase.MATCH && CommandConfig.getCurrentGamemode().equals("ct")) {
+                if (Teamhunter.phaseManager.Phase() == Phase.MATCH && GameConfigLoader.getCurrentGamemode().equals("ct")) {
                     checkDeathsAndEndMatch(server);
 
                     // 获取死亡玩家的击杀者
