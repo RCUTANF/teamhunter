@@ -1,5 +1,7 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideCondition;
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -9,7 +11,6 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.client.render.RenderLayer;
 
 import java.util.List;
 
@@ -28,20 +29,24 @@ public class GuideSysHud {
     private static final Identifier PROGRESS_IN_PROGRESS = Identifier.of("teamhunter", "textures/ui/guide/progress_in_progress.png");
     private static final Identifier PROGRESS_COMPLETE = Identifier.of("teamhunter", "textures/ui/guide/progress_complete.png");
 
+    private static final GuideSystemDataManager guideManager = GuideSystemDataManager.getInstance();
+
     private GuideSysHud() {}
 
     public static void render(DrawContext context, RenderTickCounter tickDelta) {
+
         MinecraftClient client = MinecraftClient.getInstance();
-        List<GuideSysGuiManager.AdvancementGuideItem> guides = GuideSysGuiManager.getAdvancementGuides();
+        List<GuideData> guides = guideManager.getIncompleteGuides();
+        if (guides.isEmpty()) return;
         TextRenderer textRenderer = client.textRenderer;
         int screenWidth = client.getWindow().getScaledWidth();
 
         // 计算统一宽度
         int maxWidth = 140; // 最小宽度
         if (!guides.isEmpty()) {
-            for (GuideSysGuiManager.AdvancementGuideItem guide : guides) {
+            for (GuideData guide : guides) {
                 int titleWidth = textRenderer.getWidth(guide.getTitle());
-                String progressText = (int) guide.getProgress() + "%";
+                String progressText = guide.getProgress() + "%";
                 int progressTextWidth = textRenderer.getWidth(progressText);
                 int itemWidth = ICON_SIZE + ITEM_PADDING * 3 + titleWidth + progressTextWidth + ICON_SIZE;
                 maxWidth = Math.max(maxWidth, itemWidth);
@@ -95,7 +100,7 @@ public class GuideSysHud {
         int y = hintY + hintHeight;
         int itemIndex = 0;
 
-        for (GuideSysGuiManager.AdvancementGuideItem guide : guides) {
+        for (GuideData guide : guides) {
             // 交替背景色增强可读性
             int backgroundColor = (itemIndex % 2 == 0) ? 0x90202020 : 0x90303030;
 
@@ -114,7 +119,7 @@ public class GuideSysHud {
             context.drawText(textRenderer, guide.getTitle(), titleX, titleY, 0xFFFFFFFF, true);
 
             // 绘制进度百分比文本
-            String progressText = (int) guide.getProgress() + "%";
+            String progressText = guide.getProgress() + "%";
             int progressTextWidth = textRenderer.getWidth(progressText);
             int progressTextX = screenWidth - MARGIN_RIGHT - ICON_SIZE - ITEM_PADDING * 2 - progressTextWidth;
             int progressTextY = y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2 + 1;
@@ -171,16 +176,17 @@ public class GuideSysHud {
                 y += descriptionHeight; // 描述结束后继续
 
                 //条件描述
-                if (guide.getAchievementChecker() != null) {
-                    for (int i = 0; i < guide.getAchievementChecker().conditions.size(); i++) {
-                        var condition = guide.getAchievementChecker().conditions.get(i);
-                        String conditionDesc = condition.description;
+                List<GuideCondition> guideConditions = guide.getConditions();
+                if (guideConditions != null) {
+                    for (int i = 0; i < guideConditions.size(); i++) {
+                        var condition = guideConditions.get(i);
+                        String conditionDesc = condition.getDescription();
                         if (conditionDesc != null && !conditionDesc.isEmpty()) {
                             List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), itemWidth - 6 - 20); // 预留空间给复选框
                             int condHeight = condLines.size() * (textRenderer.fontHeight + 1) + 4;
 
                             // 使用条件的内部进度来渲染整个背景
-                            float insideProgress = condition.getInsideProgress();
+                            float insideProgress = condition.getProgress();
                             int condFillWidth = (int) (itemWidth * (MathHelper.clamp(insideProgress, 0, 100) / 100.0f));
 
                             // 背景颜色 - 完成时为亮绿色，未完成时为淡蓝色

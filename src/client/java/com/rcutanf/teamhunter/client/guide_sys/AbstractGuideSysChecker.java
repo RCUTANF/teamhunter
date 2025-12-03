@@ -6,7 +6,7 @@ import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementDefinition;
 import com.rcutanf.teamhunter.client.guide_sys.def.Condition;
 import com.rcutanf.teamhunter.client.guide_sys.def.Requirement;
-import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSystemDataManager;
 import com.rcutanf.teamhunter.client.mixin.ClientAdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementProgress;
@@ -93,12 +93,12 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         if (active) {
             System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now active.");
             this.isActive = true;
-            GuideSysGuiManager.addAdvancementGuide(achievementChecker, progress);
+            GuideSystemDataManager.getInstance().addIncompleteGuide(achievementChecker, progress);
         }
         else {
             System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now inactive.");
             this.isActive = false;
-            GuideSysGuiManager.removeAdvancementGuide(achievementChecker.advancementId);
+            GuideSystemDataManager.getInstance().removeGuide(achievementChecker.advancementId);
         }
     }
 
@@ -120,7 +120,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         }
         this.progress = progress;
         // 更新进度到GUI
-        GuideSysGuiManager.updateAdvancementGuide(achievementChecker, progress);
+        GuideSystemDataManager.getInstance().updateGuideProgress(achievementChecker, progress);
     }
 
     /**
@@ -128,7 +128,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
      */
     protected void markAsCompleted() {
         setProgress(100);
-        GuideSysGuiManager.markAdvancementComplete(achievementChecker.advancementId);
+        GuideSystemDataManager.getInstance().markGuideComplete(achievementChecker.advancementId);
         ScheduledFuture<?> schedule = Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             MinecraftClient.getInstance().execute(() -> {
                 setActive(false); // 在游戏主线程执行

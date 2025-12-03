@@ -1,7 +1,7 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
-import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysGuiManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSystemDataManager;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.DimensionTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
@@ -107,7 +107,7 @@ public class GuideSysCheckerManager {
             // 2. 取消成就事件监听器注册
             AdvancementEventManager.getInstance().unregisterListener(checker);
         });
-        GuideSysGuiManager.clearAdvancementGuides();
+        GuideSystemDataManager.getInstance().clearIncompleteGuides();
         checkers.clear();
         System.out.println("已清理所有成就检查器资源");
     }
