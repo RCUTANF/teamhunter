@@ -12,15 +12,19 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class Teamhunter implements ModInitializer {
 
@@ -89,6 +93,10 @@ public class Teamhunter implements ModInitializer {
         // 玩家位置更新数据包
         PayloadTypeRegistry.playS2C().register(NetWorking.PlayerPositionUpdatePacket.ID, NetWorking.PlayerPositionUpdatePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.PlayerVisibilityUpdatePacket.ID, NetWorking.PlayerVisibilityUpdatePacket.CODEC);
+
+        // 成就数据相关数据包
+        PayloadTypeRegistry.playC2S().register(NetWorking.AdvancementDataRequestPacket.ID, NetWorking.AdvancementDataRequestPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.AdvancementDataResponsePacket.ID, NetWorking.AdvancementDataResponsePacket.CODEC);
     }
 
     /**
@@ -193,6 +201,29 @@ public class Teamhunter implements ModInitializer {
         // 商店购买处理器
         ServerPlayNetworking.registerGlobalReceiver(NetWorking.ShopPurchasePacket.ID, (packet, context) -> {
             ShopManager.purchaseItemByIndex(context.player(), packet.id());
+        });
+
+        // 成就请求数据处理
+        ServerPlayNetworking.registerGlobalReceiver(NetWorking.AdvancementDataRequestPacket.ID, (payload, context) -> {
+            ServerPlayerEntity player = context.player();
+            ServerAdvancementLoader loader = player.getEntityWorld().getServer().getAdvancementLoader();
+
+            List<AdvancementEntry> entries = payload.advancementIds().stream()
+                    .map(id -> {
+                        var placed = loader.getManager().get(id);
+                        if (placed != null) {
+                            return new AdvancementEntry(placed.getAdvancementEntry().id(), placed.getAdvancement());
+                        } else {
+                            // 发送错误消息给客户端
+                            player.sendMessage(Text.literal("§c[TeamHunter] 成就数据不存在: " + id), false);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)  // 过滤掉null值
+                    .collect(Collectors.toList());
+
+            NetWorking.AdvancementDataResponsePacket response = new NetWorking.AdvancementDataResponsePacket(entries);
+            ServerPlayNetworking.send(player, response);
         });
     }
 }

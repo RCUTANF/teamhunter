@@ -82,6 +82,8 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         return achievementChecker.id;
     }
 
+    public AchievementChecker getAchievementChecker() {return achievementChecker;}
+
     public boolean isActive() {
         return isActive;
     }

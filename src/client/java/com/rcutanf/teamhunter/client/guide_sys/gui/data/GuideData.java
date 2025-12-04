@@ -1,6 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui.data;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
-import net.minecraft.advancement.AdvancementManager;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,6 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GuideData {
     private final Identifier id;
@@ -37,8 +36,7 @@ public class GuideData {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.getNetworkHandler() == null) return null;
 
-            AdvancementManager advancementManager = getAdvancementManager();
-            PlacedAdvancement placedAdvancement = advancementManager.get(checker.advancementId);
+            PlacedAdvancement placedAdvancement = getPlacedAdvancement(checker.advancementId);
 
             if (placedAdvancement == null) return null;
 
@@ -76,16 +74,22 @@ public class GuideData {
         }
     }
 
-    private static AdvancementManager getAdvancementManager() {
+    private static PlacedAdvancement getPlacedAdvancement(Identifier id) {
         MinecraftClient client = MinecraftClient.getInstance();
         MinecraftServer server = client.getServer();
 
         if (server == null) {
-            //TODO:这里应该是联机状态，获取服务器的进度管理器，但是现在没空处理数据包构造和收发
-            return Objects.requireNonNull(client.getNetworkHandler()).getAdvancementHandler().getManager();
+            // 联机模式，从缓存获取数据
+            AdvancementEntry cachedAdvancementEntry = AdvancementDataCache.getInstance().getCachedAdvancementEntry(id);
+            if (cachedAdvancementEntry != null) {
+                // 创建一个模拟的 PlacedAdvancement 用于显示
+                return new PlacedAdvancement(cachedAdvancementEntry, null);
+            }
+            return null;
         } else {
-            return server.getAdvancementLoader().getManager();
+            return server.getAdvancementLoader().getManager().get(id);
         }
+
     }
 
     // Getters

@@ -1,21 +1,23 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
+import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSystemDataManager;
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.AdvancementDataCache;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.DimensionTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.trigger.InventoryTrigger;
 import com.rcutanf.teamhunter.client.guide_sys.impl.checker.*;
+import com.rcutanf.teamhunter.NetWorking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +111,7 @@ public class GuideSysCheckerManager {
         });
         GuideSystemDataManager.getInstance().clearIncompleteGuides();
         checkers.clear();
+        AdvancementDataCache.getInstance().clearCache();
         System.out.println("已清理所有成就检查器资源");
     }
 
@@ -126,39 +129,95 @@ public class GuideSysCheckerManager {
 
         System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
 
-        // 初始化完成后，遍历玩家物品栏中的所有物品并触发事件
+        // 检查是否在联机模式，需要从服务器请求成就数据
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null) {
-            PlayerInventory inventory = client.player.getInventory();
+        if (client.getServer() == null) { // 联机模式
+            // 收集所有需要请求数据的成就ID
+            List<Identifier> advancementIds = checkers.values().stream()
+                    .filter(Objects::nonNull)
+                    .map(checker -> checker.getAchievementChecker().advancementId)         // 访问 advancementId 字段
+                    .distinct()
+                    .collect(Collectors.toList());
 
-            // 获取InventoryTrigger
-            InventoryTrigger trigger = (InventoryTrigger) GuideSysTriggerManager.getInstance()
+            if (!advancementIds.isEmpty()) {
+                // 发送数据请求并等待响应
+                requestAdvancementDataAndInitialize(advancementIds);
+                return; // 等待异步响应，不继续执行后续初始化
+            }
+        }
+        InitMsgTrigger();
+    }
+
+
+    /**
+     * 请求成就数据并在完成后继续初始化
+     */
+    private void requestAdvancementDataAndInitialize(List<Identifier> advancementIds) {
+        // 创建数据请求
+        NetWorking.AdvancementDataRequestPacket request =
+                new NetWorking.AdvancementDataRequestPacket(advancementIds);
+
+        // 设置请求状态
+        AdvancementDataCache cache = AdvancementDataCache.getInstance();
+        CompletableFuture<Void> requestFuture = new CompletableFuture<>();
+        cache.setCurrentRequest(requestFuture);
+
+        // 发送请求
+        ClientPlayNetworking.send(request);
+
+        // 等待响应完成后继续初始化
+        // 使用 handle 方法统一处理成功和失败情况
+        requestFuture.handle((result, throwable) -> {
+            if (throwable != null) {
+                System.err.println("请求成就数据失败: " + throwable.getMessage());
+            }
+            // 无论成功失败都只调用一次 InitMsgTrigger
+            InitMsgTrigger();
+            return null;
+        });
+
+        System.out.println("已发送成就数据请求，等待服务器响应...");
+    }
+
+    private void InitMsgTrigger() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null) return;
+
+        System.out.println("开始触发初始化事件...");
+
+        // 初始化完成后，遍历玩家物品栏中的所有物品并触发事件
+        PlayerInventory inventory = client.player.getInventory();
+
+        // 获取InventoryTrigger
+        InventoryTrigger trigger = (InventoryTrigger) GuideSysTriggerManager.getInstance()
                 .getTrigger(TriggerType.inventory);
 
-            if (trigger != null) {
-                // 遍历物品
-                for (int i = 0; i < inventory.size(); i++) {
-                    ItemStack stack = inventory.getStack(i);
-                    if (!stack.isEmpty()) {
-                        Map<String, Object> eventData = new HashMap<>();
-                        eventData.put("itemStack", stack);
-                        eventData.put("isAdded", true);
-                        trigger.fire(eventData);
-                    }
+        if (trigger != null) {
+            // 遍历物品
+            for (int i = 0; i < inventory.size(); i++) {
+                ItemStack stack = inventory.getStack(i);
+                if (!stack.isEmpty()) {
+                    Map<String, Object> eventData = new HashMap<>();
+                    eventData.put("itemStack", stack);
+                    eventData.put("isAdded", true);
+                    trigger.fire(eventData);
                 }
             }
         }
 
         //发送当前维度更新包触发维度触发器
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = client.player;
         //维度触发器
         DimensionTrigger dimensionTrigger = (DimensionTrigger) GuideSysTriggerManager.getInstance()
                 .getTrigger(TriggerType.dimension);
-        if (dimensionTrigger != null && player != null) {
+        if (dimensionTrigger != null) {
             Identifier currentDimension = player.getEntityWorld().getRegistryKey().getValue();
             dimensionTrigger.fire(dimensionTrigger.createDimensionChangeEventData(null, currentDimension));
         }
+
+        System.out.println("初始化事件触发完成");
     }
+
 
     /**
      * 重新加载所有检查器

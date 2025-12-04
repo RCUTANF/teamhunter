@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
@@ -10,6 +11,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.UUID;
@@ -191,6 +193,40 @@ public class NetWorking {
             buf.writeUuid(playerId);
             buf.writeString(playerName);
             buf.writeBoolean(isVisible);
+        }
+    }
+
+    // 请求成就数据的数据包
+    public record AdvancementDataRequestPacket(List<Identifier> advancementIds) implements CustomPayload {
+        public static final Identifier ADVANCEMENT_DATA_REQUEST_ID = Identifier.of(Teamhunter.MOD_ID, "advancement_data_request");
+        public static final Id<AdvancementDataRequestPacket> ID = new Id<>(ADVANCEMENT_DATA_REQUEST_ID);
+        public static final PacketCodec<PacketByteBuf, AdvancementDataRequestPacket> CODEC =
+            PacketCodec.tuple(
+                Identifier.PACKET_CODEC.collect(PacketCodecs.toList()),
+                AdvancementDataRequestPacket::advancementIds,
+                AdvancementDataRequestPacket::new
+            );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    // 成就数据响应数据包 - 直接使用 AdvancementEntry
+    public record AdvancementDataResponsePacket(List<AdvancementEntry> advancements) implements CustomPayload {
+        public static final Identifier ADVANCEMENT_DATA_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "advancement_data_response");
+        public static final Id<AdvancementDataResponsePacket> ID = new Id<>(ADVANCEMENT_DATA_RESPONSE_ID);
+        public static final PacketCodec<RegistryByteBuf, AdvancementDataResponsePacket> CODEC =
+            PacketCodec.tuple(
+                AdvancementEntry.LIST_PACKET_CODEC,
+                AdvancementDataResponsePacket::advancements,
+                AdvancementDataResponsePacket::new
+            );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
         }
     }
 }

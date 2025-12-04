@@ -8,6 +8,7 @@ import com.rcutanf.teamhunter.client.guide_sys.GuideSysCheckerManager;
 import com.rcutanf.teamhunter.client.guide_sys.GuideSysTriggerManager;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.AdvancementDataCache;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
@@ -20,6 +21,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.network.PacketByteBuf;
@@ -165,6 +167,24 @@ public class TeamhunterClient implements ClientModInitializer {
                 info.updateVisible(isVisible);
             }
             // TODO:如果玩家尚未在位置映射中，我们将等待位置更新数据包
+        });
+
+        // 注册成就数据响应处理
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.AdvancementDataResponsePacket.ID, (payload, context) -> {
+            // 直接使用 AdvancementEntry，不需要额外缓存
+            AdvancementDataCache cache = AdvancementDataCache.getInstance();
+
+            for (AdvancementEntry entry : payload.advancements()) {
+                cache.cacheAdvancement(entry.id(), entry);
+            }
+
+            // 完成请求 Future，触发后续初始化
+            CompletableFuture<Void> currentRequest = cache.getCurrentRequest();
+            if (currentRequest != null) {
+                currentRequest.complete(null);
+            }
+
+            System.out.println("已接收并缓存 " + payload.advancements().size() + " 个成就数据");
         });
 
         // 注册登录阶段网络处理
