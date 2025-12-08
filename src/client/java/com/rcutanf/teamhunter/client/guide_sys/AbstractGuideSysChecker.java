@@ -187,7 +187,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             } else if (data.containsKey("blockTypes")) {
                 // 方块检测事件
                 handleSurroundingBlockEvent(data);
-            } else if (data.containsKey("structureId")) {
+            } else if (data.containsKey("currentStructures")) {
                 // 结构检测事件
                 handleStructureEvent(data);
             } else if (data.containsKey("entities")) {
@@ -679,15 +679,27 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
      * @return 是否成功处理该条件
      */
     protected boolean checkCondition4structure(Map<String, Object> data, Requirement requirement, String structureId) {
-        String detectedStructure = (String) data.get("structureId");
+        @SuppressWarnings("unchecked")
+        List<String> currentStructures = (List<String>) data.get("currentStructures");
 
-        if (structureId != null && structureId.equals(detectedStructure)) {
+        @SuppressWarnings("unchecked")
+        List<String> enteredStructures = (List<String>) data.get("enteredStructures");
+
+        @SuppressWarnings("unchecked")
+        List<String> exitedStructures = (List<String>) data.get("exitedStructures");
+
+        if(structureId == null){
+            return false;
+        }
+
+
+        if (enteredStructures.contains(structureId)) {
             if(!isActive()){setActive(true);}
             requirement.setInsideProgress(requirement.weight);
             updateTotalProgress();
             return true;
         }
-        else  {
+        else if(exitedStructures.contains(structureId)) {
             requirement.setInsideProgress(0);
             updateTotalProgress();
             if(isActive()){
@@ -697,6 +709,7 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
             }
             return false;
         }
+        return false;
     }
 
     protected boolean checkCondition4Entity(Map<String, Object> data, Requirement requirement, String entityId) {
