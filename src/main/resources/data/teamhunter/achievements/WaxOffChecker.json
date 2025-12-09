@@ -162,8 +162,9 @@
     },
     {
       "name": "in_trial_chambers",
-      "description": "位于试炼大厅（提示）",
+      "description": "位于试炼大厅结构内",
       "weight": 10,
+      "isHintOnly": true,
       "requirements": [
         {
           "triggerType": "structure",

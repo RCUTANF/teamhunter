@@ -58,7 +58,7 @@
     },
     {
       "name": "snowy_town_hint",
-      "description": "（提示）曾进入雪屋结构",
+      "description": "在雪屋结构（有概率）",
       "weight": 20,
       "isHintOnly": true,
       "requirements": [
