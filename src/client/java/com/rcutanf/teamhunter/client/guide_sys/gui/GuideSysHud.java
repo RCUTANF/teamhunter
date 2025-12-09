@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys.gui;
 
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideCondition;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideData;
+import com.rcutanf.teamhunter.client.guide_sys.gui.widget.ScrollingCarouselText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -21,6 +22,12 @@ public class GuideSysHud {
     private static final int ITEM_PADDING = 3;
     private static final int DESCRIPTION_PADDING = 8;
     private static final int ICON_SIZE = 16;
+
+    private static final ScrollingCarouselText hintTextWidget = new ScrollingCarouselText(
+            "按下TAB展开进度描述",
+            "按下Tab+Ctrl可打开详情界面"
+    ).setTextColor(0xFFAAAAFF)
+            .setBackgroundColor(0x90000000);
 
     private static boolean showAllDescriptions = false;
 
@@ -83,10 +90,7 @@ public class GuideSysHud {
         // 为说明文本添加背景框
         context.fill(headerX, hintY, screenWidth - MARGIN_RIGHT, hintY + hintHeight, 0x90000000);
         // 说明文本
-        context.drawText(textRenderer, hintText,
-                headerX + (itemWidth - textRenderer.getWidth(hintText)) / 2,
-                hintY + 1,
-                0xFFAAAAFF, true);
+        hintTextWidget.render(context, textRenderer, headerX, hintY, itemWidth, hintHeight);
 
         // 如果没有指南项，显示提示信息
         if (guides.isEmpty()) {
