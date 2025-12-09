@@ -7,6 +7,8 @@ import com.rcutanf.teamhunter.shop.ShopCommand;
 import com.rcutanf.teamhunter.shop.ShopComponentTypes;
 import com.rcutanf.teamhunter.shop.ShopManager;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -16,12 +18,23 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructureStart;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.gen.structure.Structure;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -97,6 +110,11 @@ public class Teamhunter implements ModInitializer {
         // 成就数据相关数据包
         PayloadTypeRegistry.playC2S().register(NetWorking.AdvancementDataRequestPacket.ID, NetWorking.AdvancementDataRequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(NetWorking.AdvancementDataResponsePacket.ID, NetWorking.AdvancementDataResponsePacket.CODEC);
+
+        // 结构数据相关数据包
+        PayloadTypeRegistry.playC2S().register(NetWorking.StructureDataRequestPacket.ID, NetWorking.StructureDataRequestPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(NetWorking.StructureDataResponsePacket.ID, NetWorking.StructureDataResponsePacket.CODEC);
+
     }
 
     /**
@@ -225,5 +243,69 @@ public class Teamhunter implements ModInitializer {
             NetWorking.AdvancementDataResponsePacket response = new NetWorking.AdvancementDataResponsePacket(entries);
             ServerPlayNetworking.send(player, response);
         });
+
+        ServerPlayNetworking.registerGlobalReceiver(NetWorking.StructureDataRequestPacket.ID, (payload, context) -> {
+            ServerPlayerEntity player = context.player();
+            MinecraftServer server = player.getEntityWorld().getServer();
+
+            RegistryKey<World> worldKey = RegistryKey.of(RegistryKeys.WORLD, payload.dimension());
+            ServerWorld serverWorld = server.getWorld(worldKey);
+
+            if (serverWorld != null) {
+                List<NetWorking.StructureInfo> structures =
+                        getStructureDataForChunk(serverWorld, payload.chunkPos());
+
+                NetWorking.StructureDataResponsePacket response =
+                        new NetWorking.StructureDataResponsePacket(payload.chunkPos(), structures);
+
+                ServerPlayNetworking.send(player, response);
+            }
+        });
+    }
+
+    /**
+     * 获取指定区块的结构数据
+     */
+    private static List<NetWorking.StructureInfo> getStructureDataForChunk(
+            ServerWorld world, ChunkPos chunkPos) {
+        List<NetWorking.StructureInfo> structures = new ArrayList<>();
+
+        try {
+            WorldChunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
+            Map<Structure, LongSet> references = chunk.getStructureReferences();
+
+            if (references != null && !references.isEmpty()) {
+                for (Map.Entry<Structure, LongSet> entry : references.entrySet()) {
+                    Structure structure = entry.getKey();
+                    LongSet referenceSet = entry.getValue();
+
+                    LongIterator iterator = referenceSet.iterator();
+                    while (iterator.hasNext()) {
+                        long packedPos = iterator.nextLong();
+                        ChunkPos refChunkPos = new ChunkPos(packedPos);
+
+                        StructureStart structureStart = world.getChunk(refChunkPos.x, refChunkPos.z)
+                                .getStructureStart(structure);
+
+                        if (structureStart != null && structureStart.hasChildren()) {
+                            BlockBox boundingBox = structureStart.getBoundingBox();
+                            String structureName = world.getRegistryManager()
+                                    .getOptional(RegistryKeys.STRUCTURE)
+                                    .map(registry -> registry.getId(structure))
+                                    .map(Object::toString)
+                                    .orElse("unknown");
+
+                            structures.add(new NetWorking.StructureInfo(
+                                structureName, boundingBox));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // 记录错误但不中断处理
+            System.err.println("获取区块结构数据时发生错误: " + e.getMessage());
+        }
+
+        return structures;
     }
 }

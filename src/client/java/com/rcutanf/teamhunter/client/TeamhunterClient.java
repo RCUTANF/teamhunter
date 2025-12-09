@@ -9,6 +9,7 @@ import com.rcutanf.teamhunter.client.guide_sys.GuideSysTriggerManager;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.AdvancementDataCache;
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.StructureCache;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
@@ -187,6 +188,11 @@ public class TeamhunterClient implements ClientModInitializer {
             System.out.println("已接收并缓存 " + payload.advancements().size() + " 个成就数据");
         });
 
+        // 注册结构数据响应处理
+        ClientPlayNetworking.registerGlobalReceiver(NetWorking.StructureDataResponsePacket.ID, (payload, context) -> {
+            StructureCache.getInstance().handleServerResponse(payload.chunkPos(), payload.structures());
+        });
+
         // 注册登录阶段网络处理
         ClientLoginNetworking.registerGlobalReceiver(NetWorking.CHECK_CLIENT_MOD,
             (payload, context, buf, consumer) -> CompletableFuture.completedFuture(new PacketByteBuf(Unpooled.buffer())));
@@ -196,6 +202,7 @@ public class TeamhunterClient implements ClientModInitializer {
             playerPositions.clear();
             //PlayerRadarHud.dispose();
             guideCheckerManager.clearAllCheckers();
+            StructureCache.getInstance().clearCache();
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {

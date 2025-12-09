@@ -10,9 +10,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ChunkPos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -228,5 +231,66 @@ public class NetWorking {
         public Id<? extends CustomPayload> getId() {
             return ID;
         }
+    }
+
+    // 结构数据请求数据包
+    public record StructureDataRequestPacket(ChunkPos chunkPos, Identifier dimension) implements CustomPayload {
+        public static final Identifier STRUCTURE_DATA_REQUEST_ID = Identifier.of(Teamhunter.MOD_ID, "structure_data_request");
+        public static final Id<StructureDataRequestPacket> ID = new Id<>(STRUCTURE_DATA_REQUEST_ID);
+
+        // 为ChunkPos创建PacketCodec
+        private static final PacketCodec<PacketByteBuf, ChunkPos> CHUNK_POS_CODEC = PacketCodec.tuple(
+                PacketCodecs.VAR_INT, chunkPos -> chunkPos.x,
+                PacketCodecs.VAR_INT, chunkPos -> chunkPos.z,
+                ChunkPos::new
+        );
+
+        public static final PacketCodec<PacketByteBuf, StructureDataRequestPacket> CODEC = PacketCodec.tuple(
+                CHUNK_POS_CODEC, StructureDataRequestPacket::chunkPos,
+                Identifier.PACKET_CODEC, StructureDataRequestPacket::dimension,
+                StructureDataRequestPacket::new
+        );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    // 结构响应数据包
+    public record StructureDataResponsePacket(ChunkPos chunkPos, List<StructureInfo> structures) implements CustomPayload {
+        public static final Identifier STRUCTURE_DATA_RESPONSE_ID = Identifier.of(Teamhunter.MOD_ID, "structure_data_response");
+        public static final Id<StructureDataResponsePacket> ID = new Id<>(STRUCTURE_DATA_RESPONSE_ID);
+
+        public static final PacketCodec<PacketByteBuf, StructureDataResponsePacket> CODEC = PacketCodec.tuple(
+                StructureDataRequestPacket.CHUNK_POS_CODEC, StructureDataResponsePacket::chunkPos,
+                StructureInfo.PACKET_CODEC.collect(PacketCodecs.toList()), StructureDataResponsePacket::structures,
+                StructureDataResponsePacket::new
+        );
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    public record StructureInfo(String name, BlockBox boundingBox) {
+        // 为BlockBox创建专用的PacketCodec
+        public static final PacketCodec<PacketByteBuf, BlockBox> BLOCK_BOX_CODEC = PacketCodec.tuple(
+                PacketCodecs.VAR_INT, BlockBox::getMinX,
+                PacketCodecs.VAR_INT, BlockBox::getMinY,
+                PacketCodecs.VAR_INT, BlockBox::getMinZ,
+                PacketCodecs.VAR_INT, BlockBox::getMaxX,
+                PacketCodecs.VAR_INT, BlockBox::getMaxY,
+                PacketCodecs.VAR_INT, BlockBox::getMaxZ,
+                BlockBox::new
+        );
+
+        // StructureInfo的PacketCodec
+        public static final PacketCodec<PacketByteBuf, StructureInfo> PACKET_CODEC = PacketCodec.tuple(
+                PacketCodecs.STRING, StructureInfo::name,
+                BLOCK_BOX_CODEC, StructureInfo::boundingBox,
+                StructureInfo::new
+        );
     }
 }

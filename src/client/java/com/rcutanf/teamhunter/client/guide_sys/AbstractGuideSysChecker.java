@@ -682,34 +682,27 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
         @SuppressWarnings("unchecked")
         List<String> currentStructures = (List<String>) data.get("currentStructures");
 
-        @SuppressWarnings("unchecked")
-        List<String> enteredStructures = (List<String>) data.get("enteredStructures");
-
-        @SuppressWarnings("unchecked")
-        List<String> exitedStructures = (List<String>) data.get("exitedStructures");
-
-        if(structureId == null){
+        if (structureId == null || currentStructures == null) {
             return false;
         }
 
-
-        if (enteredStructures.contains(structureId)) {
-            if(!isActive()){setActive(true);}
+        if (currentStructures.contains(structureId)) {
+            // 玩家在结构内
+            if (!isActive()) {
+                setActive(true);
+            }
             requirement.setInsideProgress(requirement.weight);
             updateTotalProgress();
             return true;
-        }
-        else if(exitedStructures.contains(structureId)) {
+        } else {
+            // 玩家不在结构内
             requirement.setInsideProgress(0);
             updateTotalProgress();
-            if(isActive()){
-                if (getProgress() == 0){
-                    setActive(false);
-                }
+            if (isActive() && getProgress() == 0) {
+                setActive(false);
             }
             return false;
         }
-        return false;
     }
 
     protected boolean checkCondition4Entity(Map<String, Object> data, Requirement requirement, String entityId) {

@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter.client.guide_sys.impl.trigger;
 
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
+import com.rcutanf.teamhunter.client.guide_sys.gui.data.StructureCache;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.client.MinecraftClient;
@@ -68,7 +69,7 @@ public class StructureTrigger extends ScanCore {
         } else {
             // 多人游戏 - 使用客户端可用的方法或发送数据包请求
             detectStructuresFromClient(client.world, playerPos, detectedStructures);
-            updateStructureStateAndFireEvent(detectedStructures, playerPos);
+            //updateStructureStateAndFireEvent(detectedStructures, playerPos);
         }
     }
 
@@ -111,14 +112,19 @@ public class StructureTrigger extends ScanCore {
     }
 
     private void detectStructuresFromClient(net.minecraft.world.World clientWorld, BlockPos playerPos, Set<String> detectedStructures) {
-        // 多人游戏的回退方案 - 使用客户端可用的数据
-        // 或者实现数据包通信来从服务器获取结构信息
+        StructureCache cache = StructureCache.getInstance();
 
-        // 临时的简单实现，可能不够准确
-        WorldChunk chunk = clientWorld.getWorldChunk(playerPos);
-        Map<Structure, LongSet> references = chunk.getStructureReferences();
-
-        // ... 与服务器端相同的逻辑
+        cache.getStructuresAtPosition(playerPos).thenAccept(structures -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null) {
+                client.execute(() -> {
+                    updateStructureStateAndFireEvent(structures, playerPos);
+                });
+            }
+        }).exceptionally(throwable -> {
+            System.err.println("获取结构数据失败: " + throwable.getMessage());
+            return null;
+        });
     }
 
     private void updateStructureStateAndFireEvent(Set<String> detectedStructures, BlockPos playerPos) {
