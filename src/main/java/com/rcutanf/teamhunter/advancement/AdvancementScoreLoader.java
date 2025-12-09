@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.advancement;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import net.minecraft.util.Identifier;
 import java.io.*;
 import java.nio.file.*;
@@ -51,7 +52,7 @@ public class AdvancementScoreLoader {
             }
         } catch (IOException e) {
             // 简单记录错误
-            System.err.println("无法读取成就分数文件: " + e.getMessage());
+            Teamhunter.LOGGER.error("无法读取成就分数文件: {}", e.getMessage());
         }
     }
 
@@ -69,7 +70,7 @@ public class AdvancementScoreLoader {
                     "story/smelt_iron,3"
             ));
         } catch (IOException e) {
-            System.err.println("无法创建默认成就分数文件: " + e.getMessage());
+            Teamhunter.LOGGER.error("无法创建默认成就分数文件: {}", e.getMessage());
         }
     }
 }

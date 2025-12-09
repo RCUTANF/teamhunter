@@ -185,7 +185,7 @@ public class TeamhunterClient implements ClientModInitializer {
                 currentRequest.complete(null);
             }
 
-            System.out.println("已接收并缓存 " + payload.advancements().size() + " 个成就数据");
+            Teamhunter.LOGGER.info("已接收并缓存 {} 个成就数据", payload.advancements().size());
         });
 
         // 注册结构数据响应处理

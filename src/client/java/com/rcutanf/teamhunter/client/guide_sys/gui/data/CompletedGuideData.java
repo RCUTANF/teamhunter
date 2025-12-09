@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui.data;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementRecord;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
@@ -42,7 +43,7 @@ public class CompletedGuideData {
 
             return new CompletedGuideData(id, title, record.getGameTime(), icon);
         } catch (Exception e) {
-            System.out.println("从AdvancementRecord创建CompletedGuideData时出错: " + e.getMessage());
+            Teamhunter.LOGGER.info("从AdvancementRecord创建CompletedGuideData时出错: {}", e.getMessage());
             return null;
         }
     }

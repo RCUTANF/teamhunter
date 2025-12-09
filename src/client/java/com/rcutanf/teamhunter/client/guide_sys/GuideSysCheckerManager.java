@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSystemDataManager;
@@ -112,7 +113,7 @@ public class GuideSysCheckerManager {
         GuideSystemDataManager.getInstance().clearIncompleteGuides();
         checkers.clear();
         AdvancementDataCache.getInstance().clearCache();
-        System.out.println("已清理所有成就检查器资源");
+        Teamhunter.LOGGER.info("已清理所有成就检查器资源");
     }
 
     /**
@@ -127,7 +128,7 @@ public class GuideSysCheckerManager {
 
         intializeCustomCheckers();
 
-        System.out.println("已初始化 " + checkers.size() + " 个成就检查器");
+        Teamhunter.LOGGER.info("已初始化 {} 个成就检查器", checkers.size());
 
         // 检查是否在联机模式，需要从服务器请求成就数据
         MinecraftClient client = MinecraftClient.getInstance();
@@ -169,21 +170,21 @@ public class GuideSysCheckerManager {
         // 使用 handle 方法统一处理成功和失败情况
         requestFuture.handle((result, throwable) -> {
             if (throwable != null) {
-                System.err.println("请求成就数据失败: " + throwable.getMessage());
+                Teamhunter.LOGGER.error("请求成就数据失败: {}", throwable.getMessage());
             }
             // 无论成功失败都只调用一次 InitMsgTrigger
             InitMsgTrigger();
             return null;
         });
 
-        System.out.println("已发送成就数据请求，等待服务器响应...");
+        Teamhunter.LOGGER.info("已发送成就数据请求，等待服务器响应...");
     }
 
     private void InitMsgTrigger() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) return;
 
-        System.out.println("开始触发初始化事件...");
+        Teamhunter.LOGGER.info("开始触发初始化事件...");
 
         // 初始化完成后，遍历玩家物品栏中的所有物品并触发事件
         PlayerInventory inventory = client.player.getInventory();
@@ -215,7 +216,7 @@ public class GuideSysCheckerManager {
             dimensionTrigger.fire(dimensionTrigger.createDimensionChangeEventData(null, currentDimension));
         }
 
-        System.out.println("初始化事件触发完成");
+        Teamhunter.LOGGER.info("初始化事件触发完成");
     }
 
 

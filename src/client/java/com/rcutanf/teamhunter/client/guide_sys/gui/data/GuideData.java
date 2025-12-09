@@ -1,4 +1,5 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui.data;
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlacedAdvancement;
@@ -69,7 +70,7 @@ public class GuideData {
                 conditions
             );
         } catch (Exception e) {
-            System.out.println("从AchievementChecker创建GuideData时出错: " + e.getMessage());
+            Teamhunter.LOGGER.info("从AchievementChecker创建GuideData时出错: {}", e.getMessage());
             return null;
         }
     }

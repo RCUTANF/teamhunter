@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.impl.trigger;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.TriggerType;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.StructureCache;
 import it.unimi.dsi.fastutil.longs.LongIterator;
@@ -122,7 +123,7 @@ public class StructureTrigger extends ScanCore {
                 });
             }
         }).exceptionally(throwable -> {
-            System.err.println("获取结构数据失败: " + throwable.getMessage());
+            Teamhunter.LOGGER.error("获取结构数据失败: {}", throwable.getMessage());
             return null;
         });
     }

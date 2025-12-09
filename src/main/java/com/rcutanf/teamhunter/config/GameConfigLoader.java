@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.config;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -34,9 +35,9 @@ public class GameConfigLoader {
                 loadFromFile(configFilePath);
             }
 
-            System.out.println("已加载配置，当前游戏模式: " + config.currentGamemode);
+            Teamhunter.LOGGER.info("已加载配置，当前游戏模式: {}", config.currentGamemode);
         } catch (Exception e) {
-            System.err.println("加载配置失败: " + e.getMessage());
+            Teamhunter.LOGGER.error("加载配置失败: {}", e.getMessage());
             createDefaultConfig();
         }
     }
@@ -64,7 +65,7 @@ public class GameConfigLoader {
                 }
             }
         } catch (Exception e) {
-            System.err.println("读取配置文件失败: " + e.getMessage());
+            Teamhunter.LOGGER.error("读取配置文件失败: {}", e.getMessage());
             createDefaultConfig();
         }
     }
@@ -89,7 +90,7 @@ public class GameConfigLoader {
                 }
             }
         } catch (Exception e) {
-            System.err.println("读取命令配置失败: " + gamemode);
+            Teamhunter.LOGGER.error("读取命令配置失败: {}", gamemode);
         }
 
         // 确保列表不为null
@@ -144,7 +145,7 @@ public class GameConfigLoader {
                 YAML.dump(yamlData, writer);
             }
         } catch (Exception e) {
-            System.err.println("保存配置失败: " + e.getMessage());
+            Teamhunter.LOGGER.error("保存配置失败: {}", e.getMessage());
         }
     }
 
@@ -164,7 +165,7 @@ public class GameConfigLoader {
                 YAML.dump(commandsData, writer);
             }
         } catch (Exception e) {
-            System.err.println("保存命令配置失败: " + gamemode);
+            Teamhunter.LOGGER.error("保存命令配置失败: {}", gamemode);
         }
     }
 
@@ -219,12 +220,12 @@ public class GameConfigLoader {
 
     public static boolean switchGamemode(String gamemode) {
         if (!config.gamemodes.containsKey(gamemode)) {
-            System.err.println("游戏模式不存在: " + gamemode);
+            Teamhunter.LOGGER.error("游戏模式不存在: {}", gamemode);
             return false;
         }
 
         setCurrentGamemode(gamemode);
-        System.out.println("已切换到游戏模式: " + gamemode);
+        Teamhunter.LOGGER.info("已切换到游戏模式: {}", gamemode);
         return true;
     }
 }

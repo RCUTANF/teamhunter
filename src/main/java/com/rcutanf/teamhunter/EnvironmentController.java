@@ -197,7 +197,7 @@ public class EnvironmentController {
 
         // 如果优势状态发生变化，向所有玩家发送更新
         if (previousAdvantage != netherAdvantageTeam) {
-            System.out.println("[TeamHunter] 地狱优势状态更新: " + netherAdvantageTeam);
+            Teamhunter.LOGGER.info("[TeamHunter] 地狱优势状态更新: {}", netherAdvantageTeam);
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 ServerPlayNetworking.send(player, new NetWorking.TeamAdvantagePacket(netherAdvantageTeam.ordinal()));
             }

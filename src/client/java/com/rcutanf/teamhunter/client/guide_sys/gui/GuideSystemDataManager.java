@@ -1,6 +1,7 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
 
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementRecord;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
@@ -46,7 +47,7 @@ public class GuideSystemDataManager {
                 incompleteGuides.add(0, guideData);
             }
         } catch (Exception e) {
-            System.out.println("添加指南时出错: " + e.getMessage());
+            Teamhunter.LOGGER.info("添加指南时出错: {}", e.getMessage());
             e.printStackTrace();
         }
     }

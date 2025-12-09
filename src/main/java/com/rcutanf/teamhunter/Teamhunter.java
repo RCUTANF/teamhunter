@@ -31,6 +31,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.structure.Structure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ import java.util.stream.Collectors;
 public class Teamhunter implements ModInitializer {
 
     public static final String MOD_ID = "teamhunter";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static PhaseCombiner phaseManager;
     private PlayerRespawnHandler playerRespawnHandler;
     private EnvironmentController environmentController;
@@ -303,7 +306,7 @@ public class Teamhunter implements ModInitializer {
             }
         } catch (Exception e) {
             // 记录错误但不中断处理
-            System.err.println("获取区块结构数据时发生错误: " + e.getMessage());
+            Teamhunter.LOGGER.error("获取区块结构数据时发生错误: {}", e.getMessage());
         }
 
         return structures;

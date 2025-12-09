@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys;
 
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementCompletionListener;
 import com.rcutanf.teamhunter.client.guide_sys.advancementListener.AdvancementEventManager;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementChecker;
@@ -93,12 +94,12 @@ public class AbstractGuideSysChecker implements TriggerListener, AdvancementComp
      */
     public void setActive(boolean active) {
         if (active) {
-            System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now active.");
+            Teamhunter.LOGGER.info("AbstractGuideSysChecker {} is now active.", achievementChecker.id);
             this.isActive = true;
             GuideSystemDataManager.getInstance().addIncompleteGuide(achievementChecker, progress);
         }
         else {
-            System.out.println("AbstractGuideSysChecker " + achievementChecker.id + " is now inactive.");
+            Teamhunter.LOGGER.info("AbstractGuideSysChecker {} is now inactive.", achievementChecker.id);
             this.isActive = false;
             GuideSystemDataManager.getInstance().removeGuide(achievementChecker.advancementId);
         }

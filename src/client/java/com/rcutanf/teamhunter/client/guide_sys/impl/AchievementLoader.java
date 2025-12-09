@@ -2,6 +2,7 @@ package com.rcutanf.teamhunter.client.guide_sys.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.rcutanf.teamhunter.Teamhunter;
 import com.rcutanf.teamhunter.client.guide_sys.AbstractGuideSysChecker;
 import com.rcutanf.teamhunter.client.guide_sys.def.AchievementDefinition;
 
@@ -38,28 +39,28 @@ public class AchievementLoader {
                  InputStreamReader reader = new InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8)) {
 
                 if (stream == null) {
-                    System.err.println("⚠ 资源未找到: " + resourcePath);
+                    Teamhunter.LOGGER.error("⚠ 资源未找到: {}", resourcePath);
                     continue;
                 }
 
                 AchievementDefinition definition = GSON.fromJson(reader, AchievementDefinition.class);
                 if (definition == null || definition.id == null || definition.advancementId == null) {
-                    System.err.println("⚠ 无效成就配置: " + resourcePath);
+                    Teamhunter.LOGGER.error("⚠ 无效成就配置: {}", resourcePath);
                     continue;
                 }
 
                 loadedDefinitions.add(definition);
                 loadedCount++;
-                System.out.println("✔ 成就已加载（JAR内）: " + definition.id + " (" + resourcePath + ")");
+                Teamhunter.LOGGER.info("✔ 成就已加载（JAR内）: {} ({})", definition.id, resourcePath);
 
             } catch (JsonSyntaxException e) {
-                System.err.println("❌ JSON 格式错误: " + resourcePath + " - " + e.getMessage());
+                Teamhunter.LOGGER.error("❌ JSON 格式错误: {} - {}", resourcePath, e.getMessage());
             } catch (IOException e) {
-                System.err.println("❌ 读取失败: " + resourcePath + " - " + e.getMessage());
+                Teamhunter.LOGGER.error("❌ 读取失败: {} - {}", resourcePath, e.getMessage());
             }
         }
 
-        System.out.println("✅ 已从 JAR 内加载 " + loadedCount + " 个成就");
+        Teamhunter.LOGGER.info("✅ 已从 JAR 内加载 {} 个成就", loadedCount);
     }
 
     // ✅ 查找所有 data/teamhunter/achievements/*.json 文件
@@ -103,7 +104,7 @@ public class AchievementLoader {
                 }
             }
         } catch (Exception e) {
-            System.err.println("❌ 查找成就资源失败: " + e.getMessage());
+            Teamhunter.LOGGER.error("❌ 查找成就资源失败: {}", e.getMessage());
         }
 
         return paths;
@@ -111,7 +112,7 @@ public class AchievementLoader {
 
     //在checker初始化调用，属于运行时数据
     public static void convertDefinitionsToCheckers() {
-        System.out.println("开始创建成就检查器...");
+        Teamhunter.LOGGER.info("开始创建成就检查器...");
         int count = 0;
 
         for (AchievementDefinition definition : loadedDefinitions) {
@@ -119,6 +120,6 @@ public class AchievementLoader {
             count++;
         }
 
-        System.out.println("✅ 已创建 " + count + " 个成就检查器");
+        Teamhunter.LOGGER.info("✅ 已创建 {} 个成就检查器", count);
     }
 }
