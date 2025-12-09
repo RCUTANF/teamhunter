@@ -12,6 +12,7 @@ ADGS is a guide that detects your surroundings and shows hints in the sidebar fo
 
 In the details screen, you can review all advancement hints and their details, even when the sidebar is hidden, and even after you’ve already completed those advancements.
 ## Player Radar
+- Press `F8` to configure the radar settings.
 
 ## Match Control
 
