@@ -1,5 +1,6 @@
 package com.rcutanf.teamhunter.client.guide_sys.gui;
 
+import com.rcutanf.teamhunter.client.config.GuideSysConfig;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideCondition;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.GuideData;
 import com.rcutanf.teamhunter.client.guide_sys.gui.widget.ScrollingCarouselText;
@@ -16,19 +17,12 @@ import net.minecraft.util.math.MathHelper;
 import java.util.List;
 
 public class GuideSysHud {
-    private static final int MARGIN_RIGHT = 8;
-    private static final int MARGIN_TOP = 8;
     private static final int ITEM_HEIGHT = 20;
     private static final int ITEM_PADDING = 3;
     private static final int DESCRIPTION_PADDING = 8;
     private static final int ICON_SIZE = 16;
 
-    private static final ScrollingCarouselText hintTextWidget = new ScrollingCarouselText(
-            "按下TAB展开进度描述",
-            "按下Tab+Ctrl可打开详情界面"
-    ).setTextColor(0xFFAAAAFF)
-            .setBackgroundColor(0x90000000);
-
+    private static ScrollingCarouselText hintTextWidget;
     private static boolean showAllDescriptions = false;
 
     // 进度图标资源
@@ -40,201 +34,297 @@ public class GuideSysHud {
 
     private GuideSysHud() {}
 
+    private static void initializeHintWidget() {
+        GuideSysConfig config = GuideSysConfig.getInstance();
+        hintTextWidget = new ScrollingCarouselText(
+                "按下TAB展开进度描述",
+                "按下Tab+Ctrl可打开详情界面"
+        ).setTextColor(config.getTextColor())
+         .setBackgroundColor(config.getBackgroundColor())
+         .setSwitchInterval(config.getHintSwitchInterval())
+         .setScrollSpeed(config.getHintScrollSpeed());
+    }
+
     public static void render(DrawContext context, RenderTickCounter tickDelta) {
+        GuideSysConfig config = GuideSysConfig.getInstance();
+
+        // 如果未启用，直接返回
+        if (!config.isEnabled()) return;
+
+        // 初始化提示组件（如果需要）
+        if (hintTextWidget == null) {
+            initializeHintWidget();
+        }
 
         MinecraftClient client = MinecraftClient.getInstance();
         List<GuideData> guides = guideManager.getIncompleteGuides();
-        if (guides.isEmpty()) return;
+
+        // 限制显示的项目数量
+        if (guides.size() > config.getMaxItems()) {
+            guides = guides.subList(0, config.getMaxItems());
+        }
+
         TextRenderer textRenderer = client.textRenderer;
         int screenWidth = client.getWindow().getScaledWidth();
+        int screenHeight = client.getWindow().getScaledHeight();
 
-        // 计算统一宽度
-        int maxWidth = 140; // 最小宽度
+        // 尝试使用配置的宽度
+        int maxWidth = Math.max(config.getWidth(), 140);
         if (!guides.isEmpty()) {
             for (GuideData guide : guides) {
-                int titleWidth = textRenderer.getWidth(guide.getTitle());
+                int titleWidth = (int) (textRenderer.getWidth(guide.getTitle()) * config.getTextScale());
                 String progressText = guide.getProgress() + "%";
-                int progressTextWidth = textRenderer.getWidth(progressText);
-                int itemWidth = ICON_SIZE + ITEM_PADDING * 3 + titleWidth + progressTextWidth + ICON_SIZE;
+                int progressTextWidth = (int) (textRenderer.getWidth(progressText) * config.getTextScale());
+                int itemWidth = (int) (ICON_SIZE * config.getTextScale()) + ITEM_PADDING * 3 + titleWidth + progressTextWidth + (int) (ICON_SIZE * config.getTextScale());
                 maxWidth = Math.max(maxWidth, itemWidth);
             }
         }
+
         // 确保表头文本也能适应
         String headerText = "进度列表";
-        int headerTextWidth = textRenderer.getWidth(headerText) + ITEM_PADDING * 6;
+        int headerTextWidth = (int) (textRenderer.getWidth(headerText) * config.getTextScale()) + ITEM_PADDING * 6;
         maxWidth = Math.max(maxWidth, headerTextWidth);
 
-        int itemWidth = maxWidth;
-        int x = screenWidth - MARGIN_RIGHT - itemWidth;
+        int itemWidth = Math.min(maxWidth, config.getWidth());
+
+        // 使用配置中的位置
+        int x, y;
+        if (config.getPosX() + itemWidth > screenWidth) {
+            x = screenWidth - itemWidth - 8; // 防止超出屏幕
+        } else {
+            x = config.getPosX();
+        }
+
+        if (config.getPosY() > screenHeight - 100) {
+            y = screenHeight - 100; // 防止超出屏幕
+        } else {
+            y = config.getPosY();
+        }
 
         // 绘制表头
-        int headerHeight = 20;
+        int headerHeight = (int) (20 * config.getTextScale());
         int headerX = x;
 
-        // 表头背景 - 深蓝色
-        context.fill(headerX, MARGIN_TOP, screenWidth - MARGIN_RIGHT, MARGIN_TOP + headerHeight, 0xA0204080);
-        // 表头边框
-        context.fill(headerX, MARGIN_TOP + headerHeight - 1, screenWidth - MARGIN_RIGHT, MARGIN_TOP + headerHeight, 0xFF4080FF);
+        // 表头背景 - 根据配置决定是否显示
+        if (config.isShowBackground()) {
+            context.fill(headerX, y, x + itemWidth, y + headerHeight, 0xA0204080);
+            // 表头边框
+            context.fill(headerX, y + headerHeight - 1, x + itemWidth, y + headerHeight, 0xFF4080FF);
+        }
 
-        // 表头文本
-        context.drawText(textRenderer, headerText,
-                headerX + (itemWidth - textRenderer.getWidth(headerText)) / 2,
-                MARGIN_TOP + (headerHeight - textRenderer.fontHeight) / 2,
-                0xFFFFFFFF, true);
+        // 表头文本 - 应用文字缩放
+        context.getMatrices().pushMatrix();
+        context.getMatrices().scale(config.getTextScale(), config.getTextScale());
 
-        // 说明文本 (显示按Tab可展开详情)
-        String hintText = "按下TAB展开进度描述";
-        int hintY = MARGIN_TOP + headerHeight;
-        int hintHeight = textRenderer.fontHeight + 2;
+        int scaledHeaderX = (int) ((headerX + (itemWidth - textRenderer.getWidth(headerText) * config.getTextScale()) / 2) / config.getTextScale());
+        int scaledHeaderY = (int) ((y + (headerHeight - textRenderer.fontHeight * config.getTextScale()) / 2) / config.getTextScale());
 
-        // 为说明文本添加背景框
-        context.fill(headerX, hintY, screenWidth - MARGIN_RIGHT, hintY + hintHeight, 0x90000000);
-        // 说明文本
-        hintTextWidget.render(context, textRenderer, headerX, hintY, itemWidth, hintHeight);
+        context.drawText(textRenderer, headerText, scaledHeaderX, scaledHeaderY, 0xFFFFFFFF, true);
+        context.getMatrices().popMatrix();
+
+        y += headerHeight;
+
+        // 提示文本区域
+        if (config.isEnableHintCarousel()) {
+            int hintHeight = (int) ((textRenderer.fontHeight + 2) * config.getTextScale());
+
+            // 更新提示组件的配置
+            hintTextWidget.setTextColor(config.getTextColor())
+                          .setBackgroundColor(config.getBackgroundColor())
+                          .setSwitchInterval(config.getHintSwitchInterval())
+                          .setScrollSpeed(config.getHintScrollSpeed())
+                          .setDrawBackground(config.isShowBackground());
+
+            // 渲染提示文本
+            context.getMatrices().pushMatrix();
+            context.getMatrices().scale(config.getTextScale(), config.getTextScale());
+
+            int scaledHintX = (int) (headerX / config.getTextScale());
+            int scaledHintY = (int) (y / config.getTextScale());
+            int scaledHintWidth = (int) (itemWidth / config.getTextScale());
+            int scaledHintHeight = (int) (hintHeight / config.getTextScale());
+
+            hintTextWidget.render(context, textRenderer, scaledHintX, scaledHintY, scaledHintWidth, scaledHintHeight);
+            context.getMatrices().popMatrix();
+
+            y += hintHeight;
+        }
 
         // 如果没有指南项，显示提示信息
         if (guides.isEmpty()) {
             String emptyText = "暂无进度";
-            int emptyY = hintY + hintHeight;
-            int emptyX = headerX + (itemWidth - textRenderer.getWidth(emptyText)) / 2;
-            context.drawText(textRenderer, emptyText, emptyX, emptyY, 0xFFAAAAAA, true);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().scale(config.getTextScale(), config.getTextScale());
+
+            int scaledEmptyX = (int) ((headerX + (itemWidth - textRenderer.getWidth(emptyText) * config.getTextScale()) / 2) / config.getTextScale());
+            int scaledEmptyY = (int) (y / config.getTextScale());
+
+            context.drawText(textRenderer, emptyText, scaledEmptyX, scaledEmptyY, 0xFFAAAAAA, true);
+            context.getMatrices().popMatrix();
             return;
         }
 
-        int y = hintY + hintHeight;
         int itemIndex = 0;
+        int scaledItemHeight = (int) (ITEM_HEIGHT * config.getTextScale());
 
         for (GuideData guide : guides) {
             // 交替背景色增强可读性
-            int backgroundColor = (itemIndex % 2 == 0) ? 0x90202020 : 0x90303030;
+            int backgroundColor = (itemIndex % 2 == 0) ?
+                (config.getBackgroundColor() & 0x00FFFFFF) | 0x90202020 :
+                (config.getBackgroundColor() & 0x00FFFFFF) | 0x90303030;
 
-            // 绘制背景（无间距）
-            context.fill(x, y, screenWidth - MARGIN_RIGHT, y + ITEM_HEIGHT, backgroundColor);
+            // 绘制背景（如果启用）
+            if (config.isShowBackground()) {
+                context.fill(x, y, x + itemWidth, y + scaledItemHeight, backgroundColor);
+                // 绘制边框线
+                context.fill(x, y + scaledItemHeight - 1, x + itemWidth, y + scaledItemHeight, 0x40FFFFFF);
+            }
 
-            // 绘制边框线
-            context.fill(x, y + ITEM_HEIGHT - 1, screenWidth - MARGIN_RIGHT, y + ITEM_HEIGHT, 0x40FFFFFF);
+            // 应用文字缩放
+            context.getMatrices().pushMatrix();
+            context.getMatrices().scale(config.getTextScale(), config.getTextScale());
 
             // 绘制成就图标
-            context.drawItem(guide.getIcon(), x + ITEM_PADDING, y + (ITEM_HEIGHT - ICON_SIZE) / 2);
+            int scaledIconX = (int) ((x + ITEM_PADDING) / config.getTextScale());
+            int scaledIconY = (int) ((y + (scaledItemHeight - ICON_SIZE * config.getTextScale()) / 2) / config.getTextScale());
+            context.drawItem(guide.getIcon(), scaledIconX, scaledIconY);
 
             // 绘制标题
-            int titleX = x + ICON_SIZE + ITEM_PADDING * 2;
-            int titleY = y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2 + 1;
-            context.drawText(textRenderer, guide.getTitle(), titleX, titleY, 0xFFFFFFFF, true);
+            int scaledTitleX = (int) ((x + ICON_SIZE * config.getTextScale() + ITEM_PADDING * 2) / config.getTextScale());
+            int scaledTitleY = (int) ((y + (scaledItemHeight - textRenderer.fontHeight * config.getTextScale()) / 2 + 1) / config.getTextScale());
+            context.drawText(textRenderer, guide.getTitle(), scaledTitleX, scaledTitleY, config.getTextColor(), true);
 
             // 绘制进度百分比文本
             String progressText = guide.getProgress() + "%";
             int progressTextWidth = textRenderer.getWidth(progressText);
-            int progressTextX = screenWidth - MARGIN_RIGHT - ICON_SIZE - ITEM_PADDING * 2 - progressTextWidth;
-            int progressTextY = y + (ITEM_HEIGHT - textRenderer.fontHeight) / 2 + 1;
+            int scaledProgressTextX = (int) ((x + itemWidth - ICON_SIZE * config.getTextScale() - ITEM_PADDING * 2) / config.getTextScale()) - progressTextWidth;
+            int scaledProgressTextY = scaledTitleY;
             int progressColor = guide.isCompleted() ? 0xFF55FF55 : (guide.getProgress() > 0 ? 0xFF55AAFF : 0xFFAAAAAA);
-            context.drawText(textRenderer, progressText, progressTextX, progressTextY, progressColor, true);
+            context.drawText(textRenderer, progressText, scaledProgressTextX, scaledProgressTextY, progressColor, true);
+
+            context.getMatrices().popMatrix();
 
             // 绘制状态图标
-            int statusX = screenWidth - MARGIN_RIGHT - ICON_SIZE - ITEM_PADDING;
-            int statusY = y + (ITEM_HEIGHT - ICON_SIZE) / 2;
+            int statusX = x + itemWidth - (int) (ICON_SIZE * config.getTextScale()) - ITEM_PADDING;
+            int statusY = y + (scaledItemHeight - (int) (ICON_SIZE * config.getTextScale())) / 2;
 
             Identifier statusIcon;
             if (guide.isCompleted()) {
                 statusIcon = PROGRESS_COMPLETE;
             } else if (guide.getProgress() >= 0 && guide.getProgress() < 100) {
                 statusIcon = PROGRESS_IN_PROGRESS;
-            } else if (guide.getProgress() == 100){
+            } else if (guide.getProgress() == 100) {
                 statusIcon = PROGRESS_FULL_PROGRESSED;
             } else {
                 statusIcon = PROGRESS_IN_PROGRESS;
             }
 
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, statusIcon, statusX, statusY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+            int scaledIconSize = (int) (ICON_SIZE * config.getTextScale());
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, statusIcon, statusX, statusY, 0, 0,
+                               scaledIconSize, scaledIconSize, scaledIconSize, scaledIconSize);
 
-            // 绘制进度条（2像素高）
-            int progressBarY = y + ITEM_HEIGHT - 2;
-            // 进度条背景
-            context.fill(x, progressBarY, x + itemWidth, progressBarY + 2, 0xFF404040);
-            // 进度条填充
-            int fillWidth = (int) (itemWidth * (MathHelper.clamp(guide.getProgress(), 0, 100) / 100.0f));
-            if (fillWidth > 0) {
-                context.fill(x, progressBarY, x + fillWidth, progressBarY + 2, progressColor);
+            // 绘制进度条（2像素高，按缩放调整）
+            int progressBarHeight = Math.max(1, (int) (2 * config.getTextScale()));
+            int progressBarY = y + scaledItemHeight - progressBarHeight;
+
+            if (config.isShowBackground()) {
+                // 进度条背景
+                context.fill(x, progressBarY, x + itemWidth, progressBarY + progressBarHeight, 0xFF404040);
+                // 进度条填充
+                int fillWidth = (int) (itemWidth * (MathHelper.clamp(guide.getProgress(), 0, 100) / 100.0f));
+                if (fillWidth > 0) {
+                    context.fill(x, progressBarY, x + fillWidth, progressBarY + progressBarHeight, progressColor);
+                }
             }
 
-            // 如果显示所有描述且该项有描述，则绘制描述
+            // 处理描述显示（如果启用且有描述）
             if (showAllDescriptions && guide.getDescription() != null) {
+                y += scaledItemHeight;
+
+                context.getMatrices().pushMatrix();
+                context.getMatrices().scale(config.getTextScale(), config.getTextScale());
 
                 // 自动换行处理
-                List<OrderedText> lines = textRenderer.wrapLines(guide.getDescription(), itemWidth - 6); // 留一些内边距
-                int descriptionHeight = lines.size() * (textRenderer.fontHeight + 1) + 4;
-
-                y += ITEM_HEIGHT; // 紧接当前项
+                int scaledWidth = (int) ((itemWidth - 6) / config.getTextScale());
+                List<OrderedText> lines = textRenderer.wrapLines(guide.getDescription(), scaledWidth);
+                int descriptionHeight = (int) ((lines.size() * (textRenderer.fontHeight + 1) + 4) * config.getTextScale());
 
                 // 描述背景
-                int descBgColor = 0xA0000000;
-                context.fill(x, y, screenWidth - MARGIN_RIGHT, y + descriptionHeight, descBgColor);
-
-                // 描述文本
-                int textY = y + 2;
-                for (OrderedText line : lines) {
-                    context.drawText(textRenderer, line, x + 3, textY,  0xFFAA8800, true); // 浅灰色，比白色柔和
-                    textY += textRenderer.fontHeight + 1;
+                if (config.isShowBackground()) {
+                    context.fill(x, y, x + itemWidth, y + descriptionHeight, config.getBackgroundColor());
                 }
 
-                y += descriptionHeight; // 描述结束后继续
+                // 描述文本
+                int scaledTextY = (int) ((y + 2) / config.getTextScale());
+                for (OrderedText line : lines) {
+                    context.drawText(textRenderer, line, (int) ((x + 3) / config.getTextScale()), scaledTextY, 0xFFAA8800, true);
+                    scaledTextY += textRenderer.fontHeight + 1;
+                }
 
-                //条件描述
+                context.getMatrices().popMatrix();
+                y += descriptionHeight;
+
+                // 条件描述处理
                 List<GuideCondition> guideConditions = guide.getConditions();
                 if (guideConditions != null) {
                     for (int i = 0; i < guideConditions.size(); i++) {
                         var condition = guideConditions.get(i);
                         String conditionDesc = condition.getDescription();
                         if (conditionDesc != null && !conditionDesc.isEmpty()) {
-                            List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), itemWidth - 6 - 20); // 预留空间给复选框
-                            int condHeight = condLines.size() * (textRenderer.fontHeight + 1) + 4;
+                            context.getMatrices().pushMatrix();
+                            context.getMatrices().scale(config.getTextScale(), config.getTextScale());
+
+                            List<OrderedText> condLines = textRenderer.wrapLines(StringVisitable.plain(conditionDesc), (int) ((itemWidth - 6 - 20) / config.getTextScale()));
+                            int condHeight = (int) ((condLines.size() * (textRenderer.fontHeight + 1) + 4) * config.getTextScale());
 
                             // 使用条件的内部进度来渲染整个背景
                             float insideProgress = condition.getProgress();
                             int condFillWidth = (int) (itemWidth * (MathHelper.clamp(insideProgress, 0, 100) / 100.0f));
 
                             // 背景颜色 - 完成时为亮绿色，未完成时为淡蓝色
-                            int bgColor = condition.isCompleted() ? 0xA0005500 : 0xA03366AA; // 亮绿色或淡蓝色
+                            int bgColor = condition.isCompleted() ? 0xA0005500 : 0xA03366AA;
 
                             // 绘制整个条件区域的背景
-                            context.fill(x, y, x + condFillWidth, y + condHeight, bgColor);
-                            // 未填充部分使用较暗的颜色
-                            if (condFillWidth < itemWidth) {
-                                context.fill(x + condFillWidth, y, screenWidth - MARGIN_RIGHT, y + condHeight, 0x60202020);
+                            if (config.isShowBackground()) {
+                                context.fill(x, y, x + condFillWidth, y + condHeight, bgColor);
+                                // 未填充部分使用较暗的颜色
+                                if (condFillWidth < itemWidth) {
+                                    context.fill(x + condFillWidth, y, x + itemWidth, y + condHeight, 0x60202020);
+                                }
                             }
 
                             // 绘制复选框边框
-                            int checkboxSize = 10;
+                            int checkboxSize = (int) (10 * config.getTextScale());
                             int checkboxX = x + 3;
                             int checkboxY = y + 2;
-                            context.fill(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize, 0xFF808080); // 边框
-                            context.fill(checkboxX + 1, checkboxY + 1, checkboxX + checkboxSize - 1, checkboxY + checkboxSize - 1, condition.isCompleted() ? 0xFF005500 : 0xFF202020); // 内部
+                            context.fill(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize, 0xFF808080);
+                            context.fill(checkboxX + 1, checkboxY + 1, checkboxX + checkboxSize - 1, checkboxY + checkboxSize - 1,
+                                        condition.isCompleted() ? 0xFF005500 : 0xFF202020);
 
                             // 如果完成，绘制勾号
                             if (condition.isCompleted()) {
                                 String checkMark = "✔";
-                                int checkMarkX = checkboxX + 1;
-                                int checkMarkY = checkboxY + 1;
-                                // 使用较小的字体渲染勾号
-                                context.drawText(textRenderer, checkMark, checkMarkX, checkMarkY, 0xFF55FF55, true);
+                                int scaledCheckMarkX = (int) ((checkboxX + 1) / config.getTextScale());
+                                int scaledCheckMarkY = (int) ((checkboxY + 1) / config.getTextScale());
+                                context.drawText(textRenderer, checkMark, scaledCheckMarkX, scaledCheckMarkY, 0xFF55FF55, true);
                             }
 
-                            // 条件文本 - 使用较小的字体，并根据完成状态设置颜色
-                            int condTextColor = condition.isCompleted() ? 0xFF55FF55 : 0xFFAAAAAA; // 完成时为亮绿色，未完成时为灰色
-                            int condTextY = y + 2;
+                            // 条件文本
+                            int condTextColor = condition.isCompleted() ? 0xFF55FF55 : 0xFFAAAAAA;
+                            int scaledCondTextY = (int) ((y + 2) / config.getTextScale());
                             for (OrderedText line : condLines) {
-                                // 为了视觉上的"缩小"效果，我们可以稍微调整Y坐标或使用不同的渲染方式
-                                // 这里直接使用原字体，但你可以考虑使用其他方法实现真正的字体大小调整
-                                context.drawText(textRenderer, line, x + 3 + checkboxSize + 2, condTextY, condTextColor, true);
-                                condTextY += textRenderer.fontHeight + 1;
+                                context.drawText(textRenderer, line, (int) ((x + 3 + checkboxSize + 2) / config.getTextScale()),
+                                               scaledCondTextY, condTextColor, true);
+                                scaledCondTextY += textRenderer.fontHeight + 1;
                             }
 
-                            y += condHeight; // 条件描述结束后继续
+                            context.getMatrices().popMatrix();
+                            y += condHeight;
                         }
                     }
                 }
             } else {
-                y += ITEM_HEIGHT; // 直接累加，无间距
+                y += scaledItemHeight;
             }
 
             itemIndex++;
@@ -259,6 +349,13 @@ public class GuideSysHud {
      * 动画操作：设置进度图标为progress_complete
      */
     public static void animateProgressComplete() {
+        // 动画逻辑
+    }
 
+    /**
+     * 重新加载配置时调用，重新初始化组件
+     */
+    public static void reloadConfig() {
+        hintTextWidget = null; // 强制重新初始化
     }
 }

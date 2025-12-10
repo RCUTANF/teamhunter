@@ -4,6 +4,7 @@ import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysScreen;
 import com.rcutanf.teamhunter.client.ui.RadarConfigScreen;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
+import com.rcutanf.teamhunter.client.ui.TeamHunterConfigScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -79,7 +80,10 @@ public class KeyBindings {
         // 配置键处理
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (configKey.wasPressed() && client.player != null) {
-                client.setScreen(new RadarConfigScreen(client.currentScreen));
+                if (client.currentScreen != null) {
+                    client.setScreen(null);
+                }
+                client.setScreen(new TeamHunterConfigScreen(null));
             }
         });
 
