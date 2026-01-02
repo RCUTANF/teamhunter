@@ -10,6 +10,7 @@ import com.rcutanf.teamhunter.advancement.AdvancementListener;
 import com.rcutanf.teamhunter.config.GameConfigLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
+import net.minecraft.command.permission.LeveledPermissionPredicate;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -130,11 +131,11 @@ public class Command {
                     )
                 )
                 .then(literal(RELOAD_CONFIG)
-                        .requires(source -> source.hasPermissionLevel(4)) // 需要OP权限
+                        .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK)) // 需要OP权限
                         .executes(Command::reloadConfig)
                 )
                 .then(literal(GAMEMODE)
-                        .requires(source -> source.hasPermissionLevel(2))
+                        .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                         .then(literal(LIST)
                                 .executes(Command::listGamemodes))
                         .then(literal(SWITCH)

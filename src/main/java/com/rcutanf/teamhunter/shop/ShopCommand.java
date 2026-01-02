@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -50,7 +51,7 @@ public class ShopCommand {
         player.sendMessage(Text.of("§e/shop list §7- 查看所有可购买物品"), false);
         player.sendMessage(Text.of("§e/shop buy <物品名称> §7- 购买指定物品"), false);
         player.sendMessage(Text.of("§e/shop buyid <物品ID> §7- 通过物品ID购买物品"), false);
-        if (player.hasPermissionLevel(2)) {
+        if (player.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS)) {
             player.sendMessage(Text.of("§e/shop reload §7- 重载商店配置文件"), false);
         }
         player.sendMessage(Text.of("§6==================="), false);

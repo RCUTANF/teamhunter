@@ -115,7 +115,7 @@ public class NetWorking {
         public static final Identifier SHOP_ITEMS_REQUEST_ID = Identifier.of(Teamhunter.MOD_ID, "shop_items_request");
         public static final Id<ShopItemsRequestPacket> ID = new Id<>(SHOP_ITEMS_REQUEST_ID);
         public static final PacketCodec<ByteBuf, ShopItemsRequestPacket> CODEC =
-                PacketCodecs.codec(Codec.unit(ShopItemsRequestPacket.INSTANCE));
+                PacketCodec.unit(ShopItemsRequestPacket.INSTANCE);
 
         @Override
         public Id<? extends CustomPayload> getId() {
