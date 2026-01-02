@@ -11,6 +11,7 @@ import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.AdvancementDataCache;
 import com.rcutanf.teamhunter.client.guide_sys.gui.data.StructureCache;
 import com.rcutanf.teamhunter.client.guide_sys.impl.AchievementLoader;
+import com.rcutanf.teamhunter.client.radar.data.PlayerPositionManager;
 import com.rcutanf.teamhunter.client.ui.PhaseCountdownHud;
 import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
@@ -24,17 +25,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
 
 public class TeamhunterClient implements ClientModInitializer {
 
@@ -60,23 +55,24 @@ public class TeamhunterClient implements ClientModInitializer {
     /** 游戏当前阶段 */
     public static Phase phase = Phase.WAITING;
 
-
     /** 上一次的团队优势状态，用于状态变化检测 */
     private static int lastTeamAdvantage = 0;
 
-
-    // ========== 玩家位置追踪 ==========
-
-    /** 存储其他玩家位置信息的映射表 */
-    private static final Map<UUID, PlayerPositionInfo> playerPositions = new HashMap<>();
+    // ========== 管理器实例 ==========
 
     /** 成就指南检查器管理器 */
     private static GuideSysCheckerManager guideCheckerManager;
     private static GuideSysTriggerManager guideSysTriggerManager;
     private static AdvancementEventManager advancementEventManager;
 
+    /** 玩家位置管理器 */
+    private static PlayerPositionManager playerPositionManager;
+
     @Override
     public void onInitializeClient() {
+        // 初始化管理器
+        playerPositionManager = PlayerPositionManager.getInstance();
+
         registerNetworkHandlers();
         registerHudLayers();
         registerTickEvents();
@@ -143,31 +139,21 @@ public class TeamhunterClient implements ClientModInitializer {
 
         // 注册玩家位置更新数据包处理
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.PlayerPositionUpdatePacket.ID, (payload, context) -> {
-            UUID playerId = payload.playerId();
-            String playerName = payload.playerName();
-            BlockPos position = payload.position();
-            Identifier dimension = payload.dimension(); // 接收维度信息
-
-            if (playerPositions.containsKey(playerId)) {
-                PlayerPositionInfo info = playerPositions.get(playerId);
-                info.updatePosition(position);
-                info.updateDimension(dimension);
-            } else {
-                playerPositions.put(playerId, new PlayerPositionInfo(playerName, position, dimension));
-            }
+            playerPositionManager.updatePlayerPosition(
+                    payload.playerId(),
+                    payload.playerName(),
+                    payload.position(),
+                    payload.dimension()
+            );
         });
 
         // 注册玩家可见性更新数据包处理
         ClientPlayNetworking.registerGlobalReceiver(NetWorking.PlayerVisibilityUpdatePacket.ID, (payload, context) -> {
-            UUID playerId = payload.playerId();
-            String playerName = payload.playerName();
-            boolean isVisible = payload.isVisible();
-
-            if (playerPositions.containsKey(playerId)) {
-                PlayerPositionInfo info = playerPositions.get(playerId);
-                info.updateVisible(isVisible);
-            }
-            // TODO:如果玩家尚未在位置映射中，我们将等待位置更新数据包
+            playerPositionManager.updatePlayerVisibility(
+                    payload.playerId(),
+                    payload.playerName(),
+                    payload.isVisible()
+            );
         });
 
         // 注册成就数据响应处理
@@ -199,14 +185,13 @@ public class TeamhunterClient implements ClientModInitializer {
 
         // 注册客户端连接事件
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            playerPositions.clear();
-            //PlayerRadarHud.dispose();
+            playerPositionManager.clearAllPlayers();
             guideCheckerManager.clearAllCheckers();
             StructureCache.getInstance().clearCache();
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            playerPositions.clear();
+            playerPositionManager.clearAllPlayers();
 
             // 异步等待成就数据加载完成
             new Thread(() -> {
@@ -250,7 +235,7 @@ public class TeamhunterClient implements ClientModInitializer {
         // 注册玩家雷达HUD
         HudRenderCallback.EVENT.register(PlayerRadarHud::render);
 
-        //注册成就指南HUD
+        // 注册成就指南HUD
         HudRenderCallback.EVENT.register(GuideSysHud::render);
     }
 
@@ -258,7 +243,6 @@ public class TeamhunterClient implements ClientModInitializer {
      * 注册Tick事件
      */
     private void registerTickEvents() {
-
         // 维度检测和Buff更新
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             checkDimensionAndUpdateBuffs();
@@ -273,8 +257,6 @@ public class TeamhunterClient implements ClientModInitializer {
         guideCheckerManager = GuideSysCheckerManager.getInstance();
         advancementEventManager = AdvancementEventManager.getInstance();
         AchievementLoader.loadAllAchievements();
-
-
     }
 
     /**
@@ -317,11 +299,10 @@ public class TeamhunterClient implements ClientModInitializer {
     }
 
     /**
-     * 获取所有跟踪的玩家位置信息
-     * @return 玩家位置信息映射表
+     * 获取玩家位置管理器实例
+     * @return 玩家位置管理器
      */
-    public static Map<UUID, PlayerPositionInfo> getPlayerPositions() {
-        return playerPositions;
+    public static PlayerPositionManager getPlayerPositionManager() {
+        return playerPositionManager;
     }
-
 }

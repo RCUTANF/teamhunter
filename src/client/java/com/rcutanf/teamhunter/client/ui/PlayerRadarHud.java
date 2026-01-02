@@ -68,7 +68,7 @@ public class PlayerRadarHud {
         drawRadarBackground(context);
 
         // 获取所有玩家位置信息
-        Map<UUID, PlayerPositionInfo> playerPositions = TeamhunterClient.getPlayerPositions();
+        Map<UUID, PlayerPositionInfo> playerPositions = TeamhunterClient.getPlayerPositionManager().getMergedPlayerPositions();
 
         // 玩家当前位置和朝向
         BlockPos playerPos = player.getBlockPos();
