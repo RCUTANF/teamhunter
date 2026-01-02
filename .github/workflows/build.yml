@@ -1,9 +1,9 @@
 name: build
 on:
   push:
-    branches: [ "1.21.10" ] # 当代码推送到 "1.21.10" 分支时触发
+    branches: [ "1.21.11" ]
   pull_request:
-    branches: [ "1.21.10" ] # 当向 "1.21.10" 分支发起 Pull Request 时触发
+    branches: [ "1.21.11" ]
 
 jobs:
   build:
