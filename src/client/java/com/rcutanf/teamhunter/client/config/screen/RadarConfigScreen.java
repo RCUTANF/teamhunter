@@ -1,6 +1,7 @@
-package com.rcutanf.teamhunter.client.ui;
+package com.rcutanf.teamhunter.client.config.screen;
 
 import com.rcutanf.teamhunter.client.config.RadarConfig;
+import com.rcutanf.teamhunter.client.ui.PlayerRadarHud;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

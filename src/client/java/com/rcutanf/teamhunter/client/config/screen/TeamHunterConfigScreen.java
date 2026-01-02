@@ -1,4 +1,4 @@
-package com.rcutanf.teamhunter.client.ui;
+package com.rcutanf.teamhunter.client.config.screen;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;

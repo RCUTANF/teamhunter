@@ -2,9 +2,8 @@ package com.rcutanf.teamhunter.client;
 
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysHud;
 import com.rcutanf.teamhunter.client.guide_sys.gui.GuideSysScreen;
-import com.rcutanf.teamhunter.client.ui.RadarConfigScreen;
 import com.rcutanf.teamhunter.client.ui.ShopScreen;
-import com.rcutanf.teamhunter.client.ui.TeamHunterConfigScreen;
+import com.rcutanf.teamhunter.client.config.screen.TeamHunterConfigScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;

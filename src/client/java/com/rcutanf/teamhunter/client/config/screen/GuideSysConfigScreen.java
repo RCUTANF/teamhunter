@@ -1,4 +1,4 @@
-package com.rcutanf.teamhunter.client.ui;
+package com.rcutanf.teamhunter.client.config.screen;
 
 import com.rcutanf.teamhunter.client.config.GuideSysConfig;
 import net.minecraft.client.gui.screen.Screen;
