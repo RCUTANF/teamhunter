@@ -6,7 +6,6 @@ import com.rcutanf.teamhunter.client.config.RadarConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -16,7 +15,6 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RotationAxis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +35,8 @@ public class PlayerRadarHud {
     private static int RADAR_SIZE = 60; // 默认雷达大小
     private static int RADAR_X = 5; // 默认X位置
     private static int RADAR_Y = 5; // 默认Y位置
+
+    private static boolean isSelfVisible;
 
     public static void setRadarSize(int size) {
         RADAR_SIZE = Math.max(30, Math.min(200, size));
@@ -82,26 +82,27 @@ public class PlayerRadarHud {
             // 跳过当前玩家自己
             //加入一个玩家自己可见时展示可见性图片的逻辑
             if (otherPlayerId.equals(player.getUuid())){
-                if (posInfo.isVisible()){
-                    // 加载位置暴露指示器图片
-
-                    int iconSize = 64; // 图标大小
-
-                    // 计算图标位置
-                    int screenWidth = client.getWindow().getScaledWidth();
-                    int iconX = screenWidth / 2 - iconSize / 2; // 屏幕中心
-                    int iconY = TeamScoreHud.getBAR_HEIGHT() + TeamScoreHud.getBAR_Y() + 3; // 顶部往下偏移10像素
-
-                    // 使用与类中其他纹理绘制相同的方法
-                    context.drawTexture(
-                            RenderPipelines.GUI_TEXTURED, // 渲染层函数
-                            exposureIcon,                // 纹理标识符
-                            iconX, iconY,                // 位置
-                            0, 0,                        // 纹理UV起点
-                            iconSize, iconSize,          // 绘制宽高
-                            iconSize, iconSize           // 纹理总尺寸
-                    );
-                }
+//                if (posInfo.isVisible()){
+//                    // 加载位置暴露指示器图片
+//
+//                    int iconSize = 64; // 图标大小
+//
+//                    // 计算图标位置
+//                    int screenWidth = client.getWindow().getScaledWidth();
+//                    int iconX = screenWidth / 2 - iconSize / 2; // 屏幕中心
+//                    int iconY = TeamScoreHud.getBAR_HEIGHT() + TeamScoreHud.getBAR_Y() + 3; // 顶部往下偏移10像素
+//
+//                    // 使用与类中其他纹理绘制相同的方法
+//                    context.drawTexture(
+//                            RenderPipelines.GUI_TEXTURED, // 渲染层函数
+//                            exposureIcon,                // 纹理标识符
+//                            iconX, iconY,                // 位置
+//                            0, 0,                        // 纹理UV起点
+//                            iconSize, iconSize,          // 绘制宽高
+//                            iconSize, iconSize           // 纹理总尺寸
+//                    );
+//                }
+                isSelfVisible = posInfo.isVisible();
                 continue;
             };
 
@@ -201,9 +202,36 @@ public class PlayerRadarHud {
         }
 
         if (!isVisible && !isTeammate) {
-            // 绘制指向不可见玩家方向的射线
-            drawDirectionLine(context, centerX, centerY, adjustedRadius, directionAngle, dotColor, playerName);
-            return; // 跳过下方的正常绘制逻辑
+            if (isSelfVisible) {
+                // 玩家暴露时，绘制指向不可见敌人方向的射线
+                drawDirectionLine(context, centerX, centerY, adjustedRadius, directionAngle, dotColor, playerName);
+            } else {
+                // 玩家未暴露时，在射线终点位置绘制空心圆点
+                int terminalX = centerX + Math.round((float) (Math.cos(directionAngle) * (adjustedRadius - 2)));
+                int terminalY = centerY + Math.round((float) (Math.sin(directionAngle) * (adjustedRadius - 2)));
+
+                // 绘制空心圆点（使用边框纹理）
+                drawHollowDot(context, terminalX, terminalY, dotRadius, dotColor);
+
+                // 绘制玩家名称
+                float scale = RadarConfig.getInstance().getNameScale();
+                int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(playerName);
+                int scaledWidth = (int) (textWidth * scale);
+
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(terminalX - (float) scaledWidth / 2, terminalY - 6);
+                context.getMatrices().scale(scale, scale);
+                context.drawText(
+                        MinecraftClient.getInstance().textRenderer,
+                        playerName,
+                        0,
+                        0,
+                        dotColor,
+                        false
+                );
+                context.getMatrices().popMatrix();
+            }
+            return;
         }
 
         if (isOutOfRange) {
@@ -532,6 +560,23 @@ public class PlayerRadarHud {
             textureManager.destroyTexture(id);
         }
         CIRCLE_TEXTURES.clear();
+    }
+
+    // 绘制空心圆点
+    private static void drawHollowDot(DrawContext context, int centerX, int centerY, int radius, int color) {
+        String cacheKey = "hollow_dot_" + radius + "_" + Integer.toHexString(color);
+        Identifier textureId = CIRCLE_TEXTURES.computeIfAbsent(cacheKey,
+                k -> generateCircleTexture(radius, color, false)); // false表示空心
+
+        int size = radius * 2;
+        context.drawTexture(
+                RenderPipelines.GUI_TEXTURED,
+                textureId,
+                centerX - radius, centerY - radius,
+                0, 0,
+                size, size,
+                size, size
+        );
     }
 
 

@@ -190,8 +190,6 @@ public class PlayerVisibilityTracker {
     // 发送可见性更新到客户端
     private static void sendVisibilityUpdate(ServerPlayerEntity target, boolean isVisible) {
         MinecraftServer server = target.getEntityWorld().getServer();
-        //TODO:这里可能是临时反转了想禁用那个提示，后面再看看
-        if (server != null) {return;}
         // 创建一个可见性更新数据包
         NetWorking.PlayerVisibilityUpdatePacket packet = new NetWorking.PlayerVisibilityUpdatePacket(
             target.getUuid(), target.getName().getString(), isVisible);
