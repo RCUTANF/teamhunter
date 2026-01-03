@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## v0.4.4 - 2026-01-03
+
+### Added
+- PlayerPositionManager for centralized player position tracking
+- Guide system configuration screen with centralized management of various sub-function settings
+- ScrollingCarouselText widget for dynamic hint display
+
+### Changed
+- Updated to Minecraft 1.21.11 and Gradle 9.2.1
+- Moved several configuration screen classes from `.ui` to `.config.screen` package
+- Player radar now displays hollow dots for unexposed and unknown enemy entities
+- Improved hint descriptions for clarity in JSON configuration files
+
+### Fixed
+- Replaced `System.out` with `LOGGER` for improved logging consistency
+
 ## v0.4.3 - 2025-12-09
 
 ### Added
